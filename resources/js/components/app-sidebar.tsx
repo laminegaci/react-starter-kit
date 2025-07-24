@@ -60,7 +60,6 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={mainNavItems} />
-                <div className="divider"></div>
             </SidebarContent>
 
             <SidebarFooter>
