@@ -18,14 +18,14 @@ const mainNavItems: NavItem[] = [
 const footerNavItems: NavItem[] = [
     {
         title: 'Roles',
-        href: 'https://github.com/laravel/react-starter-kit',
+        href: route('role.index'),
         icon: Folder,
     },
-    {
-        title: 'Companies',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
+    // {
+    //     title: 'Companies',
+    //     href: 'https://laravel.com/docs/starter-kits#react',
+    //     icon: BookOpen,
+    // },
     {
         title: 'Teams',
         href: 'https://github.com/laravel/react-starter-kit',
