@@ -19,7 +19,7 @@ export default function Table<T>({
   getRowDetailsUrl
 }: TableProps<T>) {
   return (
-    <div className="h-[500px] overflow-scroll bg-white rounded shadow">
+    <div className="h-[550px] overflow-scroll bg-white rounded shadow">
       <table className="w-full whitespace-nowrap">
         <thead>
           <tr className="font-bold text-left">
