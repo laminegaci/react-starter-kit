@@ -33,7 +33,7 @@ const footerNavItems: NavItem[] = [
     },
     {
         title: 'Users',
-        href: 'https://laravel.com/docs/starter-kits#react',
+        href: route('users.index'),
         icon: BookOpen,
     },
         {
