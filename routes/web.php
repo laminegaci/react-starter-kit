@@ -17,7 +17,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::get('roles', [RoleController::class, 'edit'])->name('role.edit');
     Route::get('roles/index', [RoleController::class, 'index'])->name('role.index');
 
-    Route::get('users/index', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/index', [UserController::class, 'admins'])->name('users.index');
+    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+
+    Route::get('teams/index', [UserController::class, 'teams'])->name('teams.index');
+    Route::get('teams/{user}/edit', [UserController::class, 'edit'])->name('teams.edit');
 });
 
 require __DIR__.'/settings.php';

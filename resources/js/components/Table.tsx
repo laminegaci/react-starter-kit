@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import get from 'lodash/get';
 import { ChevronRight } from 'lucide-react';
 
 interface TableProps<T> {
@@ -17,9 +18,8 @@ export default function Table<T>({
   rows = [],
   getRowDetailsUrl
 }: TableProps<T>) {
-
   return (
-    <div className="overflow-x-auto bg-white rounded shadow">
+    <div className="h-[500px] overflow-scroll bg-white rounded shadow">
       <table className="w-full whitespace-nowrap">
         <thead>
           <tr className="font-bold text-left">

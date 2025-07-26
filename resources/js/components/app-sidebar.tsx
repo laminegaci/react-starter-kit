@@ -28,7 +28,7 @@ const footerNavItems: NavItem[] = [
     // },
     {
         title: 'Teams',
-        href: 'https://github.com/laravel/react-starter-kit',
+        href: route('teams.index'),
         icon: Folder,
     },
     {

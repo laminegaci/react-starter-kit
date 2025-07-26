@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Enums\UserRoleEnum;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,15 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Root User',
-            'email' => 'root@app.com',
-        ]);
-
         $this->call([
             RolePermissionSeeder::class
         ]);
+
+        User::create([
+            'name' => 'Root User',
+            'email' => 'root@app.com',
+            'password' => Hash::make('123456789'),
+        ])->assignRole(UserRoleEnum::ROOT->name);
+
+
+        User::factory(100)->create();
     }
 }

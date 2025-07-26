@@ -9,8 +9,8 @@ import FilterBar from '@/components/FilterBar/FilterBar';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Users',
-        href: '/users',
+        title: 'Teams',
+        href: '/teams',
     },
 ];
 
@@ -29,37 +29,37 @@ const columns = [
   },
 ];
 
-export default function Users() {
-    const { users } = usePage<{
-        users: PaginatedData<User>;
+export default function Teams() {
+    const { teams } = usePage<{
+        teams: PaginatedData<User>;
     }>().props;
 
     const {
         data,
         meta: { links }
-    } = users;
+    } = teams;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="users" />
+            <Head title="teams" />
             <div className='px-4 py-6'>
-                <Heading title="Users" description="Manage users" />
-
+                <Heading title="Teams" description="Manage teams" />
+                
                 <div className="flex items-center justify-between mb-6">
-                    {/* <FilterBar /> */}
+                    <FilterBar />
                     <Link
                     className="btn-indigo focus:outline-none"
                     href={route('users.create')}
                     >
                     <span>Create</span>
-                    <span className="hidden md:inline"> user</span>
+                    <span className="hidden md:inline"> team member</span>
                     </Link>
                 </div>
                 
                 <Table
                     columns={columns}
                     rows={data}
-                    getRowDetailsUrl={row => route('users.edit', row.id)}
+                    getRowDetailsUrl={row => route('teams.edit', row.id)}
                 />
                 <Pagination links={links} />
             </div>
