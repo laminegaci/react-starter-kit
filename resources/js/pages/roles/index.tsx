@@ -3,8 +3,8 @@ import { Head, usePage } from '@inertiajs/react';
 import { type BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import Heading from '@/components/heading';
-import Table from '@/components/Table';
 import SimpleTableCard from '@/components/simple-table-card';
+import Pagination from '@/components/Pagination';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -38,7 +38,7 @@ const data = [
 const columns = [
     { key: 'id', label: 'ID' },
     { key: 'name', label: 'Name' }
-]
+];
 
 const handleEdit = (row: any) => {
   console.log('Edit', row);
@@ -53,13 +53,24 @@ const description = 'A list of the roles in your account including their name, t
 export default function Roles() {
   const { roles } = usePage<PageProps>().props;
 
+  const {data, meta: { links }} = roles;
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Roles" />
             <div className='px-4 py-6'>
                 <Heading title="Roles" description="Manage roles and permissions" />
 
-                <SimpleTableCard description={description} columns={columns} data={roles.data} onEdit={handleEdit} onDelete={handleDelete} />
+                <SimpleTableCard 
+                    description={description} 
+                    columns={columns} 
+                    data={roles.data} 
+                    onEdit={handleEdit} 
+                    onDelete={handleDelete}
+                    buttonLabel="Add New Role"
+                />
+
+                <Pagination links={links} />
             </div>
         </AppLayout>
     );

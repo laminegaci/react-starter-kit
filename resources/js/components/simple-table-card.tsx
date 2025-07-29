@@ -11,10 +11,11 @@ interface SimpleTableCardProps<T> {
   data: T[];
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
+  buttonLabel?: string;
 }
 
 export default function SimpleTableCard<T>({
-  description, columns, data, onEdit, onDelete
+  description, columns, data, onEdit, onDelete, buttonLabel
 }: SimpleTableCardProps<T>) {
   return (
     <div>
@@ -27,7 +28,7 @@ export default function SimpleTableCard<T>({
                 </p>
             </div>
             <button className="px-4 py-2 bg-violet-600 text-white text-sm font-medium rounded hover:bg-violet-700">
-                Add role
+                {buttonLabel || 'Add New'}
             </button>
             </div>
 
