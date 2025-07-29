@@ -48,7 +48,7 @@ const handleDelete = (row: any) => {
   console.log('Delete', row);
 };
 
-const description = 'A list of the roles in your account including their name, title, email and role.';
+const description = 'A list of the roles in your account including their name.';
 
 export default function Roles() {
   const { roles } = usePage<PageProps>().props;

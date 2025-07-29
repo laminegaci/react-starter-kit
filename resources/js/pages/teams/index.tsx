@@ -38,7 +38,7 @@ const handleDelete = (row: any) => {
   console.log('Delete', row);
 };
 
-const description = 'A list of all the users in your account including their name, email and role.';
+const description = 'A list of all the users in your account including their name, email.';
 
 export default function Teams() {
     const { teams } = usePage<PageProps>().props;
