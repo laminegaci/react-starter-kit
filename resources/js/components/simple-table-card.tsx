@@ -18,7 +18,7 @@ export default function SimpleTableCard<T>({
   description, columns, data, onEdit, onDelete, buttonLabel
 }: SimpleTableCardProps<T>) {
   return (
-    <div>
+    <div className='h-[640px] overflow-scroll'>
         <div className="max-w-full mx-auto py-10 px-6">
         <div className="bg-white shadow rounded-lg p-6">
             <div className="flex justify-between items-center mb-6">
