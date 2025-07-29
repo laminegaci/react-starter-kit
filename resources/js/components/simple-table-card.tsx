@@ -5,15 +5,17 @@ interface Column {
   label: string;
 }
 
-interface SimpleTableCardProps {
+interface SimpleTableCardProps<T> {
   description: string;    
   columns: Column[];
-  data: Record<string, any>[];
-  onEdit?: (row: Record<string, any>) => void;
-  onDelete?: (row: Record<string, any>) => void;
+  data: T[];
+  onEdit?: (row: T) => void;
+  onDelete?: (row: T) => void;
 }
 
-const SimpleTableCard: React.FC<SimpleTableCardProps> = ({ description, columns, data, onEdit, onDelete }) => {
+export default function SimpleTableCard<T>({
+  description, columns, data, onEdit, onDelete
+}: SimpleTableCardProps<T>) {
   return (
     <div>
         <div className="max-w-full mx-auto py-10 px-6">
@@ -40,10 +42,10 @@ const SimpleTableCard: React.FC<SimpleTableCardProps> = ({ description, columns,
                 </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 text-sm text-gray-700">
-                {data.map((user, idx) => (
+                {data.map((item, idx) => (
                     <tr key={idx}>
                         {columns.map((column) => (
-                            <td key={column.key} className="px-4 py-2">{user[column.key]}</td>
+                            <td key={column.key} className="px-4 py-2">{item[column.key]}</td>
                         ))}
                         <td className="px-4 py-2 text-violet-600 hover:underline cursor-pointer">Edit</td>
                     </tr>
@@ -54,7 +56,5 @@ const SimpleTableCard: React.FC<SimpleTableCardProps> = ({ description, columns,
         </div>
         </div>
     </div>
-  );
-};
-
-export default SimpleTableCard;
+);
+}

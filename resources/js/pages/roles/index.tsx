@@ -59,7 +59,7 @@ export default function Roles() {
             <div className='px-4 py-6'>
                 <Heading title="Roles" description="Manage roles and permissions" />
 
-                <SimpleTableCard description={description} columns={columns} data={data} onEdit={handleEdit} onDelete={handleDelete} />
+                <SimpleTableCard description={description} columns={columns} data={roles.data} onEdit={handleEdit} onDelete={handleDelete} />
             </div>
         </AppLayout>
     );
