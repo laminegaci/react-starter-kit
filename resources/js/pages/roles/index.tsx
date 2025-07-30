@@ -17,6 +17,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface Role {
   id: number;
   name: string;
+  guard_name: string;
+  updated_at: string;
 }
 
 // Define the Inertia props you expect from the backend
@@ -29,15 +31,11 @@ interface PageProps {
   [key: string]: unknown; // Add index signature to satisfy Inertia's PageProps constraint
 }
 
-const data = [
-    { id: 1, name: 'Alice' },
-    { id: 2, name: 'Bob' },
-    { id: 3, name: 'Charlie' },
-];
-
 const columns = [
     { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' }
+    { key: 'name', label: 'Name' },
+    { key: 'guard_name', label: 'Guard Name' },
+    { key: 'updated_at', label: 'Updated At' }
 ];
 
 const handleEdit = (row: any) => {
@@ -54,7 +52,7 @@ export default function Roles() {
   const { roles } = usePage<PageProps>().props;
 
   const {data, meta: { links }} = roles;
-
+  console.log('Roles data:', roles.data);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Roles" />

@@ -15,7 +15,7 @@ class RoleCollection extends ResourceCollection
     public function toArray(Request $request)
     {
         return $this->collection->map->only(
-            'id', 'name'
+            'id', 'name', 'guard_name', 'created_at', 'updated_at'
         );
     }
 }
