@@ -5,7 +5,7 @@ interface Column {
   label: string;
 }
 
-interface SimpleTableCardProps<T> {
+interface TableCardProps<T> {
   description: string;    
   columns: Column[];
   data: T[];
@@ -14,22 +14,22 @@ interface SimpleTableCardProps<T> {
   buttonLabel?: string;
 }
 
-export default function SimpleTableCard<T>({
+export default function TableCard<T>({
   description, columns, data, onEdit, onDelete, buttonLabel
-}: SimpleTableCardProps<T>) {
+}: TableCardProps<T>) {
   return (
     <div className='h-[640px] overflow-scroll'>
         <div className="max-w-full mx-auto py-10 px-6">
         <div className="bg-white shadow rounded-lg p-6">
             <div className="flex justify-between items-center mb-6">
-            <div>
-                <p className="text-sm text-gray-600">
-                {description}
-                </p>
-            </div>
-            <button className="px-4 py-2 bg-violet-600 text-white text-sm font-medium rounded hover:bg-violet-700">
-                {buttonLabel || 'Add New'}
-            </button>
+                <div>
+                    <p className="text-sm text-gray-600">
+                    {description}
+                    </p>
+                </div>
+                <button className="px-4 py-2 bg-violet-600 text-white text-sm font-medium rounded hover:bg-violet-700">
+                    {buttonLabel || 'Add New'}
+                </button>
             </div>
 
             <div className="overflow-x-auto">

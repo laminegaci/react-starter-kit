@@ -6,7 +6,7 @@ import Heading from '@/components/heading';
 import Table from '@/components/Table';
 import Pagination from '@/components/Pagination';
 import FilterBar from '@/components/FilterBar/FilterBar';
-import SimpleTableCard from '@/components/simple-table-card';
+import TableCard from '@/components/table-card';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -52,7 +52,7 @@ export default function Users() {
             <div className='px-4 py-6'>
                 <Heading title="Users" description="Manage users" />
                 
-                <SimpleTableCard 
+                <TableCard 
                     description={description} 
                     columns={columns} 
                     data={users.data} 

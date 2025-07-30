@@ -3,7 +3,7 @@ import { Head, usePage } from '@inertiajs/react';
 import { type BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import Heading from '@/components/heading';
-import SimpleTableCard from '@/components/simple-table-card';
+import TableCard from '@/components/table-card';
 import Pagination from '@/components/Pagination';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -61,10 +61,10 @@ export default function Roles() {
             <div className='px-4 py-6'>
                 <Heading title="Roles" description="Manage roles and permissions" />
 
-                <SimpleTableCard 
+                <TableCard 
                     description={description} 
                     columns={columns} 
-                    data={roles.data} 
+                    data={data} 
                     onEdit={handleEdit} 
                     onDelete={handleDelete}
                     buttonLabel="Add New Role"
