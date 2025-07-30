@@ -36,9 +36,9 @@ export default function TableCardHeader<T>({
             </form>
         </div>
         <div >
-            <details className="dropdown">
-                <summary className="btn m-1">Columns</summary>
-                <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+            <div className="dropdown dropdown-end">
+                <div tabIndex={0} role="button" className="btn m-1">Columns</div>
+                <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                     {columns.map((column) => (
                         <li>
                             <label className="label">
@@ -48,21 +48,41 @@ export default function TableCardHeader<T>({
                         </li>
                     ))}
                 </ul>
-            </details>
-            <details className="dropdown">
-                <summary className="btn m-1">Filters</summary>
-                <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-md">
-                    
-                    <li><a>Item 2</a></li>
+            </div>
+            <div className="dropdown dropdown-end">
+                <div tabIndex={0} role="button" className="btn m-1">Filters</div>
+                <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <li>
+                        <label className="label">
+                            Filter 1
+                        </label>
+                    </li>
+                    <li>
+                        <label className="label">
+                            Filter 2
+                        </label>
+                    </li>
                 </ul>
-            </details>
-            <details className="dropdown">
-                <summary className="btn m-1">Actions</summary>
-                <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                    <li><a>Item 1</a></li>
-                    <li><a>Item 2</a></li>
+            </div>
+            <div className="dropdown dropdown-end">
+                <div tabIndex={0} role="button" className="btn m-1">Actions</div>
+                <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <li>
+                        <h2 className="menu-title">import</h2>
+                        <ul>
+                            <li><a>CSV</a></li>
+                            <li><a>PDF</a></li>
+                            <li><a>EXCEL</a></li>
+                        </ul>
+                        <h2 className="menu-title">export</h2>
+                        <ul>
+                            <li><a>CSV</a></li>
+                            <li><a>PDF</a></li>
+                            <li><a>EXCEL</a></li>
+                        </ul>
+                    </li>
                 </ul>
-            </details>
+            </div>
         </div>
     </div>
     </div>
