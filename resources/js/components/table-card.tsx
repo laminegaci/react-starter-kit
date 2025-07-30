@@ -1,5 +1,6 @@
 import React from 'react';
 import TableCardHeader from './table-card-header';
+import { SquarePen } from 'lucide-react';
 
 interface Column {
   key: string;
@@ -18,6 +19,10 @@ interface TableCardProps<T> {
 export default function TableCard<T>({
   description, columns, data, onEdit, onDelete, buttonLabel
 }: TableCardProps<T>) {
+    function clickedEdit<T extends {}>(item: T): void {
+        console.log('Edit clicked for item:', item);
+    }
+
   return (
     <div className='h-[640px] overflow-scroll'>
         <div className="max-w-full mx-auto py-10 px-6">
@@ -36,11 +41,38 @@ export default function TableCard<T>({
                 </thead>
                 <tbody className="divide-y divide-gray-200 text-sm text-gray-700">
                 {data.map((item, idx) => (
-                    <tr key={idx}>
+                    <tr key={idx} className='hover:bg-gray-50 transition-colors '>
                         {columns.map((column) => (
                             <td key={column.key} className="px-4 py-2">{item[column.key]}</td>
                         ))}
-                        <td className="px-4 py-2 text-violet-600 hover:underline cursor-pointer">Edit</td>
+                        <td className="flex px-4 py-2 text-violet-600">
+                            <button 
+                                className='flex items-center rounded-md px-3.5 transition-colors cursor-pointer'
+                                type='button'
+                                onClick={() => clickedEdit(item)}
+                            >
+                            <SquarePen className="-ml-1 h-4 w-4" />
+                            <span className="ml-1.5 text-sm">Edit</span>
+                            </button>
+
+                            <button 
+                                className='flex items-center rounded-md px-3.5 transition-colors cursor-pointer'
+                                type='button'
+                                onClick={() => clickedEdit(item)}
+                            >
+                            <SquarePen className="-ml-1 h-4 w-4" />
+                            <span className="ml-1.5 text-sm">Edit</span>
+                            </button>
+
+                              <button 
+                                className='flex items-center rounded-md px-3.5 transition-colors cursor-pointer'
+                                type='button'
+                                onClick={() => clickedEdit(item)}
+                            >
+                            <SquarePen className="-ml-1 h-4 w-4" />
+                            <span className="ml-1.5 text-sm">Delete</span>
+                            </button>
+                        </td>
                     </tr>
                 ))}
                 </tbody>

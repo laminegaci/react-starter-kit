@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Users, UsersRound, Notebook, Settings } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -19,7 +19,7 @@ const footerNavItems: NavItem[] = [
     {
         title: 'Roles',
         href: route('role.index'),
-        icon: Folder,
+        icon: Notebook,
     },
     // {
     //     title: 'Companies',
@@ -29,17 +29,17 @@ const footerNavItems: NavItem[] = [
     {
         title: 'Teams',
         href: route('teams.index'),
-        icon: Folder,
+        icon: UsersRound,
     },
     {
         title: 'Users',
         href: route('users.index'),
-        icon: BookOpen,
+        icon: Users,
     },
         {
         title: 'Settings',
         href: route('profile.edit'),
-        icon: Folder,
+        icon: Settings,
     }
 ];
 
