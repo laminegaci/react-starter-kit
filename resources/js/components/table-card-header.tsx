@@ -3,10 +3,11 @@ import React from 'react';
 interface TableCardProps<T> {
   description: string; 
   buttonLabel: string;
+  columns: { key: string; label: string }[];
 }
 
 export default function TableCardHeader<T>({
-  description, buttonLabel
+  description, buttonLabel, columns
 }: TableCardProps<T>) {
   return (
     <div>
@@ -20,7 +21,7 @@ export default function TableCardHeader<T>({
             {buttonLabel || 'Add New'}
         </button>
     </div>
-    <div className="flex justify-between items-center mb-6 mx-8">
+    <div className="flex justify-between items-center mb-6">
         <div>
             <form className="flex items-center max-w-sm mx-auto">   
                 <label htmlFor="simple-search" className="sr-only">Search</label>
@@ -36,16 +37,22 @@ export default function TableCardHeader<T>({
         </div>
         <div >
             <details className="dropdown">
-                <summary className="btn m-1">Culumns</summary>
+                <summary className="btn m-1">Columns</summary>
                 <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                    <li><a>Item 1</a></li>
-                    <li><a>Item 2</a></li>
+                    {columns.map((column) => (
+                        <li>
+                            <label className="label">
+                                <input type="checkbox" defaultChecked className="checkbox checkbox-md" />
+                                {column.label}
+                            </label>
+                        </li>
+                    ))}
                 </ul>
             </details>
             <details className="dropdown">
                 <summary className="btn m-1">Filters</summary>
-                <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                    <li><a>Item 1</a></li>
+                <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-md">
+                    
                     <li><a>Item 2</a></li>
                 </ul>
             </details>

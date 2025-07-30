@@ -22,12 +22,12 @@ export default function TableCard<T>({
     <div className='h-[640px] overflow-scroll'>
         <div className="max-w-full mx-auto py-10 px-6">
         <div className="bg-white shadow rounded-lg p-6">
-            <TableCardHeader description={description} buttonLabel={buttonLabel} />
+            <TableCardHeader description={description} buttonLabel={buttonLabel} columns={columns}/>
 
             <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
                 <thead>
-                <tr className="text-left text-sm font-semibold text-gray-700">
+                <tr className="text-left text-sm font-semibold text-gray-700 bg-gray-100">
                     {columns.map((column) => (
                         <th key={column.key} className="px-4 py-2">{column.label}</th>
                     ))}
