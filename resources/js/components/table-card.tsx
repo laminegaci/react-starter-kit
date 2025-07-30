@@ -1,4 +1,5 @@
 import React from 'react';
+import TableCardHeader from './table-card-header';
 
 interface Column {
   key: string;
@@ -11,7 +12,7 @@ interface TableCardProps<T> {
   data: T[];
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
-  buttonLabel?: string;
+  buttonLabel: string;
 }
 
 export default function TableCard<T>({
@@ -21,16 +22,7 @@ export default function TableCard<T>({
     <div className='h-[640px] overflow-scroll'>
         <div className="max-w-full mx-auto py-10 px-6">
         <div className="bg-white shadow rounded-lg p-6">
-            <div className="flex justify-between items-center mb-6">
-                <div>
-                    <p className="text-sm text-gray-600">
-                    {description}
-                    </p>
-                </div>
-                <button className="px-4 py-2 bg-violet-600 text-white text-sm font-medium rounded hover:bg-violet-700">
-                    {buttonLabel || 'Add New'}
-                </button>
-            </div>
+            <TableCardHeader description={description} buttonLabel={buttonLabel} />
 
             <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
