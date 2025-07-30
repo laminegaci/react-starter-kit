@@ -1,6 +1,6 @@
 import React from 'react';
 import TableCardHeader from './table-card-header';
-import { SquarePen } from 'lucide-react';
+import { SquarePen, Eye, Trash } from 'lucide-react';
 
 interface Column {
   key: string;
@@ -45,18 +45,18 @@ export default function TableCard<T>({
                         {columns.map((column) => (
                             <td key={column.key} className="px-4 py-2">{item[column.key]}</td>
                         ))}
-                        <td className="flex px-4 py-2 text-violet-600">
+                        <td className="flex px-4 py-2">
                             <button 
-                                className='flex items-center rounded-md px-3.5 transition-colors cursor-pointer'
+                                className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-blue-600'
                                 type='button'
                                 onClick={() => clickedEdit(item)}
                             >
-                            <SquarePen className="-ml-1 h-4 w-4" />
-                            <span className="ml-1.5 text-sm">Edit</span>
+                            <Eye className="-ml-1 h-4 w-4" />
+                            <span className="ml-1.5 text-sm">View</span>
                             </button>
 
                             <button 
-                                className='flex items-center rounded-md px-3.5 transition-colors cursor-pointer'
+                                className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-violet-600'
                                 type='button'
                                 onClick={() => clickedEdit(item)}
                             >
@@ -65,11 +65,11 @@ export default function TableCard<T>({
                             </button>
 
                               <button 
-                                className='flex items-center rounded-md px-3.5 transition-colors cursor-pointer'
+                                className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
                                 type='button'
                                 onClick={() => clickedEdit(item)}
                             >
-                            <SquarePen className="-ml-1 h-4 w-4" />
+                            <Trash className="-ml-1 h-4 w-4" />
                             <span className="ml-1.5 text-sm">Delete</span>
                             </button>
                         </td>
