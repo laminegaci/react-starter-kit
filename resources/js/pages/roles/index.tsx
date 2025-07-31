@@ -52,7 +52,6 @@ export default function Roles() {
   const { roles } = usePage<PageProps>().props;
 
   const {data, meta: { links }} = roles;
-  console.log('Roles data:', roles.data);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Roles" />
