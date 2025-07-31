@@ -61,6 +61,7 @@ export default function Roles() {
                 <TableCard 
                     description={description} 
                     columns={columns} 
+                    actions={{ show: true, edit: true, delete: true }}
                     data={data} 
                     onEdit={handleEdit} 
                     onDelete={handleDelete}

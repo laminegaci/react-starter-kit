@@ -10,6 +10,11 @@ interface Column {
 interface TableCardProps<T> {
   description: string;    
   columns: Column[];
+  actions: {
+    show: true,
+    edit: true,
+    delete: true,
+  },
   data: T[];
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
@@ -17,7 +22,7 @@ interface TableCardProps<T> {
 }
 
 export default function TableCard<T>({
-  description, columns, data, onEdit, onDelete, buttonLabel
+  description, columns, actions, data, onEdit, onDelete, buttonLabel
 }: TableCardProps<T>) {
     function clickedEdit<T extends {}>(item: T): void {
         console.log('Edit clicked for item:', item);
@@ -59,19 +64,31 @@ export default function TableCard<T>({
                             <button 
                                 className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-blue-600'
                                 type='button'
-                                onClick={() => clickedEdit(item)}
+                                onClick={() => document.getElementById('my_modal_1').showModal()}
                             >
-                            <Eye className="-ml-1 h-4 w-4" />
-                            <span className="ml-1.5 text-sm">View</span>
+                                <Eye className="-ml-1 h-4 w-4" />
+                                <span className="ml-1.5 text-sm">View</span>
                             </button>
+                            <dialog id="view-{}" className="modal">
+                                <div className="modal-box">
+                                    <h3 className="font-bold text-lg">Hello!</h3>
+                                    <p className="py-4">Press ESC key or click the button below to close</p>
+                                    <div className="modal-action">
+                                    <form method="dialog">
+                                        {/* if there is a button in form, it will close the modal */}
+                                        <button className="btn">Close</button>
+                                    </form>
+                                    </div>
+                                </div>
+                            </dialog>
 
                             <button 
                                 className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-violet-600'
                                 type='button'
                                 onClick={() => clickedEdit(item)}
                             >
-                            <SquarePen className="-ml-1 h-4 w-4" />
-                            <span className="ml-1.5 text-sm">Edit</span>
+                                <SquarePen className="-ml-1 h-4 w-4" />
+                                <span className="ml-1.5 text-sm">Edit</span>
                             </button>
 
                               <button 
@@ -79,8 +96,8 @@ export default function TableCard<T>({
                                 type='button'
                                 onClick={() => clickedEdit(item)}
                             >
-                            <Trash className="-ml-1 h-4 w-4" />
-                            <span className="ml-1.5 text-sm">Delete</span>
+                                <Trash className="-ml-1 h-4 w-4" />
+                                <span className="ml-1.5 text-sm">Delete</span>
                             </button>
                         </td>
                     </tr>
