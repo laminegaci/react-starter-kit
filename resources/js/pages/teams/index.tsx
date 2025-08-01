@@ -54,6 +54,7 @@ export default function Teams() {
                 <TableCard 
                     description={description} 
                     columns={columns} 
+                    actions={{ view: false, edit: true, delete: true }}
                     data={teams.data} 
                     onEdit={handleEdit} 
                     onDelete={handleDelete} 

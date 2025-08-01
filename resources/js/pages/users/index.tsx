@@ -55,6 +55,7 @@ export default function Users() {
                 <TableCard 
                     description={description} 
                     columns={columns} 
+                    actions={{ view: false, edit: true, delete: true }}
                     data={users.data} 
                     onEdit={handleEdit} 
                     onDelete={handleDelete} 
