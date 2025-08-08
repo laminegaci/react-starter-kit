@@ -5,7 +5,7 @@ import { SquarePen, Eye, Trash } from 'lucide-react';
 export interface Column {
   key: string;
   label: string;
-  render?: (value: any, row: any) => React.ReactNode;
+  render?: (value: any, row: any, index: any) => React.ReactNode;
 }
 
 interface TableCardProps<T> {
@@ -59,7 +59,7 @@ export default function TableCard<T>({
                     <tr key={idx} className='hover:bg-gray-50 transition-colors '>
                         {filteredColumns.map((column) => (
                             <td key={column.key} className="px-4 py-2">
-                                {column.render ? column.render(item[column.key], item) : item[column.key]}
+                                {column.render ? column.render(item[column.key], item, idx) : item[column.key]}
                             </td>
                         ))}
                     </tr>

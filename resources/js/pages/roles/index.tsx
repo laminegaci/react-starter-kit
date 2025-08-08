@@ -6,6 +6,8 @@ import Heading from '@/components/heading';
 import TableCard, { Column } from '@/components/table-card';
 import Pagination from '@/components/Pagination';
 import { Columns, Eye, SquarePen, Trash } from 'lucide-react';
+import { useState } from 'react';
+import { Item } from '@radix-ui/react-dropdown-menu';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -34,21 +36,6 @@ interface PageProps {
   [key: string]: unknown; // Add index signature to satisfy Inertia's PageProps constraint
 }
 
-const handleView = (role: Role) => {
-  alert(`Viewing role: ${role.name}`);
-};
-
-const handleUpdate = (role: Role) => {
-  alert(`Updating role: ${role.name}`);
-};
-
-const handleDelete = (role: Role) => {
-  if (confirm(`Are you sure you want to delete ${role.name}?`)) {
-    // Here you would typically make an API call to delete the role
-    alert(`Deleted role: ${role.name}`);
-  }
-};
-
 const columns: Column[] = [
     { key: 'id', label: 'ID' },
     { key: 'name', label: 'Name' },
@@ -57,14 +44,16 @@ const columns: Column[] = [
     {
       key: "actions",
       label: "Actions",
-      render: (_, row) => (
+      render: (_: any, row: any, index: any) => (
         <div className="flex gap-2">
           <button 
               className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-blue-600'
               type='button'
               onClick={() => {
-                  const modal = document.getElementById(`view-${row}`) as HTMLDialogElement | null;
+                  const modal = document.getElementById(`view-${index}`) as HTMLDialogElement | null;
+                  console.log(modal)
                   if (modal) {
+                      
                       modal.showModal();
                   }
               }}
@@ -77,7 +66,7 @@ const columns: Column[] = [
               className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-violet-600'
               type='button'
               onClick={() => {
-                  const modal = document.getElementById(`edit-${idx}`) as HTMLDialogElement | null;
+                  const modal = document.getElementById(`edit-${index}`) as HTMLDialogElement | null;
                   if (modal) {
                       modal.showModal();
                   }
@@ -90,7 +79,7 @@ const columns: Column[] = [
               className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
               type='button'
               onClick={() => {
-                  const modal = document.getElementById(`delete-${idx}`) as HTMLDialogElement | null;
+                  const modal = document.getElementById(`delete-${index}`) as HTMLDialogElement | null;
                   if (modal) {
                       modal.showModal();
                   }
@@ -110,6 +99,27 @@ export default function Roles() {
   const { roles } = usePage<PageProps>().props;
 
   const {data, meta: { links }} = roles;
+
+    const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+    const [modalType, setModalType] = useState<ModalType>(null);
+
+    const openModal = (type: ModalType, role: Role) => {
+      setSelectedRole(role);
+      setModalType(type);
+    };
+
+    const closeModal = () => {
+      setSelectedRole(null);
+      setModalType(null);
+    };
+
+    const handleDeleteConfirm = () => {
+      if (selectedRole) {
+        // setUsers((prev) => prev.filter((u) => u.id !== selectedRole.id));
+        closeModal();
+      }
+    };
+    
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Roles" />
@@ -125,6 +135,52 @@ export default function Roles() {
                 />
 
                 <Pagination links={links} />
+
+                {/* Modal */}
+
+                {data.map((item, idx) => (
+                    <div key={idx}>
+                      <dialog id={`view-${idx}`} className="modal">
+                          <div className="modal-box">
+                              <h3 className="font-bold text-lg">Hello! {idx}</h3>
+                              <p className="py-4">Press ESC key or click the button below to close</p>
+                              <div className="modal-action">
+                              <form method="dialog">
+                                  {/* if there is a button in form, it will close the modal */}
+                                  <button className="btn">Close</button>
+                              </form>
+                              </div>
+                          </div>
+                      </dialog>
+                      
+                      <dialog id={`edit-${idx}`} className="modal">
+                          <div className="modal-box">
+                              <h3 className="font-bold text-lg">Hello! edit {idx}</h3>
+                              <p className="py-4">Press ESC key or click the button below to close</p>
+                              <div className="modal-action">
+                                  <form method="dialog">
+                                      {/* if there is a button in form, it will close the modal */}
+                                      <button className="btn">Close</button>
+                                  </form>
+                              </div>
+                          </div>
+                      </dialog>
+
+
+                      <dialog id={`delete-${idx}`} className="modal">
+                          <div className="modal-box">
+                              <h3 className="font-bold text-lg">Hello! delete {idx}</h3>
+                              <p className="py-4">Press ESC key or click the button below to close</p>
+                              <div className="modal-action">
+                                  <form method="dialog">
+                                      {/* if there is a button in form, it will close the modal */}
+                                      <button className="btn">Close</button>
+                                  </form>
+                              </div>
+                          </div>
+                      </dialog>
+                    </div>
+                ))}
             </div>
         </AppLayout>
     );
