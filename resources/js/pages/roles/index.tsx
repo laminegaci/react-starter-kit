@@ -36,63 +36,6 @@ interface PageProps {
   [key: string]: unknown; // Add index signature to satisfy Inertia's PageProps constraint
 }
 
-const columns: Column[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'guard_name', label: 'Guard Name' },
-    { key: 'updated_at', label: 'Updated At' },
-    {
-      key: "actions",
-      label: "Actions",
-      render: (_: any, row: any, index: any) => (
-        <div className="flex gap-2">
-          <button 
-              className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-blue-600'
-              type='button'
-              onClick={() => {
-                  const modal = document.getElementById(`view-${index}`) as HTMLDialogElement | null;
-                  console.log(modal)
-                  if (modal) {
-                      
-                      modal.showModal();
-                  }
-              }}
-          >
-              <Eye className="-ml-1 h-4 w-4" />
-              <span className="ml-1.5 text-sm">View</span>
-          </button>
-          
-          <button 
-              className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-violet-600'
-              type='button'
-              onClick={() => {
-                  const modal = document.getElementById(`edit-${index}`) as HTMLDialogElement | null;
-                  if (modal) {
-                      modal.showModal();
-                  }
-              }}
-          >
-              <SquarePen className="-ml-1 h-4 w-4" />
-              <span className="ml-1.5 text-sm">Edit</span>
-          </button>
-          <button 
-              className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
-              type='button'
-              onClick={() => {
-                  const modal = document.getElementById(`delete-${index}`) as HTMLDialogElement | null;
-                  if (modal) {
-                      modal.showModal();
-                  }
-              }}
-          >
-              <Trash className="-ml-1 h-4 w-4" />
-              <span className="ml-1.5 text-sm">Delete</span>
-          </button>
-        </div>
-      ),
-    },
-];
-
 const description = 'A list of the roles in your account including their name.';
 
 export default function Roles() {
@@ -119,6 +62,64 @@ export default function Roles() {
         closeModal();
       }
     };
+
+    const columns: Column[] = [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' },
+        { key: 'guard_name', label: 'Guard Name' },
+        { key: 'updated_at', label: 'Updated At' },
+        {
+          key: "actions",
+          label: "Actions",
+          render: (_: any, row: any, index: any) => (
+            <div className="flex gap-2">
+              <button 
+                  className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-blue-600'
+                  type='button'
+                  onClick={() => {
+                      const modal = document.getElementById(`view-${index}`) as HTMLDialogElement | null;
+                      if (modal) {
+                          setSelectedRole(row);
+                          setModalType("view");
+                          modal.showModal();
+                      }
+                  }}
+              >
+                  <Eye className="-ml-1 h-4 w-4" />
+                  <span className="ml-1.5 text-sm">View</span>
+              </button>
+              
+              <button 
+                  className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-violet-600'
+                  type='button'
+                  onClick={() => {
+                      const modal = document.getElementById(`edit-${index}`) as HTMLDialogElement | null;
+                      if (modal) {
+                          setSelectedRole(row);
+                          modal.showModal();
+                      }
+                  }}
+              >
+                  <SquarePen className="-ml-1 h-4 w-4" />
+                  <span className="ml-1.5 text-sm">Edit</span>
+              </button>
+              <button 
+                  className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
+                  type='button'
+                  onClick={() => {
+                      const modal = document.getElementById(`delete-${index}`) as HTMLDialogElement | null;
+                      if (modal) {
+                          modal.showModal();
+                      }
+                  }}
+              >
+                  <Trash className="-ml-1 h-4 w-4" />
+                  <span className="ml-1.5 text-sm">Delete</span>
+              </button>
+            </div>
+          ),
+        },
+    ];
     
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -141,20 +142,35 @@ export default function Roles() {
                 {data.map((item, idx) => (
                     <div key={idx}>
                       <dialog id={`view-${idx}`} className="modal">
-                          <div className="modal-box">
-                              <h3 className="font-bold text-lg">Hello! {idx}</h3>
-                              <p className="py-4">Press ESC key or click the button below to close</p>
-                              <div className="modal-action">
-                              <form method="dialog">
-                                  {/* if there is a button in form, it will close the modal */}
-                                  <button className="btn">Close</button>
-                              </form>
-                              </div>
+                          <div className="modal-box w-11/12 max-w-5xl">
+                          <h2 className="text-xl font-bold mb-4">View User</h2>
+
+                          <div className="space-y-2">
+                            <p>
+                              <strong>ID:</strong> {selectedRole?.id}
+                            </p>
+                            <p>
+                              <strong>Name:</strong> {selectedRole?.name}
+                            </p>
+                            <p>
+                              <strong>Guard Name:</strong> {selectedRole?.guard_name}
+                            </p>
+                            <p>
+                              <strong>Last Updated:</strong> {selectedRole?.updated_at}
+                            </p>
                           </div>
+
+                          <div className="modal-action mt-6">
+                            <form method="dialog">
+                              {/* Closing the form will close the modal */}
+                              <button className="btn btn-primary">Close</button>
+                            </form>
+                          </div>
+                        </div>
                       </dialog>
                       
                       <dialog id={`edit-${idx}`} className="modal">
-                          <div className="modal-box">
+                          <div className="modal-box w-11/12 max-w-5xl">
                               <h3 className="font-bold text-lg">Hello! edit {idx}</h3>
                               <p className="py-4">Press ESC key or click the button below to close</p>
                               <div className="modal-action">
@@ -168,7 +184,7 @@ export default function Roles() {
 
 
                       <dialog id={`delete-${idx}`} className="modal">
-                          <div className="modal-box">
+                          <div className="modal-box w-11/12 max-w-5xl">
                               <h3 className="font-bold text-lg">Hello! delete {idx}</h3>
                               <p className="py-4">Press ESC key or click the button below to close</p>
                               <div className="modal-action">
