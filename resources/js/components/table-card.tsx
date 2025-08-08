@@ -2,9 +2,10 @@ import React , { useState } from 'react';
 import TableCardHeader from './table-card-header';
 import { SquarePen, Eye, Trash } from 'lucide-react';
 
-interface Column {
+export interface Column {
   key: string;
   label: string;
+  render?: (value: any, row: any) => React.ReactNode;
 }
 
 interface TableCardProps<T> {
@@ -51,100 +52,16 @@ export default function TableCard<T>({
                     {filteredColumns.map((column) => (
                         <th key={column.key} className="px-4 py-2">{column.label}</th>
                     ))}
-                    <th className="px-4 py-2">Actions</th>
                 </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 text-sm text-gray-700">
                 {data.map((item, idx) => (
                     <tr key={idx} className='hover:bg-gray-50 transition-colors '>
                         {filteredColumns.map((column) => (
-                            <td key={column.key} className="px-4 py-2">{item[column.key]}</td>
+                            <td key={column.key} className="px-4 py-2">
+                                {column.render ? column.render(item[column.key], item) : item[column.key]}
+                            </td>
                         ))}
-                        <td className="flex px-4 py-2">
-                            {actions.view && (
-                                <><button 
-                                    className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-blue-600'
-                                    type='button'
-                                    onClick={() => {
-                                        const modal = document.getElementById(`view-${idx}`) as HTMLDialogElement | null;
-                                        if (modal) {
-                                            modal.showModal();
-                                        }
-                                    }}
-                                >
-                                    <Eye className="-ml-1 h-4 w-4" />
-                                    <span className="ml-1.5 text-sm">View</span>
-                                </button>
-                                <dialog id={`view-${idx}`} className="modal">
-                                    <div className="modal-box">
-                                        <h3 className="font-bold text-lg">Hello! {idx}</h3>
-                                        <p className="py-4">Press ESC key or click the button below to close</p>
-                                        <div className="modal-action">
-                                        <form method="dialog">
-                                            {/* if there is a button in form, it will close the modal */}
-                                            <button className="btn">Close</button>
-                                        </form>
-                                        </div>
-                                    </div>
-                                </dialog></>
-                            )}
-
-                            {actions.edit && (
-                                <><button 
-                                    className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-violet-600'
-                                    type='button'
-                                    onClick={() => {
-                                        const modal = document.getElementById(`edit-${idx}`) as HTMLDialogElement | null;
-                                        if (modal) {
-                                            modal.showModal();
-                                        }
-                                    }}
-                                >
-                                    <SquarePen className="-ml-1 h-4 w-4" />
-                                    <span className="ml-1.5 text-sm">Edit</span>
-                                </button>
-                                <dialog id={`edit-${idx}`} className="modal">
-                                    <div className="modal-box">
-                                        <h3 className="font-bold text-lg">Hello! edit {idx}</h3>
-                                        <p className="py-4">Press ESC key or click the button below to close</p>
-                                        <div className="modal-action">
-                                        <form method="dialog">
-                                            {/* if there is a button in form, it will close the modal */}
-                                            <button className="btn">Close</button>
-                                        </form>
-                                        </div>
-                                    </div>
-                                </dialog></>
-                            )}
-
-                            {actions.delete && (
-                                <><button 
-                                    className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
-                                    type='button'
-                                    onClick={() => {
-                                        const modal = document.getElementById(`delete-${idx}`) as HTMLDialogElement | null;
-                                        if (modal) {
-                                            modal.showModal();
-                                        }
-                                    }}
-                                >
-                                    <SquarePen className="-ml-1 h-4 w-4" />
-                                    <span className="ml-1.5 text-sm">Delete</span>
-                                </button>
-                                <dialog id={`delete-${idx}`} className="modal">
-                                    <div className="modal-box">
-                                        <h3 className="font-bold text-lg">Hello! delete {idx}</h3>
-                                        <p className="py-4">Press ESC key or click the button below to close</p>
-                                        <div className="modal-action">
-                                        <form method="dialog">
-                                            {/* if there is a button in form, it will close the modal */}
-                                            <button className="btn">Close</button>
-                                        </form>
-                                        </div>
-                                    </div>
-                                </dialog></>
-                            )}
-                        </td>
                     </tr>
                 ))}
                 </tbody>
