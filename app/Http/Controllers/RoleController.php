@@ -20,4 +20,15 @@ class RoleController extends Controller
             ),
         ]);
     }
+
+    public function update(Request $request, Role $role)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255'
+        ]);
+
+        $role->update($validatedData);  
+
+        // return redirect()->route('role.index')->with('success', 'Role updated successfully.');
+    }
 }

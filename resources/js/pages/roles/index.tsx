@@ -1,4 +1,4 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage, router } from '@inertiajs/react';
 
 import { type BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
@@ -63,6 +63,36 @@ export default function Roles() {
       }
     };
 
+    function handleChange(e) {
+      if (selectedRole) {
+        setSelectedRole({
+          id: selectedRole.id,
+          guard_name: selectedRole.guard_name,
+          updated_at: selectedRole.updated_at,
+          name: e.target.value,
+        });
+      }
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+
+      if (selectedRole) {
+
+        router.put(`/roles/${selectedRole.id}`, {
+            name: selectedRole.name,
+          }, {
+            onSuccess: () => {
+              const modal = document.getElementById(`edit-${selectedRole.id}`) as HTMLDialogElement | null;
+              modal?.close();
+            },
+            onError: (errors) => {
+              console.error('Error updating role:', errors);
+            }
+          });
+      }
+    }
+
     const columns: Column[] = [
         { key: 'id', label: 'ID' },
         { key: 'name', label: 'Name' },
@@ -77,7 +107,7 @@ export default function Roles() {
                   className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-blue-600'
                   type='button'
                   onClick={() => {
-                      const modal = document.getElementById(`view-${index}`) as HTMLDialogElement | null;
+                      const modal = document.getElementById(`view-${row.id}`) as HTMLDialogElement | null;
                       if (modal) {
                           setSelectedRole(row);
                           setModalType("view");
@@ -93,9 +123,10 @@ export default function Roles() {
                   className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-violet-600'
                   type='button'
                   onClick={() => {
-                      const modal = document.getElementById(`edit-${index}`) as HTMLDialogElement | null;
+                      const modal = document.getElementById(`edit-${row.id}`) as HTMLDialogElement | null;
                       if (modal) {
                           setSelectedRole(row);
+                          setModalType("edit");
                           modal.showModal();
                       }
                   }}
@@ -107,8 +138,10 @@ export default function Roles() {
                   className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
                   type='button'
                   onClick={() => {
-                      const modal = document.getElementById(`delete-${index}`) as HTMLDialogElement | null;
+                      const modal = document.getElementById(`delete-${row.id}`) as HTMLDialogElement | null;
                       if (modal) {
+                          setSelectedRole(row);
+                          setModalType("delete");
                           modal.showModal();
                       }
                   }}
@@ -141,51 +174,98 @@ export default function Roles() {
 
                 {data.map((item, idx) => (
                     <div key={idx}>
-                      <dialog id={`view-${idx}`} className="modal">
-                          <div className="modal-box w-11/12 max-w-5xl">
-                          <h2 className="text-xl font-bold mb-4">View User</h2>
+                      <dialog id={`view-${item.id}`} className="modal">
+                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
+                            {/* Modal Header */}
+                            <div className="flex items-center justify-between border-b pb-3">
+                              <h2 className="text-xl font-semibold text-gray-800">View User</h2>
+                            </div>
 
-                          <div className="space-y-2">
-                            <p>
-                              <strong>ID:</strong> {selectedRole?.id}
-                            </p>
-                            <p>
-                              <strong>Name:</strong> {selectedRole?.name}
-                            </p>
-                            <p>
-                              <strong>Guard Name:</strong> {selectedRole?.guard_name}
-                            </p>
-                            <p>
-                              <strong>Last Updated:</strong> {selectedRole?.updated_at}
-                            </p>
-                          </div>
+                            {/* Modal Content */}
+                            <div className="mt-4 space-y-4">
+                              <div className="flex justify-between border-b pb-2">
+                                <span className="text-gray-500 font-medium">ID</span>
+                                <span className="text-gray-900">{selectedRole?.id}</span>
+                              </div>
 
-                          <div className="modal-action mt-6">
-                            <form method="dialog">
-                              {/* Closing the form will close the modal */}
-                              <button className="btn btn-primary">Close</button>
-                            </form>
+                              <div className="flex justify-between border-b pb-2">
+                                <span className="text-gray-500 font-medium">Name</span>
+                                <span className="text-gray-900">{selectedRole?.name}</span>
+                              </div>
+
+                              <div className="flex justify-between border-b pb-2">
+                                <span className="text-gray-500 font-medium">Guard Name</span>
+                                <span className="text-gray-900">{selectedRole?.guard_name}</span>
+                              </div>
+
+                              <div className="flex justify-between">
+                                <span className="text-gray-500 font-medium">Last Updated</span>
+                                <span className="text-gray-900">{selectedRole?.updated_at}</span>
+                              </div>
+                            </div>
+
+                            <div className="modal-action mt-6">
+                              <form method="dialog">
+                                {/* Closing the form will close the modal */}
+                                <button className="btn btn-primary">Close</button>
+                              </form>
+                            </div>
                           </div>
-                        </div>
                       </dialog>
                       
-                      <dialog id={`edit-${idx}`} className="modal">
-                          <div className="modal-box w-11/12 max-w-5xl">
-                              <h3 className="font-bold text-lg">Hello! edit {idx}</h3>
-                              <p className="py-4">Press ESC key or click the button below to close</p>
-                              <div className="modal-action">
-                                  <form method="dialog">
-                                      {/* if there is a button in form, it will close the modal */}
-                                      <button className="btn">Close</button>
-                                  </form>
+                      <dialog id={`edit-${item.id}`} className="modal">
+                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
+                              <div className="flex items-center justify-between border-b pb-3">
+                                <h2 className="text-xl font-semibold text-gray-800">Edit Role</h2>
                               </div>
+
+                              {/* Modal Content */}
+                              <form
+                                method="dialog"
+                                className="mt-4 space-y-4"
+                                onSubmit={handleSubmit}
+                              >
+                                {/* Role Name Field */}
+                                <div>
+                                  <label htmlFor="roleName" className="block text-sm font-medium text-gray-700">
+                                    Role Name
+                                  </label>
+                                  <input
+                                    type="text"
+                                    id="name"
+                                    value={selectedRole?.name}
+                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                                    onChange={handleChange}
+                                  />
+                                </div>
+
+                                {/* Modal Footer */}
+                                <div className="flex justify-end gap-2 pt-4 border-t">
+                                  <button
+                                    type="button"
+                                    className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
+                                    onClick={() => {
+                                      const modal = document.getElementById(`edit-${item.id}`) as HTMLDialogElement;
+                                      modal?.close();
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="submit"
+                                    className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+                                  >
+                                    Save Changes
+                                  </button>
+                                </div>
+                              </form>
                           </div>
                       </dialog>
 
 
-                      <dialog id={`delete-${idx}`} className="modal">
+                      <dialog id={`delete-${item.id}`} className="modal">
                           <div className="modal-box w-11/12 max-w-5xl">
-                              <h3 className="font-bold text-lg">Hello! delete {idx}</h3>
+                              <h3 className="font-bold text-lg">Hello! delete {item.id}</h3>
                               <p className="py-4">Press ESC key or click the button below to close</p>
                               <div className="modal-action">
                                   <form method="dialog">

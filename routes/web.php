@@ -16,6 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Route::get('roles', [RoleController::class, 'edit'])->name('role.edit');
     Route::get('roles/index', [RoleController::class, 'index'])->name('role.index');
+    Route::put('roles/{role}', [RoleController::class, 'update'])->name('role.update');
 
     Route::get('users/index', [UserController::class, 'admins'])->name('users.index');
     Route::get('users/create', [UserController::class, 'create'])->name('users.create');
