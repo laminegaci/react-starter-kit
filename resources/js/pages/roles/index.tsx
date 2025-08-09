@@ -8,6 +8,7 @@ import Pagination from '@/components/Pagination';
 import { Columns, Eye, SquarePen, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { Item } from '@radix-ui/react-dropdown-menu';
+import toast from 'react-hot-toast';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -85,6 +86,7 @@ export default function Roles() {
             onSuccess: () => {
               const modal = document.getElementById(`edit-${selectedRole.id}`) as HTMLDialogElement | null;
               modal?.close();
+              toast.success('Role updated successfully!');
             },
             onError: (errors) => {
               console.error('Error updating role:', errors);
