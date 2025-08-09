@@ -75,6 +75,24 @@ export default function Roles() {
       }
     }
 
+    const handleSubmitDelete = (e) => {
+      e.preventDefault();
+
+      if (selectedRole) {
+        router.delete(`/roles/${selectedRole.id}`, {
+          onSuccess: () => {
+            const modal = document.getElementById(`delete-${selectedRole.id}`) as HTMLDialogElement | null;
+            modal?.close();
+            toast.success('Role deleted successfully!');
+          },
+          onError: (errors) => {
+            console.error('Error deleting role:', errors);
+            toast.error('Failed to delete role. Please try again.');
+          }
+        });
+      }
+    }
+
     function handleSubmit(e) {
       e.preventDefault();
 
@@ -90,6 +108,7 @@ export default function Roles() {
             },
             onError: (errors) => {
               console.error('Error updating role:', errors);
+              toast.error('Failed to update role. Please try again.');
             }
           });
       }
@@ -180,7 +199,7 @@ export default function Roles() {
                           <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
                             {/* Modal Header */}
                             <div className="flex items-center justify-between border-b pb-3">
-                              <h2 className="text-xl font-semibold text-gray-800">View User</h2>
+                              <h3 className="font-bold text-lg">View</h3>
                             </div>
 
                             {/* Modal Content */}
@@ -218,7 +237,7 @@ export default function Roles() {
                       <dialog id={`edit-${item.id}`} className="modal">
                           <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
                               <div className="flex items-center justify-between border-b pb-3">
-                                <h2 className="text-xl font-semibold text-gray-800">Edit Role</h2>
+                                <h3 className="font-bold text-lg">Edit Role</h3>
                               </div>
 
                               {/* Modal Content */}
@@ -266,15 +285,35 @@ export default function Roles() {
 
 
                       <dialog id={`delete-${item.id}`} className="modal">
-                          <div className="modal-box w-11/12 max-w-5xl">
+                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
                               <h3 className="font-bold text-lg">Hello! delete {item.id}</h3>
-                              <p className="py-4">Press ESC key or click the button below to close</p>
-                              <div className="modal-action">
-                                  <form method="dialog">
-                                      {/* if there is a button in form, it will close the modal */}
-                                      <button className="btn">Close</button>
+                              <p className="py-4">Are you sure you want to delete this role? <span className='text-red-600'>{selectedRole?.name}</span></p>
+                              
+                                {/* Modal Footer */}
+                                <div className="flex justify-end gap-2 pt-4 border-t">
+                                  <form 
+                                    method="dialog"
+                                    className="mt-4 space-y-4"
+                                    onSubmit={handleSubmitDelete}
+                                  >
+                                    <button
+                                    type="button"
+                                    className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
+                                    onClick={() => {
+                                      const modal = document.getElementById(`delete-${item.id}`) as HTMLDialogElement;
+                                      modal?.close();
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="submit"
+                                    className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition"
+                                  >
+                                    Delete
+                                  </button>
                                   </form>
-                              </div>
+                                </div>
                           </div>
                       </dialog>
                     </div>

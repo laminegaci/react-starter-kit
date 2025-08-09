@@ -28,7 +28,10 @@ class RoleController extends Controller
         ]);
 
         $role->update($validatedData);  
+    }
 
-        // return redirect()->route('role.index')->with('success', 'Role updated successfully.');
+    public function destroy(Role $role)
+    {
+        $role->delete();
     }
 }
