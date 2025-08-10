@@ -58,8 +58,12 @@ export default function TableCard<T>({
                 {data.map((item, idx) => (
                     <tr key={idx} className='hover:bg-gray-50 transition-colors '>
                         {filteredColumns.map((column) => (
-                            <td key={column.key} className="px-4 py-2">
-                                {column.render ? column.render(item[column.key], item, idx) : item[column.key]}
+                            <td key={column.key} className={`px-4 py-2 ${column.key === "actions" ? "flex justify-end" : ""}`}>
+                                {column.render ? (
+                                        <div>
+                                            {column.render(item[column.key], item, idx)}
+                                        </div>
+                                    ) : item[column.key]}
                             </td>
                         ))}
                     </tr>

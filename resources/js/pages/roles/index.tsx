@@ -109,7 +109,7 @@ export default function Roles() {
         { key: 'updated_at', label: 'Updated At' },
         {
           key: "actions",
-          label: "Actions",
+          label: "",
           render: (_: any, row: any, index: any) => (
             <div className="flex gap-2">
               <button 
