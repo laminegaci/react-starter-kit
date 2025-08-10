@@ -24,7 +24,14 @@ export default function TableCardHeader<T>({
             {description}
             </p>
         </div>
-        <button role="button" className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-orange-400 cursor-pointer" onClick={() => console.log('Button clicked')}>
+        <button role="button" className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-orange-400 cursor-pointer" 
+            onClick={() => {
+                const modal = document.getElementById('create') as HTMLDialogElement | null;
+                if (modal) {
+                    modal.showModal();
+                }
+            }}>
+                
             {buttonLabel || 'Add New'}
         </button>
     </div>

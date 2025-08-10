@@ -44,6 +44,7 @@ export default function Roles() {
 
   const {data, meta: { links }} = roles;
 
+    const [role, setRole] = useState('');
     const [selectedRole, setSelectedRole] = useState<Role | null>(null);
     const [modalType, setModalType] = useState<ModalType>(null);
 
@@ -97,6 +98,10 @@ export default function Roles() {
       }
     }
 
+    function handleSubmitCreate(e) {
+      e.preventDefault();
+    }
+
     const columns: Column[] = [
         { key: 'id', label: 'ID' },
         { key: 'name', label: 'Name' },
@@ -138,6 +143,7 @@ export default function Roles() {
                   <SquarePen className="-ml-1 h-4 w-4" />
                   <span className="ml-1.5 text-sm">Edit</span>
               </button>
+              
               <button 
                   className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
                   type='button'
@@ -174,8 +180,7 @@ export default function Roles() {
 
                 <Pagination links={links} />
 
-                {/* Modal */}
-
+                {/* view / update / delete Modals */}
                 {data.map((item, idx) => (
                     <div key={idx}>
                       <dialog id={`view-${item.id}`} className="modal">
@@ -265,7 +270,6 @@ export default function Roles() {
                           </div>
                       </dialog>
 
-
                       <dialog id={`delete-${item.id}`} className="modal">
                           <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
                               <h3 className="font-bold text-lg">Hello! delete {item.id}</h3>
@@ -300,6 +304,55 @@ export default function Roles() {
                       </dialog>
                     </div>
                 ))}
+
+                {/* Create Modal */}
+                <dialog id='create' className="modal">
+                    <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
+                        <div className="flex items-center justify-between border-b pb-3">
+                          <h3 className="font-bold text-lg">Create new role</h3>
+                        </div>
+
+                        {/* Modal Content */}
+                        <form
+                          method="dialog"
+                          className="mt-4 space-y-4"
+                          onSubmit={handleSubmitCreate}
+                        >
+                          {/* Role Name Field */}
+                          <div>
+                            <label htmlFor="roleName" className="block text-sm font-medium text-gray-700">
+                              Role Name
+                            </label>
+                            <input
+                              id="name"
+                              value={role}
+                              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                              onChange={(e) => setRole(e.target.value)}
+                            />
+                          </div>
+
+                          {/* Modal Footer */}
+                          <div className="flex justify-end gap-2 pt-4 border-t">
+                            <button
+                              type="button"
+                              className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
+                              onClick={() => {
+                                const modal = document.getElementById('create') as HTMLDialogElement;
+                                modal?.close();
+                              }}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="submit"
+                              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+                            >
+                              Save Changes
+                            </button>
+                          </div>
+                        </form>
+                    </div>
+                </dialog>
             </div>
         </AppLayout>
     );
