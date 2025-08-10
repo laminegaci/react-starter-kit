@@ -24,7 +24,7 @@ export default function TableCardHeader<T>({
             {description}
             </p>
         </div>
-        <button className="px-4 py-2 bg-violet-600 text-white text-sm font-medium rounded hover:bg-violet-700">
+        <button role="button" className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-orange-400 cursor-pointer" onClick={() => console.log('Button clicked')}>
             {buttonLabel || 'Add New'}
         </button>
     </div>
@@ -44,7 +44,7 @@ export default function TableCardHeader<T>({
         </div>
         <div >
             <div className="dropdown dropdown-end">
-                <div tabIndex={0} role="button" className="btn m-1">Columns</div>
+                <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">Columns</div>
                 <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                     {columns.map((column) => (
                         <li key={column.key}>
@@ -62,7 +62,7 @@ export default function TableCardHeader<T>({
                 </ul>
             </div>
             <div className="dropdown dropdown-end">
-                <div tabIndex={0} role="button" className="btn m-1">Filters</div>
+                <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">Filters</div>
                 <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                     <li>
                         <label className="label">
@@ -77,7 +77,7 @@ export default function TableCardHeader<T>({
                 </ul>
             </div>
             <div className="dropdown dropdown-end">
-                <div tabIndex={0} role="button" className="btn m-1">Actions</div>
+                <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">Actions</div>
                 <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                     <li>
                         <h2 className="menu-title">import</h2>
