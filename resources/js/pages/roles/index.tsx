@@ -47,23 +47,6 @@ export default function Roles() {
     const [selectedRole, setSelectedRole] = useState<Role | null>(null);
     const [modalType, setModalType] = useState<ModalType>(null);
 
-    const openModal = (type: ModalType, role: Role) => {
-      setSelectedRole(role);
-      setModalType(type);
-    };
-
-    const closeModal = () => {
-      setSelectedRole(null);
-      setModalType(null);
-    };
-
-    const handleDeleteConfirm = () => {
-      if (selectedRole) {
-        // setUsers((prev) => prev.filter((u) => u.id !== selectedRole.id));
-        closeModal();
-      }
-    };
-
     function handleChange(e) {
       if (selectedRole) {
         setSelectedRole({
@@ -252,9 +235,8 @@ export default function Roles() {
                                     Role Name
                                   </label>
                                   <input
-                                    type="text"
                                     id="name"
-                                    value={selectedRole?.name}
+                                    value={selectedRole?.name ?? ""}
                                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                                     onChange={handleChange}
                                   />
