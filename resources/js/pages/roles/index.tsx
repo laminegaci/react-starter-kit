@@ -184,29 +184,52 @@ export default function Roles() {
                 {data.map((item, idx) => (
                     <div key={idx}>
                       <dialog id={`view-${item.id}`} className="modal">
-                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
+                          <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200">
                             {/* Modal Header */}
                             <div className="flex items-center justify-between border-b pb-3">
                               <h3 className="font-bold text-lg">View</h3>
                             </div>
 
                             {/* Modal Content */}
+                            <div className="card bg-base-100 shadow-sm mt-6">
+                              <div className="card lg:card-side bg-base-100 shadow-sm">
+                                <div className="card-body">
+                                  <div className="flex justify-center">  
+                                  
+                                  <fieldset className="fieldset w-95">
+                                    <legend className="fieldset-legend">Role name</legend>
+                                    <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.name} disabled/>
+                                  </fieldset>
+
+                                  <fieldset className="fieldset w-95">
+                                    <legend className="fieldset-legend">Guard name</legend>
+                                    <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.guard_name} disabled/>
+                                  </fieldset>
+                                </div>
+                                </div>
+                              </div>
+                            </div>
                             <div className="mt-4 space-y-4">
-                              <div className="flex justify-between border-b pb-2">
-                                <span className="text-gray-500 font-medium">ID</span>
-                                <span className="text-gray-900">{selectedRole?.id}</span>
-                              </div>
-
-                              <div className="flex justify-between border-b pb-2">
-                                <span className="text-gray-500 font-medium">Name</span>
-                                <span className="text-gray-900">{selectedRole?.name}</span>
-                              </div>
-
-                              <div className="flex justify-between border-b pb-2">
-                                <span className="text-gray-500 font-medium">Guard Name</span>
-                                <span className="text-gray-900">{selectedRole?.guard_name}</span>
-                              </div>
-
+                              <data value="" className='flex flex-wrap gap-4'> 
+                                <div className="card w-78 bg-base-100 card-xs shadow-sm">
+                                  <div className="card-body">
+                                    <h2 className="card-title">User</h2>
+                                    <p>permissions for root role</p>
+                                  </div>
+                                </div>
+                                <div className="card w-78 bg-base-100 card-xs shadow-sm">
+                                  <div className="card-body">
+                                    <h2 className="card-title">Team</h2>
+                                    <p>permissions for root role</p>
+                                  </div>
+                                </div>
+                                <div className="card w-78 bg-base-100 card-xs shadow-sm">
+                                  <div className="card-body">
+                                    <h2 className="card-title">Role</h2>
+                                    <p>permissions for root role</p>
+                                  </div>
+                                </div>
+                              </data>
                               <div className="flex justify-between">
                                 <span className="text-gray-500 font-medium">Last Updated</span>
                                 <span className="text-gray-900">{selectedRole?.updated_at}</span>
