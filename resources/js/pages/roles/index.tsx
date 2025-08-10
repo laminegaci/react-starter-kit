@@ -77,7 +77,7 @@ export default function Roles() {
       }
     }
 
-    function handleSubmit(e) {
+    function handleSubmitUpdate(e) {
       e.preventDefault();
 
       if (selectedRole) {
@@ -232,7 +232,7 @@ export default function Roles() {
                               <form
                                 method="dialog"
                                 className="mt-4 space-y-4"
-                                onSubmit={handleSubmit}
+                                onSubmit={handleSubmitUpdate}
                               >
                                 {/* Role Name Field */}
                                 <div>

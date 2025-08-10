@@ -24,7 +24,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
 
     Route::get('teams/index', [UserController::class, 'teams'])->name('teams.index');
-    Route::get('teams/{user}/edit', [UserController::class, 'edit'])->name('teams.edit');
+    Route::put('teams/{role}', [UserController::class, 'update'])->name('teams.update');
+    Route::delete('teams/{role}', [UserController::class, 'destroy'])->name('teams.destroy');
 });
 
 require __DIR__.'/settings.php';
