@@ -329,7 +329,14 @@ export default function Roles() {
 
                                       <fieldset className="fieldset w-95">
                                         <legend className="fieldset-legend">Guard name</legend>
-                                        <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.guard_name ?? ''} disabled/>
+                                        {/* <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.guard_name ?? ''} disabled/> */}
+                                        <input
+                                          id="name"
+                                          value={selectedRole?.guard_name ?? ""}
+                                          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                                          onChange={handleChange}
+                                          disabled
+                                        />
                                       </fieldset>
                                     </div>
                                     </div>
