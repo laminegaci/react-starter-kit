@@ -225,38 +225,20 @@ export default function Roles() {
                                 <div className="card w-78 bg-base-100 card-xs shadow-sm">
                                   <div className="card-body">
                                     <div className='flex items-center gap-2'>
-                                      <input type="checkbox" defaultChecked  />
+                                      <input type="checkbox" disabled defaultChecked />
                                       <h2 className="card-title">Role</h2>
                                     </div>
-                                    <p>permissions for root role</p>
+                                    <p>Availlable permissions</p>
                                     <div className="grid grid-cols-3 gap-4">
-                                      <div>
-                                          <div className='flex items-center gap-1'>
-                                            <input type="checkbox" defaultChecked  />
-                                            <p className="text-xs">ROLE</p>
-                                          </div>
-                                      </div>
-                                      <div>
-                                          <div className='flex items-center gap-1'>
-                                            <input type="checkbox" defaultChecked  />
-                                            <p className="text-xs">ROLE</p>
-                                          </div>
-                                      </div>
-                                      <div>
-                                          <div className='flex items-center gap-1'>
-                                            <input type="checkbox" defaultChecked  />
-                                            <p className="text-xs">ROLE</p>
-                                          </div>
-                                      </div>
                                       {permissions.filter((group) => group.label == "role_permissions").map((group) => (
-                                        <div key={group.label}>
-                                          {Object.entries(group.items).map(([key, value]) => (
-                                            <div className='flex items-center gap-1'>
-                                              <input type="checkbox" defaultChecked  />
-                                              <p className="text-xs">{value.replace(/^ROLE_/, '')}</p>
+                                          Object.entries(group.items).map(([Key, value]) => (
+                                            <div>
+                                              <div className='flex items-center gap-1'>
+                                                <input type="checkbox" disabled defaultChecked />
+                                                <p className="text-xs">{value.replace(/^ROLE_/, '')}</p>
+                                              </div>
                                             </div>
-                                          ))}
-                                        </div>
+                                          ))
                                       ))}
                                     </div>
                                   </div>
@@ -264,19 +246,43 @@ export default function Roles() {
                                 <div className="card w-78 bg-base-100 card-xs shadow-sm">
                                   <div className="card-body">
                                     <div className='flex items-center gap-2'>
-                                      <input type="checkbox" defaultChecked  />
+                                      <input type="checkbox" disabled defaultChecked />
                                       <h2 className="card-title">Team</h2>
                                     </div>
-                                    <p>permissions for root role</p>
+                                    <p>Availlable permissions</p>
+                                    <div className="grid grid-cols-3 gap-4">
+                                      {permissions.filter((group) => group.label == "team_permissions").map((group) => (
+                                          Object.entries(group.items).map(([Key, value]) => (
+                                            <div>
+                                              <div className='flex items-center gap-1'>
+                                                <input type="checkbox" disabled defaultChecked />
+                                                <p className="text-xs">{value.replace(/^TEAM_/, '')}</p>
+                                              </div>
+                                            </div>
+                                          ))
+                                      ))}
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="card w-78 bg-base-100 card-xs shadow-sm">
                                   <div className="card-body">
                                     <div className='flex items-center gap-2'>
-                                      <input type="checkbox" defaultChecked  />
+                                      <input type="checkbox" disabled defaultChecked />
                                       <h2 className="card-title">User</h2>
                                     </div>
-                                    <p>permissions for root role</p>
+                                    <p>Availlable permissions</p>
+                                    <div className="grid grid-cols-3 gap-4">
+                                      {permissions.filter((group) => group.label == "user_permissions").map((group) => (
+                                          Object.entries(group.items).map(([Key, value]) => (
+                                            <div>
+                                              <div className='flex items-center gap-1'>
+                                                <input type="checkbox" disabled defaultChecked />
+                                                <p className="text-xs">{value.replace(/^USER_/, '')}</p>
+                                              </div>
+                                            </div>
+                                          ))
+                                      ))}
+                                    </div>
                                   </div>
                                 </div>
                               </data>
