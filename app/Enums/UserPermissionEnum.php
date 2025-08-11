@@ -16,16 +16,6 @@ enum UserPermissionEnum: string
     case STATS_SHOW = 'STATS_SHOW';
 
     /**
-     * USER PERMISSION
-     */
-    case USER_LIST = 'USER_LIST';
-    case USER_SHOW = 'USER_SHOW';
-    case USER_CREATE = 'USER_CREATE';
-    case USER_EDIT = 'USER_EDIT';
-    case USER_DELETE = 'USER_DELETE';
-    case USER_MANAGE = 'USER_MANAGE';
-
-    /**
      * Roles PERMISSION
      */
     case ROLE_LIST = 'ROLE_LIST';
@@ -44,6 +34,16 @@ enum UserPermissionEnum: string
     case TEAM_EDIT = 'TEAM_EDIT';
     case TEAM_DELETE = 'TEAM_DELETE';
     case TEAM_MANAGE = 'TEAM_MANAGE';
+    
+    /**
+     * USER PERMISSION
+     */
+    case USER_LIST = 'USER_LIST';
+    case USER_SHOW = 'USER_SHOW';
+    case USER_CREATE = 'USER_CREATE';
+    case USER_EDIT = 'USER_EDIT';
+    case USER_DELETE = 'USER_DELETE';
+    case USER_MANAGE = 'USER_MANAGE';
 
     public function description(): string
     {

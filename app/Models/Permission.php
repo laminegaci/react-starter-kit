@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Permission;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Permission\Models\Role as ModelsRole;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Permission\Models\Permission as ModelsPermission;
 
-class Role extends ModelsRole
+class Permission extends ModelsPermission
 {
     /**
      * The attributes that are mass assignable.
@@ -38,9 +37,9 @@ class Role extends ModelsRole
     |--------------------------------------------------------------------------
     */
 
-    public function permissions(): BelongsToMany
+    public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Permission::class, 'role_has_permissions', 'role_id', 'permission_id');
+        return $this->belongsToMany(Role::class, 'role_has_permissions', 'permission_id', 'role_id');
     }
 
     /*

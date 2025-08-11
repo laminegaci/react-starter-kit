@@ -5,10 +5,12 @@ import AppLayout from '@/layouts/app-layout';
 import Heading from '@/components/heading';
 import TableCard, { Column } from '@/components/table-card';
 import Pagination from '@/components/Pagination';
-import { Columns, Eye, SquarePen, Trash } from 'lucide-react';
+import { Columns, Eye, Key, SquarePen, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { Item } from '@radix-ui/react-dropdown-menu';
 import toast from 'react-hot-toast';
+import { permission } from 'process';
+import { group } from 'console';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -25,6 +27,12 @@ interface Role {
   updated_at: string;
 }
 
+interface PermissionGroup {
+  label: string;
+  items: Record<string, string>; 
+  // example: { list: "ROLE_LIST", show: "ROLE_SHOW", ... }
+}
+
 type ModalType = "view" | "edit" | "delete" | null;
 
 // Define the Inertia props you expect from the backend
@@ -34,16 +42,19 @@ interface PageProps {
     links: any[]; // Optional: for pagination component
     meta: any;    // Optional: total, current_page, etc.
   };
+  permissions: PermissionGroup[];
   [key: string]: unknown; // Add index signature to satisfy Inertia's PageProps constraint
 }
 
 const description = 'A list of the roles in your account including their name.';
 
 export default function Roles() {
-  const { roles } = usePage<PageProps>().props;
+  const { roles, permissions } = usePage<PageProps>().props;
 
   const {data, meta: { links }} = roles;
 
+  console.log('data:', data);
+  console.log('permissions:', permissions);
     const [role, setRole] = useState('');
     const [selectedRole, setSelectedRole] = useState<Role | null>(null);
     const [modalType, setModalType] = useState<ModalType>(null);
@@ -184,7 +195,7 @@ export default function Roles() {
                 {data.map((item, idx) => (
                     <div key={idx}>
                       <dialog id={`view-${item.id}`} className="modal">
-                          <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200">
+                          <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                             {/* Modal Header */}
                             <div className="flex items-center justify-between border-b pb-3">
                               <h3 className="font-bold text-lg">View</h3>
@@ -198,12 +209,12 @@ export default function Roles() {
                                   
                                   <fieldset className="fieldset w-95">
                                     <legend className="fieldset-legend">Role name</legend>
-                                    <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.name} disabled/>
+                                    <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.name ?? ''} disabled/>
                                   </fieldset>
 
                                   <fieldset className="fieldset w-95">
                                     <legend className="fieldset-legend">Guard name</legend>
-                                    <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.guard_name} disabled/>
+                                    <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.guard_name ?? ''} disabled/>
                                   </fieldset>
                                 </div>
                                 </div>
@@ -218,6 +229,36 @@ export default function Roles() {
                                       <h2 className="card-title">Role</h2>
                                     </div>
                                     <p>permissions for root role</p>
+                                    <div className="grid grid-cols-3 gap-4">
+                                      <div>
+                                          <div className='flex items-center gap-1'>
+                                            <input type="checkbox" defaultChecked  />
+                                            <p className="text-xs">ROLE</p>
+                                          </div>
+                                      </div>
+                                      <div>
+                                          <div className='flex items-center gap-1'>
+                                            <input type="checkbox" defaultChecked  />
+                                            <p className="text-xs">ROLE</p>
+                                          </div>
+                                      </div>
+                                      <div>
+                                          <div className='flex items-center gap-1'>
+                                            <input type="checkbox" defaultChecked  />
+                                            <p className="text-xs">ROLE</p>
+                                          </div>
+                                      </div>
+                                      {permissions.filter((group) => group.label == "role_permissions").map((group) => (
+                                        <div key={group.label}>
+                                          {Object.entries(group.items).map(([key, value]) => (
+                                            <div className='flex items-center gap-1'>
+                                              <input type="checkbox" defaultChecked  />
+                                              <p className="text-xs">{value.replace(/^ROLE_/, '')}</p>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      ))}
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="card w-78 bg-base-100 card-xs shadow-sm">
@@ -255,7 +296,7 @@ export default function Roles() {
                       </dialog>
                       
                       <dialog id={`edit-${item.id}`} className="modal">
-                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
+                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                               <div className="flex items-center justify-between border-b pb-3">
                                 <h3 className="font-bold text-lg">Edit Role</h3>
                               </div>
@@ -303,7 +344,7 @@ export default function Roles() {
                       </dialog>
 
                       <dialog id={`delete-${item.id}`} className="modal">
-                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
+                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                               <h3 className="font-bold text-lg">Hello! delete {item.id}</h3>
                               <p className="py-4">Are you sure you want to delete this role? <span className='text-red-600'>{selectedRole?.name}</span></p>
                               
@@ -339,7 +380,7 @@ export default function Roles() {
 
                 {/* Create Modal */}
                 <dialog id='create' className="modal">
-                    <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
+                    <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                         <div className="flex items-center justify-between border-b pb-3">
                           <h3 className="font-bold text-lg">Create new role</h3>
                         </div>
