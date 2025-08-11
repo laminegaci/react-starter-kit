@@ -53,8 +53,6 @@ export default function Roles() {
 
   const {data, meta: { links }} = roles;
 
-  console.log('data:', data);
-  console.log('permissions:', permissions);
     const [role, setRole] = useState('');
     const [selectedRole, setSelectedRole] = useState<Role | null>(null);
     const [modalType, setModalType] = useState<ModalType>(null);
@@ -302,7 +300,7 @@ export default function Roles() {
                       </dialog>
                       
                       <dialog id={`edit-${item.id}`} className="modal">
-                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
+                          <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                               <div className="flex items-center justify-between border-b pb-3">
                                 <h3 className="font-bold text-lg">Edit Role</h3>
                               </div>
@@ -313,19 +311,103 @@ export default function Roles() {
                                 className="mt-4 space-y-4"
                                 onSubmit={handleSubmitUpdate}
                               >
-                                {/* Role Name Field */}
-                                <div>
-                                  <label htmlFor="roleName" className="block text-sm font-medium text-gray-700">
-                                    Role Name
-                                  </label>
-                                  <input
-                                    id="name"
-                                    value={selectedRole?.name ?? ""}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                                    onChange={handleChange}
-                                  />
-                                </div>
+                                <div className="card bg-base-100 shadow-sm mt-6">
+                                  <div className="card lg:card-side bg-base-100 shadow-sm">
+                                    <div className="card-body">
+                                      <div className="flex justify-center">  
+                                      
+                                      <fieldset className="fieldset w-95">
+                                        <legend className="fieldset-legend">Role name</legend>
+                                        {/* <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.name ?? ''}/> */}
+                                        <input
+                                          id="name"
+                                          value={selectedRole?.name ?? ""}
+                                          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                                          onChange={handleChange}
+                                        />
+                                      </fieldset>
 
+                                      <fieldset className="fieldset w-95">
+                                        <legend className="fieldset-legend">Guard name</legend>
+                                        <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.guard_name ?? ''} disabled/>
+                                      </fieldset>
+                                    </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                <div className="mt-4 space-y-4">
+                                  <data value="" className='flex flex-wrap gap-4'> 
+                                    <div className="card w-78 bg-base-100 card-xs shadow-sm">
+                                      <div className="card-body">
+                                        <div className='flex items-center gap-2'>
+                                          <input type="checkbox" defaultChecked />
+                                          <h2 className="card-title">Role</h2>
+                                        </div>
+                                        <p>Availlable permissions</p>
+                                        <div className="grid grid-cols-3 gap-4">
+                                          {permissions.filter((group) => group.label == "role_permissions").map((group) => (
+                                              Object.entries(group.items).map(([Key, value]) => (
+                                                <div>
+                                                  <div className='flex items-center gap-1'>
+                                                    <input type="checkbox" defaultChecked />
+                                                    <p className="text-xs">{value.replace(/^ROLE_/, '')}</p>
+                                                  </div>
+                                                </div>
+                                              ))
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="card w-78 bg-base-100 card-xs shadow-sm">
+                                      <div className="card-body">
+                                        <div className='flex items-center gap-2'>
+                                          <input type="checkbox" defaultChecked />
+                                          <h2 className="card-title">Team</h2>
+                                        </div>
+                                        <p>Availlable permissions</p>
+                                        <div className="grid grid-cols-3 gap-4">
+                                          {permissions.filter((group) => group.label == "team_permissions").map((group) => (
+                                              Object.entries(group.items).map(([Key, value]) => (
+                                                <div>
+                                                  <div className='flex items-center gap-1'>
+                                                    <input type="checkbox" defaultChecked />
+                                                    <p className="text-xs">{value.replace(/^TEAM_/, '')}</p>
+                                                  </div>
+                                                </div>
+                                              ))
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="card w-78 bg-base-100 card-xs shadow-sm">
+                                      <div className="card-body">
+                                        <div className='flex items-center gap-2'>
+                                          <input type="checkbox" defaultChecked />
+                                          <h2 className="card-title">User</h2>
+                                        </div>
+                                        <p>Availlable permissions</p>
+                                        <div className="grid grid-cols-3 gap-4">
+                                          {permissions.filter((group) => group.label == "user_permissions").map((group) => (
+                                              Object.entries(group.items).map(([Key, value]) => (
+                                                <div>
+                                                  <div className='flex items-center gap-1'>
+                                                    <input type="checkbox" defaultChecked />
+                                                    <p className="text-xs">{value.replace(/^USER_/, '')}</p>
+                                                  </div>
+                                                </div>
+                                              ))
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </data>
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-500 font-medium">Last Updated</span>
+                                    <span className="text-gray-900">{selectedRole?.updated_at}</span>
+                                  </div>
+                                </div>
+                              
                                 {/* Modal Footer */}
                                 <div className="flex justify-end gap-2 pt-4 border-t">
                                   <button
