@@ -213,19 +213,28 @@ export default function Roles() {
                               <data value="" className='flex flex-wrap gap-4'> 
                                 <div className="card w-78 bg-base-100 card-xs shadow-sm">
                                   <div className="card-body">
-                                    <h2 className="card-title">User</h2>
+                                    <div className='flex items-center gap-2'>
+                                      <input type="checkbox" defaultChecked  />
+                                      <h2 className="card-title">Role</h2>
+                                    </div>
                                     <p>permissions for root role</p>
                                   </div>
                                 </div>
                                 <div className="card w-78 bg-base-100 card-xs shadow-sm">
                                   <div className="card-body">
-                                    <h2 className="card-title">Team</h2>
+                                    <div className='flex items-center gap-2'>
+                                      <input type="checkbox" defaultChecked  />
+                                      <h2 className="card-title">Team</h2>
+                                    </div>
                                     <p>permissions for root role</p>
                                   </div>
                                 </div>
                                 <div className="card w-78 bg-base-100 card-xs shadow-sm">
                                   <div className="card-body">
-                                    <h2 className="card-title">Role</h2>
+                                    <div className='flex items-center gap-2'>
+                                      <input type="checkbox" defaultChecked  />
+                                      <h2 className="card-title">User</h2>
+                                    </div>
                                     <p>permissions for root role</p>
                                   </div>
                                 </div>
