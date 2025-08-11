@@ -7,10 +7,7 @@ import TableCard, { Column } from '@/components/table-card';
 import Pagination from '@/components/Pagination';
 import { Columns, Eye, Key, SquarePen, Trash } from 'lucide-react';
 import { useState } from 'react';
-import { Item } from '@radix-ui/react-dropdown-menu';
 import toast from 'react-hot-toast';
-import { permission } from 'process';
-import { group } from 'console';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
