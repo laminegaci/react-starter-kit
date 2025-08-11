@@ -26,6 +26,6 @@ class DatabaseSeeder extends Seeder
         ])->assignRole(UserRoleEnum::ROOT->name);
 
 
-        User::factory(50000)->create();
+        User::factory(100)->create();
     }
 }
