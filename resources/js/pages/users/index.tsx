@@ -8,6 +8,8 @@ import TableCard, { Column } from '@/components/table-card';
 import { Columns, Eye, Key, SquarePen, Trash } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import TextInput from '@/components/Form/TextInput';
+import FieldGroup from '@/components/Form/FieldGroup';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -170,27 +172,29 @@ export default function Users() {
                 {data.map((item, idx) => (
                     <div key={idx}>
                       <dialog id={`view-${item.id}`} className="modal">
-                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
+                          <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                             {/* Modal Header */}
                             <div className="flex items-center justify-between border-b pb-3">
                               <h3 className="font-bold text-lg">View</h3>
                             </div>
 
                             {/* Modal Content */}
-                            <div className="mt-4 space-y-4">
-                              <div className="flex justify-between border-b pb-2">
-                                <span className="text-gray-500 font-medium">ID</span>
-                                <span className="text-gray-900">{selectedUser?.id}</span>
-                              </div>
+                            <div className="card bg-base-100 shadow-sm mt-6">
+                              <div className="card lg:card-side bg-base-100 shadow-sm">
+                                <div className="card-body">
+                                  <div className="flex justify-center">  
+                                  
+                                  <fieldset className="fieldset w-95">
+                                    <legend className="fieldset-legend">name</legend>
+                                    <input type="text" placeholder="Type here" className="input input-neutral" value={selectedUser?.name ?? ''} disabled/>
+                                  </fieldset>
 
-                              <div className="flex justify-between border-b pb-2">
-                                <span className="text-gray-500 font-medium">Name</span>
-                                <span className="text-gray-900">{selectedUser?.name}</span>
-                              </div>
-
-                              <div className="flex justify-between border-b pb-2">
-                                <span className="text-gray-500 font-medium">Email</span>
-                                <span className="text-gray-900">{selectedUser?.email}</span>
+                                  <fieldset className="fieldset w-95">
+                                    <legend className="fieldset-legend">Email</legend>
+                                    <input type="text" placeholder="Type here" className="input input-neutral" value={selectedUser?.email ?? ''} disabled/>
+                                  </fieldset>
+                                </div>
+                                </div>
                               </div>
                             </div>
 
@@ -204,7 +208,7 @@ export default function Users() {
                       </dialog>
                       
                       <dialog id={`edit-${item.id}`} className="modal">
-                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
+                          <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                               <div className="flex items-center justify-between border-b pb-3">
                                 <h3 className="font-bold text-lg">Edit User</h3>
                               </div>
@@ -215,21 +219,53 @@ export default function Users() {
                                 className="mt-4 space-y-4"
                                 onSubmit={handleSubmitUpdate}
                               >
-                                {/* User Name Field */}
-                                <div>
-                                  <label htmlFor="userName" className="block text-sm font-medium text-gray-700">
-                                    User Name
-                                  </label>
-                                  <input
-                                    id="name"
-                                    value={selectedUser?.name ?? ""}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                                    onChange={handleChange}
-                                  />
+                                {/* Modal Content */}
+                                <div className="card bg-base-100 shadow-sm mt-6">
+                                  <div className="card lg:card-side bg-base-100 shadow-sm">
+                                    <div className="card-body">
+                                      <div className="flex justify-around">  
+                                      
+                                      <div className="w-90">
+                                        <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
+                                          Name
+                                        </label>
+                                        <div className="mt-2">
+                                          <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                            <input
+                                              id="name"
+                                              name="name"
+                                              type="text"
+                                              className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                              value={selectedUser?.name ?? ''}
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div className="w-90">
+                                        <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
+                                          Email
+                                        </label>
+                                        <div className="mt-2">
+                                          <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                            <input
+                                              id="username"
+                                              name="username"
+                                              type="text"
+                                              className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                              value={selectedUser?.email ?? ''}
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                      
+                                    </div>
+                                    </div>
+                                  </div>
                                 </div>
 
                                 {/* Modal Footer */}
-                                <div className="flex justify-end gap-2 pt-4 border-t">
+                                <div className="flex justify-end gap-2 pt-4">
                                   <button
                                     type="button"
                                     className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
