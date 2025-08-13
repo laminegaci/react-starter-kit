@@ -179,7 +179,7 @@ export default function Teams() {
                 {data.map((item, idx) => (
                     <div key={idx}>
                       <dialog id={`view-${item.id}`} className="modal">
-                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
+                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                             {/* Modal Header */}
                             <div className="flex items-center justify-between border-b pb-3">
                               <h3 className="font-bold text-lg">View</h3>
@@ -213,7 +213,7 @@ export default function Teams() {
                       </dialog>
                       
                       <dialog id={`edit-${item.id}`} className="modal">
-                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
+                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                               <div className="flex items-center justify-between border-b pb-3">
                                 <h3 className="font-bold text-lg">Edit Team</h3>
                               </div>
@@ -261,7 +261,7 @@ export default function Teams() {
                       </dialog>
 
                       <dialog id={`delete-${item.id}`} className="modal">
-                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
+                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                               <h3 className="font-bold text-lg">Hello! delete {item.id}</h3>
                               <p className="py-4">Are you sure you want to delete this team? <span className='text-red-600'>{selectedTeam?.name}</span></p>
                               
@@ -297,7 +297,7 @@ export default function Teams() {
 
                 {/* Create Modal */}
                 <dialog id='create' className="modal">
-                    <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200">
+                    <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                         <div className="flex items-center justify-between border-b pb-3">
                           <h3 className="font-bold text-lg">Create new team</h3>
                         </div>
