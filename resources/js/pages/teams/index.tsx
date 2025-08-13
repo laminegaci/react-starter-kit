@@ -1,6 +1,6 @@
 import { Head, usePage, router } from '@inertiajs/react';
 
-import { User, type BreadcrumbItem } from '@/types';
+import { Profile, User, type BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import Heading from '@/components/heading';
 import Table from '@/components/Table';
@@ -21,8 +21,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 // Define the shape of each team
 interface Team {
   id: number;
-  name: string;
   email: string;
+  profile: Profile
 }
 
 type ModalType = "view" | "edit" | "delete" | null;
@@ -51,7 +51,10 @@ export default function Teams() {
       if (selectedTeam) {
         setSelectedTeam({
           id: selectedTeam.id,
-          name: e.target.value,
+          profile: {
+            ...selectedTeam.profile,
+            full_name: e.target.value,
+          },
           email: selectedTeam.email,
         });
       }
@@ -80,7 +83,7 @@ export default function Teams() {
       if (selectedTeam) {
 
         router.put(`/teams/${selectedTeam.id}`, {
-            name: selectedTeam.name,
+            name: selectedTeam.profile.full_name,
           }, {
             onSuccess: () => {
               const modal = document.getElementById(`edit-${selectedTeam.id}`) as HTMLDialogElement | null;
@@ -100,7 +103,7 @@ export default function Teams() {
 
     const columns: Column[] = [
       { key: 'id', label: 'ID' },
-      { key: 'name', label: 'Name' },
+      { key: 'profile.full_name', label: 'Name' },
       { key: 'email', label: 'Email' },
       {
         key: "actions",
@@ -194,7 +197,7 @@ export default function Teams() {
 
                               <div className="flex justify-between border-b pb-2">
                                 <span className="text-gray-500 font-medium">Name</span>
-                                <span className="text-gray-900">{selectedTeam?.name}</span>
+                                <span className="text-gray-900">{selectedTeam?.profile.full_name}</span>
                               </div>
 
                               <div className="flex justify-between border-b pb-2">
@@ -231,7 +234,7 @@ export default function Teams() {
                                   </label>
                                   <input
                                     id="name"
-                                    value={selectedTeam?.name ?? ""}
+                                    value={selectedTeam?.profile.full_name ?? ""}
                                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                                     onChange={handleChange}
                                   />
@@ -263,7 +266,7 @@ export default function Teams() {
                       <dialog id={`delete-${item.id}`} className="modal">
                           <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                               <h3 className="font-bold text-lg">Hello! delete {item.id}</h3>
-                              <p className="py-4">Are you sure you want to delete this team? <span className='text-red-600'>{selectedTeam?.name}</span></p>
+                              <p className="py-4">Are you sure you want to delete this team? <span className='text-red-600'>{selectedTeam?.profile.full_name}</span></p>
                               
                                 {/* Modal Footer */}
                                 <div className="flex justify-end gap-2 pt-4 border-t">

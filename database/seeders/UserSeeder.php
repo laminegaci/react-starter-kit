@@ -30,6 +30,7 @@ class UserSeeder extends Seeder
         $admin->profile()->create([
             'first_name' => 'admin',
             'last_name' => 'Henkel',
+            'full_name' => 'admin ' . Str::lower(config('app.name', 'Laravel')),
             'phone_number' => '0699472366',
             'address' => 'Cyberparc',
             'born_at' => Carbon::now()->subYears(rand(20, 40)),

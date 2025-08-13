@@ -33,6 +33,7 @@ class RootSeeder extends Seeder
         $root->profile()->create([
             'first_name' => 'root',
             'last_name' => Str::lower(config('app.name', 'Laravel')),
+            'full_name' => 'root ' . Str::lower(config('app.name', 'Laravel')),
             'phone_number' => '0699472366',
             'address' => 'Cyber parc',
             'born_at' => Carbon::now()->subYears(random_int(20, 40)),

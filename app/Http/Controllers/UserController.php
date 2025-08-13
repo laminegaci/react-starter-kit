@@ -32,7 +32,7 @@ class UserController extends Controller
         return Inertia::render('users/index', [
             // 'filters' => Request::all('search', 'trashed'),
             'users' => new UserCollection(
-                User::query()
+                User::query()->with('profile')
                     ->whereHas('roles', function ($query) {
                         $query->where('name', '=', 'root');
                     })

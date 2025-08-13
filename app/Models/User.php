@@ -21,7 +21,6 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
     ];
@@ -59,7 +58,7 @@ class User extends Authenticatable
 
     public function profile(): HasOne
     {
-        return $this->hasOne(Profile::class, 'user_id')->with('company')->withTrashed();
+        return $this->hasOne(Profile::class, 'user_id')->withTrashed();
     }
 
     /*
