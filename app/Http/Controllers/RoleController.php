@@ -8,6 +8,8 @@ use Inertia\Response;
 use Illuminate\Http\Request;
 use App\Http\Resources\RoleCollection;
 use App\Helpers\PermissionHelper;
+use Illuminate\Contracts\Support\ValidatedData;
+use phpDocumentor\Reflection\Types\Void_;
 
 class RoleController extends Controller
 {
@@ -27,7 +29,18 @@ class RoleController extends Controller
         ]);
     }
 
-
+    public function store(Request $request): Void
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'guard_name' => 'required|string|max:255'
+        ]);
+        
+        Role::create([
+            'name' => $validatedData['name'],
+            'guard_name' => $validatedData['guard_name']
+        ]);
+    }
 
     public function update(Request $request, Role $role)
     {
