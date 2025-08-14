@@ -49,10 +49,12 @@ export default function Roles() {
     const [newGuardName, setNewGuardName] = useState("web");
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+      const { name, value } = e.target;
+
       if (selectedRole) {
         setSelectedRole({
           ...selectedRole,
-          name: e.target.value,
+          [name]: value, // Dynamically update based on the input's name attribute
         });
       }
     }
