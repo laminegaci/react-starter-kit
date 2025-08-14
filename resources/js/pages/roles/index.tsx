@@ -86,9 +86,11 @@ export default function Roles() {
 
       router.put(
         `/roles/${selectedRole.id}`,
-        { name: selectedRole.name },
+        { name: selectedRole.name, guard_name: selectedRole.guard_name },
         {
           onSuccess: () => {
+            const modal = document.getElementById(`edit-${selectedRole.id}`) as HTMLDialogElement | null;
+            modal?.close();
             closeModal();
             toast.success("Role updated successfully!");
           },
@@ -324,30 +326,46 @@ export default function Roles() {
                                   <div className="card bg-base-100 shadow-sm mt-6">
                                     <div className="card lg:card-side bg-base-100 shadow-sm">
                                       <div className="card-body">
-                                        <div className="flex justify-center">  
+                                        <div className="flex justify-around">  
                                         
-                                        <fieldset className="fieldset w-95">
-                                          <legend className="fieldset-legend">Role name</legend>
-                                          {/* <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.name ?? ''}/> */}
-                                          <input
-                                            id="name"
-                                            value={selectedRole?.name ?? ""}
-                                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                                            onChange={handleChange}
-                                          />
-                                        </fieldset>
+                                        <div className="w-90">
+                                    <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
+                                      Role name
+                                    </label>
+                                    <div className="mt-2">
+                                      <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                        <input
+                                          id="name"
+                                          name="name"
+                                          type="text"
+                                          className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                          value={selectedRole?.name ?? ''}
+                                          onChange={handleChange}
+                                        />
+                                      </div>
+                                      {errors.name && <div className="text-red-500">{errors.name}</div>}
+                                    </div>
+                                  </div>
 
-                                        <fieldset className="fieldset w-95">
-                                          <legend className="fieldset-legend">Guard name</legend>
-                                          {/* <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.guard_name ?? ''} disabled/> */}
-                                          <input
-                                            id="name"
-                                            value={selectedRole?.guard_name ?? ""}
-                                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                                            onChange={handleChange}
-                                            disabled
-                                          />
-                                        </fieldset>
+                                  <div className="w-90">
+                                    <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
+                                      Guard name
+                                    </label>
+                                    <div className="mt-2">
+                                      <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                        <input
+                                          id="guard_name"
+                                          name="guard_name"
+                                          type="text"
+                                          className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                          value={selectedRole?.guard_name ?? ''}
+                                          onChange={handleChange}
+                                        />
+                                      </div>
+                                        {errors.guard_name && <div className="text-red-500">{errors.guard_name}</div>}
+                                    </div>
+                                  </div>
+                                        
                                       </div>
                                       </div>
                                     </div>

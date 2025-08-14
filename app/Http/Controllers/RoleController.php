@@ -45,7 +45,8 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
+            'guard_name' => 'required|string|max:255'
         ]);
 
         $role->update($validatedData);  
