@@ -47,6 +47,7 @@ export default function Roles() {
     const [modalType, setModalType] = useState<ModalType>(null);
     const [newRoleName, setNewRoleName] = useState("");
     const [newGuardName, setNewGuardName] = useState("web");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
       const { name, value } = e.target;
@@ -106,6 +107,7 @@ export default function Roles() {
 
     function handleSubmitCreate(e: React.FormEvent) {
       e.preventDefault();
+      setIsSubmitting(true);
 
       router.post(
         `/roles`,
@@ -120,6 +122,7 @@ export default function Roles() {
           onError: (errors) => {
             console.error("Error creating role:", errors);
             toast.error("Failed to create role. Please try again.");
+            setIsSubmitting(false);
           },
         }
       );
@@ -569,7 +572,7 @@ export default function Roles() {
                             <div className="flex justify-end gap-2 pt-4 border-t">
                               <button
                                 type="button"
-                                className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
+                                className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
                                 onClick={() => {
                                   const modal = document.getElementById('create') as HTMLDialogElement;
                                   modal?.close();
@@ -579,8 +582,12 @@ export default function Roles() {
                               </button>
                               <button
                                 type="submit"
-                                className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+                                className={`px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-orange-400 cursor-pointer ${isSubmitting ? 'cursor-none! bg-indigo-300! hover:bg-indigo-400!' : ''}`}
+                                disabled={isSubmitting}
                               >
+                                {isSubmitting && (
+                                  <span className="loading loading-spinner loading-xs mr-2"></span>
+                                )}
                                 Save Changes
                               </button>
                             </div>
