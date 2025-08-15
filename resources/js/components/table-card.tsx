@@ -20,10 +20,11 @@ interface TableCardProps<T> {
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
   buttonLabel: string;
+  onCreateClick?: () => void
 }
 
 export default function TableCard<T>({
-  description, columns, actions, data, onEdit, onDelete, buttonLabel
+  description, columns, actions, data, onEdit, onDelete, buttonLabel, onCreateClick
 }: TableCardProps<T>) {
     function clickedEdit<T extends {}>(item: T): void {
         console.log('Edit clicked for item:', item);
@@ -43,6 +44,7 @@ export default function TableCard<T>({
                 columns={columns}
                 visibleColumns={visibleColumns}
                 onVisibleColumnsChange={setVisibleColumns}
+                onCreateClick={onCreateClick}
             />
 
             <div className="overflow-x-auto">

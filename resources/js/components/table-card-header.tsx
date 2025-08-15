@@ -6,10 +6,11 @@ interface TableCardProps<T> {
   columns: { key: string; label: string }[];
   visibleColumns: Set<string>;
   onVisibleColumnsChange: (updated: Set<string>) => void;
+  onCreateClick?: () => void
 }
 
 export default function TableCardHeader<T>({
-  description, buttonLabel, columns, visibleColumns, onVisibleColumnsChange
+  description, buttonLabel, columns, visibleColumns, onVisibleColumnsChange, onCreateClick
 }: TableCardProps<T>) {
     const toggleColumn = (key: string) => {
         const updated = new Set(visibleColumns);
@@ -25,12 +26,7 @@ export default function TableCardHeader<T>({
             </p>
         </div>
         <button role="button" className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-orange-400 cursor-pointer" 
-            onClick={() => {
-                const modal = document.getElementById('create') as HTMLDialogElement | null;
-                if (modal) {
-                    modal.showModal();
-                }
-            }}>
+            onClick={onCreateClick}>
                 
             {buttonLabel || 'Add New'}
         </button>

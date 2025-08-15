@@ -32,7 +32,7 @@ class RoleController extends Controller
     public function store(Request $request): Void
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:roles,name',
             'guard_name' => 'required|string|max:255'
         ]);
         
