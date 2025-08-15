@@ -49,7 +49,7 @@ export default function TableCardHeader<T>({
             <div className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">Columns</div>
                 <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                    {columns.map((column) => (
+                    {columns.filter(column => column.label !== "").map((column) => (
                         <li key={column.key}>
                             <label className="label">
                                 <input 
