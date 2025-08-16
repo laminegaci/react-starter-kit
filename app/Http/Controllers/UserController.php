@@ -23,10 +23,10 @@ class UserController extends Controller
                     ->whereHas('roles', function ($query) {
                         $query->where('name', '=', 'root');
                     })
-                    ->orderBy('id', 'desc')
-                    // ->filter(Request::only('search', 'trashed'))
-                    ->paginate(10)
-                    // ->appends(Request::all())
+                    ->orderByDesc('id')
+                    ->filter(Request::only('search'))
+                    ->paginate()
+                    ->appends(Request::all())
             ),
         ]);
     }
