@@ -45,7 +45,7 @@ export interface User {
 export interface Profile {
     first_name: string
     last_name: string
-    full_name: string
+    full_name?: string
     gender?: GENDER
     phone_number?: string
     address?: string

@@ -7,6 +7,10 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Http\Resources\UserCollection;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request as FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
+use App\Enums\UserRoleEnum;
 
 class UserController extends Controller
 {
@@ -56,20 +60,52 @@ class UserController extends Controller
                     ->orderBy('id')
                     ->filter(Request::only('search', 'trashed'))
                     ->paginate(100)
-                    // ->appends(Request::all())
+                    ->appends(Request::all())
             ),
         ]);
     }
 
-    public function create()
+    public function store(FormRequest $request): Void
     {
-        //
+        $validatedData = $request->validate([
+            'email' => 'required|email|max:255|unique:users,email',
+            'profile' => 'required|array',
+            'profile.first_name' => 'required|string|max:255',
+            'profile.last_name' => 'required|string|max:255'
+        ]);
+
+        $team = User::create([
+            'email' => $validatedData['email'],
+            'password' => Hash::make('123456789'),
+        ])->assignRole(UserRoleEnum::MANAGER->value);
+        $team->profile()->create([
+            'first_name' => $validatedData['profile']['first_name'],
+            'last_name' => $validatedData['profile']['last_name']
+        ]);
     }
 
-    public function edit(User $user)
+    public function update(FormRequest $request, User $team)
     {
-        //
+        $validatedData = $request->validate([
+            'email' => ['required', 'max:50', 'email',
+                Rule::unique('users')->ignore($team->id),
+            ],
+            'profile' => 'required|array',
+            'profile.first_name' => 'required|string|max:255',
+            'profile.last_name' => 'required|string|max:255'
+        ]);
+
+        $team->update([
+            'email' => $validatedData['email'],
+        ]);
+        $team->profile->update([
+            'first_name' => $validatedData['profile']['first_name'],
+            'last_name' => $validatedData['profile']['last_name'],
+        ]);
     }
 
-    // Additional methods for role management can be added here
+    public function destroy(User $team)
+    {
+        $team->delete();
+    }
 }

@@ -13,11 +13,13 @@ class ProfileObserver
 
     public function updated(Profile $profile): void
     {
+        info('updated');
         $this->onNameChanged($profile);
     }
 
     protected function onNameChanged(Profile $profile): void
     {
+        info('it works');
         if($profile->isDirty(['first_name', 'last_name'])) {
             Profile::withoutEvents(function() use($profile) {
                 $profile->update([

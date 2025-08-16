@@ -24,9 +24,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('users/create', [UserController::class, 'create'])->name('users.create');
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
 
-    Route::get('teams/index', [UserController::class, 'teams'])->name('teams.index');
-    Route::put('teams/{role}', [UserController::class, 'update'])->name('teams.update');
-    Route::delete('teams/{role}', [UserController::class, 'destroy'])->name('teams.destroy');
+    Route::get('teams', [UserController::class, 'teams'])->name('teams.index');
+    Route::post('teams', [UserController::class, 'store'])->name('teams.store');
+    Route::put('teams/{team}', [UserController::class, 'update'])->name('teams.update');
+    Route::delete('teams/{team}', [UserController::class, 'destroy'])->name('teams.destroy');
 });
 
 require __DIR__.'/settings.php';

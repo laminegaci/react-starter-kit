@@ -10,7 +10,10 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Enums\UserGenderEnum;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use App\Observers\ProfileObserver;
 
+#[ObservedBy([ProfileObserver::class])]
 class Profile extends Model
 {
     use SoftDeletes;
