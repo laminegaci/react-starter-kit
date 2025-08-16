@@ -1,6 +1,6 @@
 import React , { useState } from 'react';
 import TableCardHeader from './table-card-header';
-import { SquarePen, Eye, Trash } from 'lucide-react';
+import { SquarePen, Eye, Trash, Key } from 'lucide-react';
 
 export interface Column {
   key: string;
@@ -33,6 +33,8 @@ export default function TableCard<T>({
     const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set(columns.map(col => col.key)));
 
     const filteredColumns = columns.filter(col => visibleColumns.has(col.key));
+    {console.log(filteredColumns)}
+
 
   return (
     <div className='h-[640px] overflow-scroll'>
@@ -67,16 +69,22 @@ export default function TableCard<T>({
                     </td>
                     </tr>
                 )}
+
                 {data.map((item, idx) => (
                     <tr key={idx} className='hover:bg-gray-50 transition-colors '>
                         {filteredColumns.map((column) => (
-                            <td key={column.key} className={`px-4 py-2 ${column.key === "actions" ? "flex justify-end" : ""}`}>
-                                {column.render ? (
-                                        <div>
-                                            {column.render(item[column.key], item, idx)}
-                                        </div>
-                                    ) : item[column.key]}
-                            </td>
+                        <td
+                            key={column.key}
+                            className={`px-4 py-2 ${column.key === "actions" ? "flex justify-end" : ""}`}
+                        >
+                            {column.render ? (
+                            <div>{column.render(item[column.key], item, idx)}</div>
+                            ) : column.key === "name" ? (
+                            <div className="badge badge-soft badge-primary p-2">{item[column.key]}</div>
+                            ) : (
+                            item[column.key]
+                            )}
+                        </td>
                         ))}
                     </tr>
                 ))}

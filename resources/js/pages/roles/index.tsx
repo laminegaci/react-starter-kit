@@ -7,6 +7,7 @@ import Pagination from "@/components/Pagination";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Eye, SquarePen, Trash } from "lucide-react";
+import _ from "lodash";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: "Roles", href: "/roles" },
@@ -143,6 +144,12 @@ export default function Roles() {
         { key: 'id', label: 'ID' },
         { key: 'name', label: 'Name' },
         { key: 'guard_name', label: 'Guard Name' },
+        { 
+          key: 'permissions', 
+          label: 'Permissions',
+          render: (_: any) => (
+            <div className="badge badge-soft badge-info p-3">00</div>
+        )},
         { key: 'updated_at', label: 'Updated At' },
         {
           key: "actions",
