@@ -17,45 +17,11 @@ class UserController extends Controller
     public function index(): Response
     {
         return Inertia::render('users/index', [
-            // 'filters' => Request::all('search', 'trashed'),
+            'filters' => Request::all('search', 'trashed'),
             'users' => new UserCollection(
                 User::query()
                     ->whereHas('roles', function ($query) {
                         $query->where('name', '=', 'root');
-                    })
-                    ->orderByDesc('id')
-                    ->filter(Request::only('search'))
-                    ->paginate()
-                    ->appends(Request::all())
-            ),
-        ]);
-    }
-
-    public function admins(): Response
-    {
-        return Inertia::render('users/index', [
-            'filters' => Request::all('search', 'trashed'),
-            'users' => new UserCollection(
-                User::query()->with('profile')
-                    ->whereHas('roles', function ($query) {
-                        $query->where('name', '=', 'root');
-                    })
-                    ->orderByDesc('id')
-                    ->filter(Request::only('search', 'trashed'))
-                    ->paginate(100)
-                    ->appends(Request::all())
-            ),
-        ]);
-    }
-
-    public function teams(): Response
-    {
-        return Inertia::render('teams/index', [
-            'filters' => Request::all('search', 'trashed'),
-            'teams' => new UserCollection(
-                User::query()
-                    ->whereHas('roles', function ($query) {
-                        $query->where('name', '!=', 'root');
                     })
                     ->orderByDesc('id')
                     ->filter(Request::only('search', 'trashed'))
@@ -74,38 +40,38 @@ class UserController extends Controller
             'profile.last_name' => 'required|string|max:255'
         ]);
 
-        $team = User::create([
+        $user = User::create([
             'email' => $validatedData['email'],
             'password' => Hash::make('123456789'),
         ])->assignRole(UserRoleEnum::MANAGER->value);
-        $team->profile()->create([
+        $user->profile()->create([
             'first_name' => $validatedData['profile']['first_name'],
             'last_name' => $validatedData['profile']['last_name']
         ]);
     }
 
-    public function update(FormRequest $request, User $team)
+    public function update(FormRequest $request, User $user)
     {
         $validatedData = $request->validate([
             'email' => ['required', 'max:50', 'email',
-                Rule::unique('users')->ignore($team->id),
+                Rule::unique('users')->ignore($user->id),
             ],
             'profile' => 'required|array',
             'profile.first_name' => 'required|string|max:255',
             'profile.last_name' => 'required|string|max:255'
         ]);
 
-        $team->update([
+        $user->update([
             'email' => $validatedData['email'],
         ]);
-        $team->profile->update([
+        $user->profile->update([
             'first_name' => $validatedData['profile']['first_name'],
             'last_name' => $validatedData['profile']['last_name'],
         ]);
     }
 
-    public function destroy(User $team)
+    public function destroy(User $user)
     {
-        $team->delete();
+        $user->delete();
     }
 }
