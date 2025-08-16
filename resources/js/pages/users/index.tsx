@@ -25,7 +25,8 @@ interface PageProps {
 interface User {
   id: number;
   email: string;
-  profile: Profile
+  profile: Profile;
+  roles?: any;
 }
 
 type ModalType = "create" | "view" | "edit" | "delete" | null;
@@ -51,6 +52,7 @@ export default function Users() {
     const flattenedData = users.data.map((user) => ({
       ...user,
       full_name: user.profile?.full_name ?? "",
+      role: user.roles?.[0]?.name ?? ""
     }));
 
     useEffect(() => {
@@ -170,6 +172,7 @@ export default function Users() {
         { key: 'id', label: 'ID' },
         { key: 'full_name', label: 'Name' },
         { key: 'email', label: 'Email' },
+        { key: 'role', label: 'Role' },
         {
           key: "actions",
           label: "",

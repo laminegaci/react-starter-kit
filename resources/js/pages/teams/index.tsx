@@ -50,6 +50,7 @@ export default function Teams() {
     const flattenedData = teams.data.map((team) => ({
       ...team,
       full_name: team.profile?.full_name ?? "",
+      role: team.roles?.[0]?.name ?? ""
     }));
 
     useEffect(() => {
@@ -169,6 +170,7 @@ export default function Teams() {
         { key: 'id', label: 'ID' },
         { key: 'full_name', label: 'Name' },
         { key: 'email', label: 'Email' },
+        { key: 'role', label: 'Role' },
         {
           key: "actions",
           label: "",

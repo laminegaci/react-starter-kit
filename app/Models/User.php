@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class, 'user_id')->withTrashed();
     }
 
+    public function role(): HasOne
+    {
+        return $this->hasOne(Role::class, 'user_id')->withTrashed();
+    }
+
     /*
 	|--------------------------------------------------------------------------
     ╔═══════════════╗

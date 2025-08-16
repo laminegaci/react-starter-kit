@@ -15,7 +15,7 @@ class UserCollection extends ResourceCollection
     public function toArray(Request $request)
     {
         return $this->collection->map->only(
-            'id', 'email', 'profile'
+            'id', 'email', 'profile', 'roles'
         );
     }
 }
