@@ -22,15 +22,15 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $admin = User::create([
-            'email' => 'admin@' . Str::lower(config('app.name', 'Laravel')) . '.com',
+        $team = User::create([
+            'email' => 'team@' . Str::lower(config('app.name', 'Laravel')) . '.com',
             'password' => Hash::make('123456789'),
         ])->assignRole(UserRoleEnum::USER->value);
 
-        $admin->profile()->create([
-            'first_name' => 'admin',
-            'last_name' => 'Henkel',
-            'full_name' => 'admin ' . Str::lower(config('app.name', 'Laravel')),
+        $team->profile()->create([
+            'first_name' => 'team',
+            'last_name' => Str::lower(config('app.name', 'Laravel')),
+            'full_name' => 'team ' . Str::lower(config('app.name', 'Laravel')),
             'phone_number' => '0699472366',
             'address' => 'Cyberparc',
             'born_at' => Carbon::now()->subYears(rand(20, 40)),
