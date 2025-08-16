@@ -12,43 +12,9 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use App\Enums\UserRoleEnum;
 
-class UserController extends Controller
+class TeamController extends Controller
 {
     public function index(): Response
-    {
-        return Inertia::render('users/index', [
-            // 'filters' => Request::all('search', 'trashed'),
-            'users' => new UserCollection(
-                User::query()
-                    ->whereHas('roles', function ($query) {
-                        $query->where('name', '=', 'root');
-                    })
-                    ->orderByDesc('id')
-                    ->filter(Request::only('search'))
-                    ->paginate()
-                    ->appends(Request::all())
-            ),
-        ]);
-    }
-
-    public function admins(): Response
-    {
-        return Inertia::render('users/index', [
-            'filters' => Request::all('search', 'trashed'),
-            'users' => new UserCollection(
-                User::query()->with('profile')
-                    ->whereHas('roles', function ($query) {
-                        $query->where('name', '=', 'root');
-                    })
-                    ->orderByDesc('id')
-                    ->filter(Request::only('search', 'trashed'))
-                    ->paginate(100)
-                    ->appends(Request::all())
-            ),
-        ]);
-    }
-
-    public function teams(): Response
     {
         return Inertia::render('teams/index', [
             'filters' => Request::all('search', 'trashed'),
