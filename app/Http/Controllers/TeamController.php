@@ -25,7 +25,7 @@ class TeamController extends Controller
                     })
                     ->orderByDesc('id')
                     ->filter(Request::only('search', 'trashed'))
-                    ->paginate(100)
+                    ->paginate(20)
                     ->appends(Request::all())
             ),
         ]);
