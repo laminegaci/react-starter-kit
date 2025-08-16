@@ -16,8 +16,6 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
-
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
         Role::where('name', UserRoleEnum::ROOT->value)->first()

@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +21,6 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
     ];
@@ -47,13 +48,37 @@ class User extends Authenticatable
         ];
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    ╔═══════════════╗
+    ║ Relationships ║
+    ╚═══════════════╝
+    |--------------------------------------------------------------------------
+    */
+
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class, 'user_id')->withTrashed();
+    }
+
+    /*
+	|--------------------------------------------------------------------------
+    ╔═══════════════╗
+    ║ Scopes        ║
+    ╚═══════════════╝
+	|--------------------------------------------------------------------------
+	|
+	*/
 
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%'.$search.'%')
-                    ->orWhere('email', 'like', '%'.$search.'%');
+                $query->where('email', 'like', "%{$search}%")
+                    ->orWhereHas('profile', function ($q) use ($search) {
+                        $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                    });
             });
         })->when($filters['role'] ?? null, function ($query, $role) {
             $query->whereRole($role);

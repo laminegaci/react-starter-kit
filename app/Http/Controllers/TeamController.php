@@ -12,17 +12,16 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use App\Enums\UserRoleEnum;
 
-class UserController extends Controller
+class TeamController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('users/index', [
+        return Inertia::render('teams/index', [
             'filters' => Request::all('search', 'trashed'),
-            'users' => new UserCollection(
+            'teams' => new UserCollection(
                 User::query()
                     ->whereHas('roles', function ($query) {
-                        $query->where('name', '=', 'root')
-                            ->orWhere('name', '=', 'manager');
+                        $query->where('name', '=', 'user');
                     })
                     ->orderByDesc('id')
                     ->filter(Request::only('search', 'trashed'))
@@ -41,38 +40,38 @@ class UserController extends Controller
             'profile.last_name' => 'required|string|max:255'
         ]);
 
-        $user = User::create([
+        $team = User::create([
             'email' => $validatedData['email'],
             'password' => Hash::make('123456789'),
-        ])->assignRole(UserRoleEnum::MANAGER->value);
-        $user->profile()->create([
+        ])->assignRole(UserRoleEnum::USER->value);
+        $team->profile()->create([
             'first_name' => $validatedData['profile']['first_name'],
             'last_name' => $validatedData['profile']['last_name']
         ]);
     }
 
-    public function update(FormRequest $request, User $user)
+    public function update(FormRequest $request, User $team)
     {
         $validatedData = $request->validate([
             'email' => ['required', 'max:50', 'email',
-                Rule::unique('users')->ignore($user->id),
+                Rule::unique('users')->ignore($team->id),
             ],
             'profile' => 'required|array',
             'profile.first_name' => 'required|string|max:255',
             'profile.last_name' => 'required|string|max:255'
         ]);
 
-        $user->update([
+        $team->update([
             'email' => $validatedData['email'],
         ]);
-        $user->profile->update([
+        $team->profile->update([
             'first_name' => $validatedData['profile']['first_name'],
             'last_name' => $validatedData['profile']['last_name'],
         ]);
     }
 
-    public function destroy(User $user)
+    public function destroy(User $team)
     {
-        $user->delete();
+        $team->delete();
     }
 }

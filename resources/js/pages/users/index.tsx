@@ -1,156 +1,210 @@
-import { Head, usePage, router } from '@inertiajs/react';
-
-import { User, type BreadcrumbItem } from '@/types';
-import AppLayout from '@/layouts/app-layout';
-import Heading from '@/components/heading';
-import Pagination from '@/components/Pagination';
-import TableCard, { Column } from '@/components/table-card';
-import { Columns, Eye, Key, SquarePen, Trash } from 'lucide-react';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import TextInput from '@/components/Form/TextInput';
-import FieldGroup from '@/components/Form/FieldGroup';
+import { Head, usePage, router, useForm} from "@inertiajs/react";
+import { Profile, type BreadcrumbItem } from "@/types";
+import AppLayout from "@/layouts/app-layout";
+import Heading from "@/components/heading";
+import TableCard, { Column } from "@/components/table-card";
+import Pagination from "@/components/Pagination";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { Eye, SquarePen, Trash } from "lucide-react";
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Users',
-        href: '/users',
-    },
+  { title: "Users", href: "/users" },
 ];
 
 interface PageProps {
   users: {
-    data: User[]; // This matches the pagination "data" array
-    links: any[]; // Optional: for pagination component
-    meta: any;    // Optional: total, current_page, etc.
+    data: User[];
+    links: any[];
+    meta: any;
   };
-  [key: string]: unknown; // Add index signature to satisfy Inertia's PageProps constraint
+  [key: string]: unknown;
 }
 
-type ModalType = "view" | "edit" | "delete" | null;
+// Define the shape of each user
+interface User {
+  id: number;
+  email: string;
+  profile: Profile
+}
 
-const description = 'A list of all the admins in your account including their name, email and role.';
+type ModalType = "create" | "view" | "edit" | "delete" | null;
+
+const description = 'A list of all the users in your account including their name, email.';
 
 export default function Users() {
     const { users } = usePage<PageProps>().props;
 
-    const {data, meta: { links }} = users;
-
-    const [user, setUser] = useState('');
+    const [modal, setModal] = useState<ModalType>(null);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    const [modalType, setModalType] = useState<ModalType>(null);
 
-    const handleChange = (e) => {
-      if (selectedUser) {
-        setSelectedUser({
-          id: selectedUser.id,
-          name: e.target.value,
-          email: selectedUser.email,
-        });
+    const { data, setData, post, put, processing, reset, errors, clearErrors } = useForm({
+      email: "",
+      profile: { 
+        first_name: "",
+        last_name: ""
+       }
+    });
+
+    console.log(errors)
+
+    const flattenedData = users.data.map((user) => ({
+      ...user,
+      full_name: user.profile?.full_name ?? "",
+    }));
+
+    useEffect(() => {
+      if (modal === "create" || modal === "edit") {
+        const modalEl = document.getElementById("create&update") as HTMLDialogElement | null;
+        modalEl?.showModal();
+      }else if (modal === "view") {
+        const modalEl = document.getElementById('view') as HTMLDialogElement | null;
+        modalEl?.showModal();
+      }else if(modal === 'delete') {
+        const modalEl = document.getElementById('delete') as HTMLDialogElement | null;
+        modalEl?.showModal();
       }
-    }
+    }, [modal]);
 
-    const handleSubmitDelete = (e) => {
-      e.preventDefault();
-
-      if (selectedUser) {
-        router.delete(`/users/${selectedUser.id}`, {
-          onSuccess: () => {
-            const modal = document.getElementById(`delete-${selectedUser.id}`) as HTMLDialogElement | null;
-            modal?.close();
-            toast.success('User deleted successfully!');
+    const openModal = (type: ModalType, user: User) => {
+      setModal(type);
+      setSelectedUser(user);
+      if (type === "edit") {
+        setData({
+          email: user.email,
+          profile: {
+            first_name: user.profile.first_name,
+            last_name: user.profile.last_name
           },
-          onError: (errors) => {
-            toast.error('Failed to delete user. Please try again.');
-          }
         });
       }
-    }
+    };
 
-    const handleSubmitUpdate = (e) => {
-      e.preventDefault();
+    const closeModal = () => {
+      setModal(null);
+      setSelectedUser(null);
+      reset();
+      clearErrors();
+    };
 
-      if (selectedUser) {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      
+      if (name.includes(".")) {
+        const [parent, child] = name.split(".");
 
-        router.put(`/users/${selectedUser.id}`, {
-            name: selectedUser.name,
-          }, {
-            onSuccess: () => {
-              const modal = document.getElementById(`edit-${selectedUser.id}`) as HTMLDialogElement | null;
-              modal?.close();
-              toast.success('User updated successfully!');
+        setData(parent as keyof typeof data, {
+          ...(data as any)[parent],
+          [child]: value,
+        });
+
+        if (selectedUser) {
+          setSelectedUser({
+            ...selectedUser,
+            [parent]: {
+              ...(selectedUser as any)[parent],
+              [child]: value,
             },
-            onError: (errors) => {
-              toast.error('Failed to update user. Please try again.');
-            }
           });
+        }
+      } else {
+        // Normal flat property
+        setData(name as keyof typeof data, value);
+
+        if (selectedUser) {
+          setSelectedUser({
+            ...selectedUser,
+            [name]: value,
+          });
+        }
       }
+    };
+
+    const handleCreate = (e: React.FormEvent) => {
+      e.preventDefault();
+      post("/users", {
+        onSuccess: success,
+        onError: failed
+      });
+    };
+
+    const handleUpdate = (e: React.FormEvent) => {
+      e.preventDefault();
+      
+      if (!selectedUser) return;
+      put(`/users/${selectedUser.id}`, {
+        onSuccess: success,
+        onError: failed
+      });
+    };
+
+    const handleDelete = () => {
+      if (!selectedUser) return;
+      router.delete(`/users/${selectedUser.id}`, {
+        onSuccess: success,
+        onError: failed
+      });
+    };
+
+    const success = () => {
+      if(modal === 'create' )
+        toast.success("User created successfully!");
+      if(modal === 'edit')
+        toast.success("User updated successfully!");
+      if(modal === 'delete')
+        toast.success("User deleted successfully!");
+
+      closeModal();
     }
 
-    const handleSubmitCreate = (e) => {
-      e.preventDefault();
+    const failed = () => {
+      if(modal === 'create' )
+        toast.error("Failed to create user. Please try again.");
+      if(modal === 'edit')
+        toast.error("Failed to update user. Please try again.");
+      if(modal === 'delete')
+        toast.error("Failed to delete user. Please try again.");
     }
 
     const columns: Column[] = [
-          { key: 'id', label: 'ID' },
-          { key: 'name', label: 'Name' },
-          { key: 'email', label: 'Email' },
-          {
-            key: "actions",
-            label: "",
-            render: (_: any, row: any, index: any) => (
-              <div className="flex gap-2">
-                <button 
-                    className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-blue-600'
-                    type='button'
-                    onClick={() => {
-                        const modal = document.getElementById(`view-${row.id}`) as HTMLDialogElement | null;
-                        if (modal) {
-                            setSelectedUser(row);
-                            setModalType("view");
-                            modal.showModal();
-                        }
-                    }}
-                >
-                    <Eye className="-ml-1 h-4 w-4" />
-                    <span className="ml-1.5 text-sm">View</span>
-                </button>
-                
-                <button 
-                    className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-violet-600'
-                    type='button'
-                    onClick={() => {
-                        const modal = document.getElementById(`edit-${row.id}`) as HTMLDialogElement | null;
-                        if (modal) {
-                            setSelectedUser(row);
-                            setModalType("edit");
-                            modal.showModal();
-                        }
-                    }}
-                >
-                    <SquarePen className="-ml-1 h-4 w-4" />
-                    <span className="ml-1.5 text-sm">Edit</span>
-                </button>
-                
-                <button 
-                    className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
-                    type='button'
-                    onClick={() => {
-                        const modal = document.getElementById(`delete-${row.id}`) as HTMLDialogElement | null;
-                        if (modal) {
-                            setSelectedUser(row);
-                            setModalType("delete");
-                            modal.showModal();
-                        }
-                    }}
-                >
-                    <Trash className="-ml-1 h-4 w-4" />
-                    <span className="ml-1.5 text-sm">Delete</span>
-                </button>
-              </div>
-            ),
-          },
-        ];
+        { key: 'id', label: 'ID' },
+        { key: 'full_name', label: 'Name' },
+        { key: 'email', label: 'Email' },
+        {
+          key: "actions",
+          label: "",
+          render: (_: any, row: any, index: any) => (
+            <div className="flex gap-2">
+              <button 
+                  className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-blue-600'
+                  type='button'
+                  onClick={() => openModal("view", row)}
+              >
+                  <Eye className="-ml-1 h-4 w-4" />
+                  <span className="ml-1.5 text-sm">View</span>
+              </button>
+              
+              <button 
+                  className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-violet-600'
+                  type='button'
+                  onClick={() => openModal("edit", row)}
+              >
+                  <SquarePen className="-ml-1 h-4 w-4" />
+                  <span className="ml-1.5 text-sm">Edit</span>
+              </button>
+              
+              <button 
+                  className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
+                  type='button'
+                  onClick={() => openModal("delete", row)}
+              >
+                  <Trash className="-ml-1 h-4 w-4" />
+                  <span className="ml-1.5 text-sm">Delete</span>
+              </button>
+            </div>
+          ),
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -162,214 +216,220 @@ export default function Users() {
                     description={description} 
                     columns={columns} 
                     actions={{ view: false, edit: true, delete: true }}
-                    data={data} 
+                    data={flattenedData} 
                     buttonLabel="Add New User"
+                    onCreateClick={() => openModal("create", { id: 0, email: "", profile: { first_name: "", last_name: "" } })}
                 />
 
-                <Pagination links={links} />
+                <Pagination links={users.meta.links} />
 
-                {/* view / update / delete Modals */}
-                {data.map((item, idx) => (
-                    <div key={idx}>
-                      <dialog id={`view-${item.id}`} className="modal">
-                          <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
-                            {/* Modal Header */}
-                            <div className="flex items-center justify-between border-b pb-3">
-                              <h3 className="font-bold text-lg">View</h3>
-                            </div>
+                {/* view / create / update / delete Modals */}
+                {(modal === "create" || modal === "edit") && (
+                  <dialog id='create&update' className="modal">
+                      <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
+                          <div className="flex items-center justify-between border-b pb-3">
+                            <h3 className="font-bold text-lg">{modal === "create" ? "Create User" : "Edit User"}</h3>
+                          </div>
 
-                            {/* Modal Content */}
+                          {/* Modal Content */}
+                          <form
+                            method="dialog"
+                            className="mt-4 space-y-4"
+                            onSubmit={modal === "create" ? handleCreate : handleUpdate}
+                          >
+                            {/* User Name Field */}
                             <div className="card bg-base-100 shadow-sm mt-6">
                               <div className="card lg:card-side bg-base-100 shadow-sm">
                                 <div className="card-body">
-                                  <div className="flex justify-center">  
+                                  <div className="flex justify-around">  
                                   
-                                  <fieldset className="fieldset w-95">
-                                    <legend className="fieldset-legend">name</legend>
-                                    <input type="text" placeholder="Type here" className="input input-neutral" value={selectedUser?.name ?? ''} disabled/>
-                                  </fieldset>
-
-                                  <fieldset className="fieldset w-95">
-                                    <legend className="fieldset-legend">Email</legend>
-                                    <input type="text" placeholder="Type here" className="input input-neutral" value={selectedUser?.email ?? ''} disabled/>
-                                  </fieldset>
-                                </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="modal-action mt-6">
-                              <form method="dialog">
-                                {/* Closing the form will close the modal */}
-                                <button className="btn btn-primary">Close</button>
-                              </form>
-                            </div>
-                          </div>
-                      </dialog>
-                      
-                      <dialog id={`edit-${item.id}`} className="modal">
-                          <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
-                              <div className="flex items-center justify-between border-b pb-3">
-                                <h3 className="font-bold text-lg">Edit User</h3>
-                              </div>
-
-                              {/* Modal Content */}
-                              <form
-                                method="dialog"
-                                className="mt-4 space-y-4"
-                                onSubmit={handleSubmitUpdate}
-                              >
-                                {/* Modal Content */}
-                                <div className="card bg-base-100 shadow-sm mt-6">
-                                  <div className="card lg:card-side bg-base-100 shadow-sm">
-                                    <div className="card-body">
-                                      <div className="flex justify-around">  
-                                      
-                                      <div className="w-90">
-                                        <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
-                                          Name
-                                        </label>
-                                        <div className="mt-2">
-                                          <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-                                            <input
-                                              id="name"
-                                              name="name"
-                                              type="text"
-                                              className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                              value={selectedUser?.name ?? ''}
-                                            />
-                                          </div>
-                                        </div>
+                                  <div className="w-70">
+                                    <label htmlFor="first_name" className="block text-sm/6 font-medium text-gray-900">
+                                      First name
+                                    </label>
+                                    <div className="mt-2">
+                                      <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                        <input
+                                          id="first_name"
+                                          name="profile.first_name"
+                                          type="text"
+                                          className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                          value={(modal === "create") ? data.profile.first_name : selectedUser?.profile.first_name}
+                                          onChange={(e) => (modal === "create")
+                                            ? setData("profile", { ...data.profile, first_name: e.target.value })
+                                            : handleChange(e)}
+                                        />
                                       </div>
-
-                                      <div className="w-90">
-                                        <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
-                                          Email
-                                        </label>
-                                        <div className="mt-2">
-                                          <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-                                            <input
-                                              id="username"
-                                              name="username"
-                                              type="text"
-                                              className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                              value={selectedUser?.email ?? ''}
-                                            />
-                                          </div>
-                                        </div>
-                                      </div>
-                                      
-                                    </div>
+                                      {errors["profile.first_name"] && (
+                                        <p className="text-red-500 text-sm mt-1">{errors["profile.first_name"]}</p>
+                                      )}
                                     </div>
                                   </div>
-                                </div>
 
-                                {/* Modal Footer */}
-                                <div className="flex justify-end gap-2 pt-4">
-                                  <button
-                                    type="button"
-                                    className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
-                                    onClick={() => {
-                                      const modal = document.getElementById(`edit-${item.id}`) as HTMLDialogElement;
-                                      modal?.close();
-                                    }}
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    type="submit"
-                                    className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
-                                  >
-                                    Save Changes
-                                  </button>
-                                </div>
-                              </form>
-                          </div>
-                      </dialog>
+                                  <div className="w-70">
+                                    <label htmlFor="last_name" className="block text-sm/6 font-medium text-gray-900">
+                                      Last name
+                                    </label>
+                                    <div className="mt-2">
+                                      <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                        <input
+                                          id="last_name"
+                                          name="profile.last_name"
+                                          type="text"
+                                          className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                          value={(modal === "create") ? data.profile.last_name : selectedUser?.profile.last_name}
+                                          onChange={(e) => (modal === "create")
+                                            ? setData("profile", { ...data.profile, last_name: e.target.value })
+                                            : handleChange(e)}
+                                        />
+                                      </div>
+                                        {errors["profile.last_name"] && (
+                                          <p className="text-red-500 text-sm mt-1">{errors["profile.last_name"]}</p>
+                                        )}
+                                    </div>
+                                  </div>
 
-                      <dialog id={`delete-${item.id}`} className="modal">
-                          <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
-                              <h3 className="font-bold text-lg">Hello! delete {item.id}</h3>
-                              <p className="py-4">Are you sure you want to delete this user? <span className='text-red-600'>{selectedUser?.name}</span></p>
-                              
-                                {/* Modal Footer */}
-                                <div className="flex justify-end gap-2 pt-4 border-t">
-                                  <form 
-                                    method="dialog"
-                                    className="mt-4 space-y-4"
-                                    onSubmit={handleSubmitDelete}
-                                  >
-                                    <button
-                                    type="button"
-                                    className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
-                                    onClick={() => {
-                                      const modal = document.getElementById(`delete-${item.id}`) as HTMLDialogElement;
-                                      modal?.close();
-                                    }}
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    type="submit"
-                                    className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition"
-                                  >
-                                    Delete
-                                  </button>
-                                  </form>
+                                  <div className="w-70">
+                                    <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+                                      Email
+                                    </label>
+                                    <div className="mt-2">
+                                      <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                        <input
+                                          id="email"
+                                          name="email"
+                                          type="text"
+                                          className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                          value={(modal === "create") ? data.email : selectedUser?.email}
+                                          onChange={(e) => (modal === "create")
+                                            ? setData("email", e.target.value )
+                                            : handleChange(e)}
+                                        />
+                                      </div>
+                                        {errors.email && (
+                                          <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                                        )}
+                                    </div>
+                                  </div>
+                                  
                                 </div>
-                          </div>
-                      </dialog>
-                    </div>
-                ))}
+                                </div>
+                              </div>
+                            </div>
 
-                {/* Create Modal */}
-                <dialog id='create' className="modal">
-                    <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
+                            {/* Modal Footer */}
+                            <div className="flex justify-end gap-2 pt-4 border-t">
+                              <button
+                                type="button"
+                                className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
+                                onClick={closeModal}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="submit"
+                                className={`px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-orange-400 cursor-pointer ${processing ? 'cursor-none! bg-indigo-300! hover:bg-indigo-400!' : ''}`}
+                                disabled={processing}
+                              >
+                                {processing && (
+                                  <span className="loading loading-spinner loading-xs mr-2"></span>
+                                )}
+                                Save Changes
+                              </button>
+                            </div>
+                          </form>
+                      </div>
+                  </dialog>
+                )}
+
+                {modal === 'view' && (
+                  <dialog id={'view'} className="modal">
+                    <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                         <div className="flex items-center justify-between border-b pb-3">
-                          <h3 className="font-bold text-lg">Create new user</h3>
+                          <h3 className="font-bold text-lg">View</h3>
                         </div>
 
                         {/* Modal Content */}
-                        <form
-                          method="dialog"
-                          className="mt-4 space-y-4"
-                          onSubmit={handleSubmitCreate}
-                        >
-                          {/* User Name Field */}
-                          <div>
-                            <label htmlFor="userName" className="block text-sm font-medium text-gray-700">
-                              User Name
-                            </label>
-                            <input
-                              id="name"
-                              value={user}
-                              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                              onChange={(e) => setUser(e.target.value)}
-                            />
-                          </div>
+                        <div className="card bg-base-100 shadow-sm mt-6">
+                          <div className="card lg:card-side bg-base-100 shadow-sm">
+                            <div className="card-body">
+                              <div className="flex justify-around">  
 
-                          {/* Modal Footer */}
-                          <div className="flex justify-end gap-2 pt-4 border-t">
-                            <button
-                              type="button"
-                              className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
-                              onClick={() => {
-                                const modal = document.getElementById('create') as HTMLDialogElement;
-                                modal?.close();
-                              }}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              type="submit"
-                              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
-                            >
-                              Save Changes
-                            </button>
+                              <fieldset className="fieldset w-70">
+                                <legend className="fieldset-legend">First name</legend>
+                                <input type="text" placeholder="Type here" className="input input-neutral" value={selectedUser?.profile.first_name ?? ''} disabled/>
+                              </fieldset>
+
+                              <fieldset className="fieldset w-70">
+                                <legend className="fieldset-legend">Last name</legend>
+                                <input type="text" placeholder="Type here" className="input input-neutral" value={selectedUser?.profile.last_name ?? ''} disabled/>
+                              </fieldset>
+
+                              <fieldset className="fieldset w-70">
+                                <legend className="fieldset-legend">email</legend>
+                                <input type="text" placeholder="Type here" className="input input-neutral" value={selectedUser?.email ?? ''} disabled/>
+                              </fieldset>
+                            </div>
+                            </div>
                           </div>
-                        </form>
+                        </div>
+
+                        <div className="modal-action mt-6">
+                          <form method="dialog">
+                            {/* Modal Footer */}
+                            <div className="flex justify-end gap-2 pt-4 border-t">
+                              <button
+                                type="button"
+                                className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
+                                onClick={closeModal}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </form>
+                        </div>
                     </div>
-                </dialog>
+                  </dialog>
+                )}
+
+                {modal === 'delete' && (  
+                  <dialog id={'delete'} className="modal">
+                      <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
+                        <div className="flex items-center justify-between border-b pb-3">
+                          <h3 className="font-bold text-lg">Delete</h3>
+                        </div>
+                        <p className="py-4">Are you sure you want to delete this role? <span className='text-red-600'>{selectedUser?.profile.full_name}</span></p>
+                          
+
+                          <form 
+                            method="dialog"
+                            className="mt-4 space-y-4"
+                            onSubmit={handleDelete}
+                          >
+                            <div className="flex justify-end gap-2 pt-4">
+                              <button
+                                type="button"
+                                className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
+                                onClick={closeModal}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="submit"
+                                className={`px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-orange-400 cursor-pointer ${processing ? 'cursor-none! bg-indigo-300! hover:bg-indigo-400!' : ''}`}
+                                disabled={processing}
+                              >
+                                {processing && (
+                                  <span className="loading loading-spinner loading-xs mr-2"></span>
+                                )}
+                                Save Changes
+                              </button>
+                            </div>
+                          </form>
+                      </div>
+                  </dialog>
+                )}
+
             </div>
         </AppLayout>
     );

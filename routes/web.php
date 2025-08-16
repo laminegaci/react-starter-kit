@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TeamController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -15,17 +16,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     // Route::get('roles', [RoleController::class, 'edit'])->name('role.edit');
-    Route::get('roles/index', [RoleController::class, 'index'])->name('role.index');
+    Route::get('roles', [RoleController::class, 'index'])->name('role.index');
+    Route::post('roles', [RoleController::class, 'store'])->name('role.store');
     Route::put('roles/{role}', [RoleController::class, 'update'])->name('role.update');
     Route::delete('roles/{role}', [RoleController::class, 'destroy'])->name('role.destroy');
 
-    Route::get('users/index', [UserController::class, 'admins'])->name('users.index');
-    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
-    Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::post('users', [UserController::class, 'store'])->name('users.store');
+    Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
-    Route::get('teams/index', [UserController::class, 'teams'])->name('teams.index');
-    Route::put('teams/{role}', [UserController::class, 'update'])->name('teams.update');
-    Route::delete('teams/{role}', [UserController::class, 'destroy'])->name('teams.destroy');
+    Route::get('teams', [TeamController::class, 'index'])->name('teams.index');
+    Route::post('teams', [TeamController::class, 'store'])->name('teams.store');
+    Route::put('teams/{team}', [TeamController::class, 'update'])->name('teams.update');
+    Route::delete('teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
 });
 
 require __DIR__.'/settings.php';
