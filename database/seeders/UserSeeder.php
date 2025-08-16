@@ -2,15 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Enums\UserGender;
-use App\Enums\UserGenderEnum;
-use App\Enums\UserRole;
-use App\Enums\UserRoleEnum;
-use App\Models\Company;
-use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Enums\UserRole;
+use App\Models\Company;
+use App\Models\Profile;
+use App\Enums\UserGender;
+use App\Enums\UserRoleEnum;
 use Illuminate\Support\Str;
+use App\Enums\UserGenderEnum;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -36,5 +37,10 @@ class UserSeeder extends Seeder
             'born_at' => Carbon::now()->subYears(rand(20, 40)),
             'gender' => UserGenderEnum::random()
         ]);
+
+
+                // Seed 100 random users with profiles
+        User::factory(100)
+            ->create();
     }
 }

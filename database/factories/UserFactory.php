@@ -7,6 +7,8 @@ use App\Enums\UserRoleEnum;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Carbon\Carbon;
+use App\Enums\UserGenderEnum;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -26,13 +28,11 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('123456789'),
-            'remember_token' => Str::random(10),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => Hash::make('123456789'),
         ];
     }
+
 
     /**
      * Indicate that the model's email address should be unverified.
@@ -48,6 +48,16 @@ class UserFactory extends Factory
     {
         return $this->afterCreating(function (User $user) {
             $user->assignRole(UserRoleEnum::USER->value);
+
+            $user->profile()->create([
+            'first_name'   => $this->faker->firstName(),
+            'last_name'    => $this->faker->lastName(),
+            'full_name'    => $this->faker->name(),
+            'phone_number' => $this->faker->phoneNumber(),
+            'address'      => $this->faker->address(),
+            'born_at'      => Carbon::now()->subYears(rand(20, 40)),
+            'gender'       => UserGenderEnum::random(),
+        ]);
         });
     }
 }
