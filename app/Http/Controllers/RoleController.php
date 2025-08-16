@@ -21,7 +21,7 @@ class RoleController extends Controller
             ],
             'roles' => new RoleCollection(
                 Role::query()
-                    ->orderBy('name')
+                    ->orderByDesc('id')
                     ->filter(Request::only('search'))
                     ->paginate()
                     ->appends(Request::all())
