@@ -57,6 +57,16 @@ export default function TableCard<T>({
                 </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 text-sm text-gray-700">
+                {data?.length === 0 && (
+                    <tr>
+                    <td
+                        className="px-6 py-24 border-t text-center"
+                        colSpan={columns.length}
+                    >
+                        No data found.
+                    </td>
+                    </tr>
+                )}
                 {data.map((item, idx) => (
                     <tr key={idx} className='hover:bg-gray-50 transition-colors '>
                         {filteredColumns.map((column) => (

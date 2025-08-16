@@ -1,4 +1,8 @@
 import React from 'react';
+import { usePage, router } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
+import { usePrevious } from 'react-use';
+import pickBy from 'lodash/pickBy';
 
 interface TableCardProps<T> {
   description: string; 
@@ -12,12 +16,55 @@ interface TableCardProps<T> {
 export default function TableCardHeader<T>({
   description, buttonLabel, columns, visibleColumns, onVisibleColumnsChange, onCreateClick
 }: TableCardProps<T>) {
+
+    const { filters } = usePage<{
+        filters: { search?: string; };
+    }>().props;
+
+    const [values, setValues] = useState({
+        search: filters.search || '',
+    });
+
+    const prevValues = usePrevious(values);
+
+    function reset() {
+        setValues({
+            search: ''
+        });
+    }
+
+    useEffect(() => {
+        // https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
+        if (prevValues) {
+        const query = Object.keys(pickBy(values)).length ? pickBy(values) : {};
+
+        router.get(route(route().current() as string), query, {
+            replace: true,
+            preserveState: true
+        });
+        }
+    }, [values]);
+
+    function handleChange(
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) {
+        const name = e.target.name;
+        const value = e.target.value;
+
+        setValues(values => ({
+        ...values,
+        [name]: value
+        }));
+    }
+
+    
     const toggleColumn = (key: string) => {
         const updated = new Set(visibleColumns);
         updated.has(key) ? updated.delete(key) : updated.add(key);
         onVisibleColumnsChange(updated);
     };
-  return (
+    
+    return (
     <div>
         <div className="flex justify-between items-center mb-6">
         <div>
@@ -41,7 +88,15 @@ export default function TableCardHeader<T>({
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                         </svg>
                     </div>
-                    <input type="text" id="simple-search" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search ..." required />
+                    <input 
+                        type="text" 
+                        name="search"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                        placeholder="Search ..." 
+                        required
+                        value={values.search}
+                        onChange={handleChange}
+                        />
                 </div>
             </form>
         </div>
@@ -101,5 +156,5 @@ export default function TableCardHeader<T>({
         </div>
     </div>
     </div>
-);
+    );
 }
