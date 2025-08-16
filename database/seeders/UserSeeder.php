@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
         $admin = User::create([
             'email' => 'admin@' . Str::lower(config('app.name', 'Laravel')) . '.com',
             'password' => Hash::make('123456789'),
-        ])->assignRole(UserRoleEnum::MANAGER->value);
+        ])->assignRole(UserRoleEnum::USER->value);
 
         $admin->profile()->create([
             'first_name' => 'admin',
