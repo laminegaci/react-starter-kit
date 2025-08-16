@@ -57,7 +57,7 @@ class UserController extends Controller
                     ->whereHas('roles', function ($query) {
                         $query->where('name', '!=', 'root');
                     })
-                    ->orderBy('id')
+                    ->orderByDesc('id')
                     ->filter(Request::only('search', 'trashed'))
                     ->paginate(100)
                     ->appends(Request::all())
