@@ -21,7 +21,8 @@ class UserController extends Controller
             'users' => new UserCollection(
                 User::query()
                     ->whereHas('roles', function ($query) {
-                        $query->where('name', '=', 'root');
+                        $query->where('name', '=', 'root')
+                            ->orWhere('name', '=', 'manager');
                     })
                     ->orderByDesc('id')
                     ->filter(Request::only('search', 'trashed'))

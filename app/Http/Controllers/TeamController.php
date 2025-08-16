@@ -21,7 +21,7 @@ class TeamController extends Controller
             'teams' => new UserCollection(
                 User::query()
                     ->whereHas('roles', function ($query) {
-                        $query->where('name', '!=', 'root');
+                        $query->where('name', '=', 'user');
                     })
                     ->orderByDesc('id')
                     ->filter(Request::only('search', 'trashed'))
@@ -43,7 +43,7 @@ class TeamController extends Controller
         $team = User::create([
             'email' => $validatedData['email'],
             'password' => Hash::make('123456789'),
-        ])->assignRole(UserRoleEnum::MANAGER->value);
+        ])->assignRole(UserRoleEnum::USER->value);
         $team->profile()->create([
             'first_name' => $validatedData['profile']['first_name'],
             'last_name' => $validatedData['profile']['last_name']

@@ -21,9 +21,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('roles/{role}', [RoleController::class, 'update'])->name('role.update');
     Route::delete('roles/{role}', [RoleController::class, 'destroy'])->name('role.destroy');
 
-    Route::get('users/index', [UserController::class, 'admins'])->name('users.index');
-    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
-    Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::post('users', [UserController::class, 'store'])->name('users.store');
+    Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
     Route::get('teams', [TeamController::class, 'index'])->name('teams.index');
     Route::post('teams', [TeamController::class, 'store'])->name('teams.store');

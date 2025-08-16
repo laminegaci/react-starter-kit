@@ -259,8 +259,8 @@ export default function Teams() {
                                             : handleChange(e)}
                                         />
                                       </div>
-                                      {errors.profile?.first_name && (
-                                        <p className="text-red-500 text-sm mt-1">{errors.profile.first_name}</p>
+                                      {errors["profile.first_name"] && (
+                                        <p className="text-red-500 text-sm mt-1">{errors["profile.first_name"]}</p>
                                       )}
                                     </div>
                                   </div>
@@ -282,8 +282,8 @@ export default function Teams() {
                                             : handleChange(e)}
                                         />
                                       </div>
-                                        {errors.profile?.last_name && (
-                                          <p className="text-red-500 text-sm mt-1">{errors.profile?.last_name}</p>
+                                        {errors["profile.last_name"] && (
+                                          <p className="text-red-500 text-sm mt-1">{errors["profile.last_name"]}</p>
                                         )}
                                     </div>
                                   </div>
