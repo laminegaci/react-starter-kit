@@ -42,17 +42,21 @@ export default function Profile({
       email: auth.user.email,
     });
 
-  const submit: FormEventHandler = (e) => {
-    e.preventDefault();
+    const submit: FormEventHandler = (e) => {
+        e.preventDefault();
 
-    patch(route('profile.update'), {
-      preserveScroll: true,
-      onSuccess: success
-    });
-  };
+        patch(route('profile.update'), {
+        preserveScroll: true,
+        onSuccess: success,
+        onError: failed
+        });
+    };
 
-  const success = () => {
+    const success = () => {
         toast.success("Profile updated successfully!");
+    }
+    const failed = () => {
+        toast.error("Failed updated profile. Please try again.");
     }
 
   return (
