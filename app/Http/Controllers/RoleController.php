@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Support\Facades\Request;
-use App\Http\Resources\RoleCollection;
 use App\Helpers\PermissionHelper;
+
+use App\Http\Resources\RoleCollection;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request as FormRequest;
 
 class RoleController extends Controller
 {
@@ -30,7 +32,7 @@ class RoleController extends Controller
         ]);
     }
 
-    public function store(Request $request): Void
+    public function store(FormRequest $request): Void
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
@@ -43,7 +45,7 @@ class RoleController extends Controller
         ]);
     }
 
-    public function update(Request $request, Role $role)
+    public function update(FormRequest $request, Role $role)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
