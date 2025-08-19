@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Enums\UserGenderEnum;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Observers\ProfileObserver;
+use App\Http\Resources\MediaAvatarResource;
 
 #[ObservedBy([ProfileObserver::class])]
 class Profile extends Model implements HasMedia
@@ -67,7 +68,7 @@ class Profile extends Model implements HasMedia
         $this->addMediaCollection(self::MEDIA_COLLECTION_NAME)
             ->singleFile()
             ->useDisk(self::MEDIA_DISK_NAME)
-            ->useFallbackUrl(asset('images/default/avatar-profile-man.png'));
+            ->useFallbackUrl(asset('images/avatar-profile-man.png'));
     }
 
     public function registerMediaConversions(?Media $media = null): void
@@ -124,13 +125,15 @@ class Profile extends Model implements HasMedia
     {
         $media = $this->getFirstMedia(self::MEDIA_COLLECTION_NAME);
 
-        $avatar = [
-            'original' => $this->getFirstMediaUrl(self::MEDIA_COLLECTION_NAME),
-            'thumb' => !$media ? $this->getFallbackMediaUrl(self::MEDIA_COLLECTION_NAME) : $media->getUrl('thumb'),
-            'square' => !$media ? $this->getFallbackMediaUrl(self::MEDIA_COLLECTION_NAME) : $media->getUrl('square'),
-        ];
+        $avatar = ! $media
+            ? [
+                'original' => $this->getFallbackMediaUrl(self::MEDIA_COLLECTION_NAME),
+                'thumb'    => $this->getFallbackMediaUrl(self::MEDIA_COLLECTION_NAME),
+                'square'   => $this->getFallbackMediaUrl(self::MEDIA_COLLECTION_NAME),
+            ]
+            : new MediaAvatarResource($media);
 
-        return Attribute::get(fn() => $avatar);
+        return Attribute::get(fn () => $avatar);
     }
 
     // public function attachments(): Attribute

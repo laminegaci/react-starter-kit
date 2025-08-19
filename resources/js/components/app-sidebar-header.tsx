@@ -1,10 +1,14 @@
-import { Breadcrumbs } from '@/components/breadcrumbs';
+import { type SharedData } from '@/types';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
 import { Link } from '@inertiajs/react';
 import { Input } from './ui/input';
+import { usePage } from '@inertiajs/react'
+import { Breadcrumbs } from './breadcrumbs';
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
+    const { auth } = usePage<SharedData>().props
+
     return (
         <header className="flex justify-between h-16 shrink-0 items-center gap-2 border-b border-sidebar-border/50 px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4">
             <div className="flex items-center gap-2">
@@ -33,7 +37,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                         <div className="w-10 rounded-full">
                         <img
                             alt="Tailwind CSS Navbar component"
-                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                            src={auth.user?.profile?.avatar?.original} />
                         </div>
                     </div>
                     <ul

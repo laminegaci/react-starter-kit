@@ -23,7 +23,6 @@ class UserResource extends JsonResource
             // 'unread_notifications_count' => $this->unreadNotifications()->count(),
             'role' => $this->roles->first(),
             'full_name' => $this->profile->full_name,
-            'avatar' => $this->profile->image,
             'profile' => $this->whenLoaded('profile', fn() => ProfileResource::make($this->profile)),
             // 'portfolios' => $this->whenLoaded('portfolios', fn() => PortfoliosResource::collection($this->portfolios)),
             // 'unread_messages_count' => $this->unreadMessagesCount() ?: 0,

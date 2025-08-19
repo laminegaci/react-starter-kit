@@ -34,7 +34,6 @@ export interface SharedData {
 export interface User {
     id: number;
     email: string;
-    avatar?: string;
     email_verified_at?: string | null;
     created_at?: string;
     updated_at?: string;
@@ -43,15 +42,20 @@ export interface User {
 }
 
 export interface Profile {
-    first_name: string
-    last_name: string
-    full_name?: string
-    gender?: GENDER
-    phone_number?: string
-    address?: string
-    zip_code?: string
-    description?: string
-    born_at?: string
+    first_name: string;
+    last_name: string;
+    full_name?: string;
+    gender?: GENDER;
+    phone_number?: string;
+    address?: string;
+    zip_code?: string;
+    description?: string;
+    born_at?: string;
+    avatar?: {
+      original: string;
+      thumb: string;
+      square: string;
+    };
 }
 
 export enum GENDER {

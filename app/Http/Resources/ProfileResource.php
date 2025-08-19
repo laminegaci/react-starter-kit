@@ -25,6 +25,7 @@ class ProfileResource extends JsonResource
             'born_at' => $this->born_at,
             'image' => $this->image,
             'banner' => $this->cover,
+            'avatar' => $this->avatar,
         ];
     }
 }
