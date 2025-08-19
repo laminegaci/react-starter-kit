@@ -24,6 +24,7 @@ type ProfileForm = {
   first_name: string;
   last_name: string;
   email: string;
+  avatar: File | string | null;
 };
 
 export default function Profile({
@@ -35,11 +36,12 @@ export default function Profile({
 }) {
   const { auth } = usePage<SharedData>().props;
 
-  const { data, setData, patch, errors, processing, recentlySuccessful } =
-    useForm<Required<ProfileForm>>({
+  const { data, setData, patch, errors, processing, recentlySuccessful, progress } =
+    useForm<ProfileForm>({
       first_name: auth.user.profile?.first_name ?? '',
       last_name: auth.user.profile?.last_name ?? '',
       email: auth.user.email,
+      avatar: auth.user?.avatar ?? null,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -55,8 +57,9 @@ export default function Profile({
     const success = () => {
         toast.success("Profile updated successfully!");
     }
-    const failed = () => {
-        toast.error("Failed updated profile. Please try again.");
+    const failed = (errors) => {
+        console.log(errors)
+        toast.error("Failed updated profile. Please try again."+{errors});
     }
 
   return (
@@ -71,6 +74,19 @@ export default function Profile({
           />
 
           <form onSubmit={submit} className="space-y-6">
+            <input
+              type="file"
+              className="file-input"
+              onChange={e => {
+                const files = e.target.files;
+                setData('avatar', files && files[0] ? files[0] : null);
+              }}
+            />
+              {progress && (
+                <progress value={progress.percentage} max="100">
+                  {progress.percentage}%
+                </progress>
+            )}
             {/* First Name */}
             <div className="grid gap-2">
               <Label htmlFor="first_name">First name</Label>

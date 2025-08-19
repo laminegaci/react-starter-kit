@@ -72,7 +72,6 @@ class Profile extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        //avatar
         $this->addMediaConversion('thumb')
             ->crop('crop-center', '180', '180')
             ->performOnCollections(self::MEDIA_COLLECTION_NAME)
@@ -90,6 +89,7 @@ class Profile extends Model implements HasMedia
 	|--------------------------------------------------------------------------
 	|
 	*/
+
     public function scopeBirthdayBetween($query, $start, $end)
     {
         return $query->whereDate('profiles.born_at', '>=', $start)
