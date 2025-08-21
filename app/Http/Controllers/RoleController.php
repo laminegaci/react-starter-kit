@@ -6,8 +6,9 @@ use App\Models\Role;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Helpers\PermissionHelper;
-
+use App\Http\Resources\PermissionResource;
 use App\Http\Resources\RoleCollection;
+use App\Models\Permission;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Http\Request as FormRequest;
 
@@ -16,11 +17,7 @@ class RoleController extends Controller
     public function index(): Response
     {
         return Inertia::render('roles/index', [
-            'permissions' => [
-                ['label' => 'role_permissions', 'items' => PermissionHelper::getRolePermissions()],
-                ['label' => 'team_permissions', 'items' => PermissionHelper::getTeamPermissions()],
-                ['label' => 'user_permissions', 'items' => PermissionHelper::getUserPermissions()],
-            ],
+            'permissions' => PermissionResource::collection(Permission::get()),
             'roles' => new RoleCollection(
                 Role::query()
                     ->orderByDesc('id')

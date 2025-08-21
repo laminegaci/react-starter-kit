@@ -12,7 +12,6 @@ enum UserPermissionEnum: string
      */
     case DASHBOARD_SHOW = 'DASHBOARD_SHOW';
     case DATA_MANAGE = 'DATA_MANAGE';
-    case ROOT_MANAGE = 'ROOT_MANAGE';
     case STATS_SHOW = 'STATS_SHOW';
 
     /**

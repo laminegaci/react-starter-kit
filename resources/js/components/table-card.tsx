@@ -26,14 +26,10 @@ interface TableCardProps<T> {
 export default function TableCard<T>({
   description, columns, actions, data, onEdit, onDelete, buttonLabel, onCreateClick
 }: TableCardProps<T>) {
-    function clickedEdit<T extends {}>(item: T): void {
-        console.log('Edit clicked for item:', item);
-    }
     
     const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set(columns.map(col => col.key)));
 
     const filteredColumns = columns.filter(col => visibleColumns.has(col.key));
-    {console.log(filteredColumns)}
 
 
   return (
