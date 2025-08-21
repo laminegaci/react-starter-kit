@@ -54,7 +54,6 @@ enum UserPermissionEnum: string
         return match ($value) {
             self::DASHBOARD_SHOW => __('DASHBOARD_SHOW'),
             self::DATA_MANAGE => __('DATA_MANAGE'),
-            self::ROOT_MANAGE => __('ROOT_MANAGE'),
             self::STATS_SHOW => __('STATS_SHOW'),
 
             self::USER_LIST => __('USER_LIST'),
@@ -85,7 +84,6 @@ enum UserPermissionEnum: string
         return [
             self::DASHBOARD_SHOW => self::DASHBOARD_SHOW->description(),
             self::DATA_MANAGE => self::DATA_MANAGE->description(),
-            self::ROOT_MANAGE => self::ROOT_MANAGE->description(),
             self::STATS_SHOW => self::STATS_SHOW->description(),
 
             self::USER_LIST => self::USER_LIST->description(),
