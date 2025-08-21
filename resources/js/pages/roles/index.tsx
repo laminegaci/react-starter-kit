@@ -30,6 +30,7 @@ interface Role {
   name: string;
   guard_name: string;
   updated_at: string;
+  permissions?: Permission[];
 }
 
 interface Permission {
@@ -145,10 +146,6 @@ export default function Roles() {
         toast.error("Failed to update role. Please try again.");
       if(modal === 'delete')
         toast.error("Failed to delete role. Please try again.");
-    }
-
-    const checked = () => {
-      return true;
     }
 
     const columns: Column[] = [
@@ -366,27 +363,40 @@ export default function Roles() {
 
                         <div className="mt-4 space-y-4">
                           <data value="" className='flex flex-wrap gap-4'> 
-                          {uniquePrefixes.map((prefix) => (
-                            <div className="card w-78 bg-base-100 card-xs shadow-sm">
-                              <div className="card-body">
-                                <div className='flex items-center gap-2'>
-                                  <input type="checkbox" disabled />
-                                  <h2 className="card-title">{prefix}</h2>
-                                </div>
-                                <p>Availlable permissions</p>
-                                <div className="grid grid-cols-3 gap-4">
-                                  {permissions.data.filter((permission) => permission.prefix == prefix).map((permission) => (
-                                    <div key={permission.id}>
-                                      <div className='flex items-center gap-1'>
-                                        <input type="checkbox" disabled {checked ? checked : ''} />
-                                        <p className="text-xs">{permission.suffix}</p>
-                                      </div>
-                                    </div>
-                                  ))}
+                          {uniquePrefixes.map((prefix) => {
+                            const groupPermissions = permissions.data.filter((p) => p.prefix === prefix);
+
+                            const isGroupChecked =
+                              groupPermissions.length > 0 &&
+                              groupPermissions.every((permission) =>
+                                selectedRole?.permissions?.some((rp) => rp.id === permission.id)
+                              );
+
+                            return (
+                              <div key={prefix} className="card w-78 bg-base-100 card-xs shadow-sm">
+                                <div className="card-body">
+                                  <div className='flex items-center gap-2'>
+                                    <input type="checkbox" disabled checked={isGroupChecked} />
+                                    <h2 className="card-title">{prefix}</h2>
+                                  </div>
+                                  <p>Available permissions</p>
+                                  <div className="grid grid-cols-3 gap-4">
+                                    {groupPermissions.map((permission) => {
+                                      const isChecked =
+                                        selectedRole?.permissions?.some((rp) => rp.id === permission.id) ?? false;
+
+                                      return (
+                                        <div key={permission.id} className="flex items-center gap-1">
+                                          <input type="checkbox" disabled checked={isChecked} />
+                                          <p className="text-xs">{permission.suffix}</p>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                           </data>
                           <div className="flex justify-between">
                             <span className="text-gray-500 font-medium">Last Updated</span>
