@@ -41,6 +41,12 @@ interface Permission {
   suffix: string;
 }
 
+type RoleForm = {
+  name: string;
+  guard_name: string;
+  permissions: number[];
+};
+
 type ModalType = "create" | "view" | "edit" | "delete" | null;
 
 const description = "A list of the roles in your account including their name.";
@@ -51,9 +57,10 @@ export default function Roles() {
     const [modal, setModal] = useState<ModalType>(null);
     const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
-    const { data, setData, post, put, processing, reset, errors, clearErrors } = useForm({
+    const { data, setData, post, put, processing, reset, errors, clearErrors } = useForm<RoleForm>({
       name: "",
       guard_name: "web",
+      permissions: [] as number[],
     });
 
     const uniquePrefixes = Array.from(new Set(permissions.data.map(p => p.prefix)));
@@ -78,6 +85,15 @@ export default function Roles() {
         setData({
           name: role.name,
           guard_name: role.guard_name,
+          permissions: (role.permissions ?? []).map(p => p.id), // ✅ ensure number[]
+        });
+      }
+
+      if (type === "create") {
+        setData({
+          name: "",
+          guard_name: "web",
+          permissions: [], // ✅ empty selection
         });
       }
     };
@@ -147,6 +163,24 @@ export default function Roles() {
       if(modal === 'delete')
         toast.error("Failed to delete role. Please try again.");
     }
+
+    const selectedIds = Array.isArray(data.permissions) ? data.permissions : []; // ✅ guard
+
+    const togglePermission = (id: number) => {
+      setData("permissions",
+        selectedIds.includes(id)
+          ? selectedIds.filter(x => x !== id)
+          : [...selectedIds, id]
+      );
+    };
+    const toggleGroup = (ids: number[]) => {
+      const allSelected = ids.every(id => selectedIds.includes(id));
+      setData("permissions",
+        allSelected
+          ? selectedIds.filter(id => !ids.includes(id))                  // uncheck all
+          : Array.from(new Set([...selectedIds, ...ids]))                // check all
+      );
+    };
 
     const columns: Column[] = [
         { key: 'id', label: 'ID' },
@@ -281,27 +315,48 @@ export default function Roles() {
 
                             <div className="mt-4 space-y-4">
                               <data value="" className='flex flex-wrap gap-4'> 
-                              {uniquePrefixes.map((prefix) => (
-                                <div className="card w-78 bg-base-100 card-xs shadow-sm">
-                                  <div className="card-body">
-                                    <div className='flex items-center gap-2'>
-                                      <input type="checkbox" defaultChecked />
-                                      <h2 className="card-title">{prefix}</h2>
-                                    </div>
-                                    <p>Availlable permissions</p>
-                                    <div className="grid grid-cols-3 gap-4">
-                                      {permissions.data.filter((permission) => permission.prefix == prefix).map((permission) => (
-                                            <div key={permission.id}>
-                                              <div className='flex items-center gap-1'>
-                                                <input type="checkbox" defaultChecked />
-                                                <p className="text-xs">{permission.suffix}</p>
-                                              </div>
-                                            </div>
-                                      ))}
+
+                              {uniquePrefixes.map((prefix) => {
+                                const groupPermissions = permissions.data.filter(p => p.prefix === prefix);
+                                const groupIds = groupPermissions.map(p => p.id);
+
+                                const isGroupChecked =
+                                  groupIds.length > 0 && groupIds.every(id => selectedIds.includes(id));
+
+                                return (
+                                  <div key={prefix} className="card w-78 bg-base-100 card-xs shadow-sm">
+                                    <div className="card-body">
+                                      <div className="flex items-center gap-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={isGroupChecked}
+                                          onChange={() => toggleGroup(groupIds)}
+                                        />
+                                        <h2 className="card-title">{prefix}</h2>
+                                      </div>
+
+                                      <p>Available permissions</p>
+                                      <div className="grid grid-cols-3 gap-4">
+                                        {groupPermissions.map((permission) => {
+                                          const isChecked = selectedIds.includes(permission.id);
+
+                                          return (
+                                            <label key={permission.id} className="flex items-center gap-1">
+                                              <input
+                                                type="checkbox"
+                                                checked={isChecked}
+                                                onChange={() => togglePermission(permission.id)}
+                                              />
+                                              <span className="text-xs">{permission.suffix}</span>
+                                            </label>
+                                          );
+                                        })}
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              ))}
+                                );
+                              })}
+
                               </data>
                               <div className="flex justify-between">
                                 <span className="text-gray-500 font-medium">Last Updated</span>

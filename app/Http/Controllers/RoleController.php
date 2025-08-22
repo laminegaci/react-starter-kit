@@ -33,23 +33,28 @@ class RoleController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
-            'guard_name' => 'required|string|max:255'
+            'guard_name' => 'required|string|max:255',
+            'permissions' => 'required|array'
         ]);
         
-        Role::create([
+        $role = Role::create([
             'name' => $validatedData['name'],
             'guard_name' => $validatedData['guard_name']
         ]);
+
+        $role->syncPermissions($request->input('permissions', []));
     }
 
     public function update(FormRequest $request, Role $role)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'guard_name' => 'required|string|max:255|in:web'
+            'guard_name' => 'required|string|max:255|in:web',
+            'permissions' => 'required|array'
         ]);
 
-        $role->update($validatedData);  
+        $role->fill($request->only('name','guard_name'))->save();
+        $role->syncPermissions($request->input('permissions', []));
     }
 
     public function destroy(Role $role)
