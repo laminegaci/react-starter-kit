@@ -155,7 +155,7 @@ export default function Roles() {
       closeModal();
     }
 
-    const failed = () => {
+    const failed = (errors) => {
       if(modal === 'create' )
         toast.error("Failed to create role. Please try again.");
       if(modal === 'edit')
@@ -186,12 +186,7 @@ export default function Roles() {
         { key: 'id', label: 'ID' },
         { key: 'name', label: 'Name' },
         { key: 'guard_name', label: 'Guard Name' },
-        { 
-          key: 'permissions', 
-          label: 'Permissions',
-          render: (_: any) => (
-            <div className="badge badge-soft badge-info p-3">00</div>
-        )},
+        { key: 'permissions_count', label: 'Permissions'},
         { key: 'updated_at', label: 'Updated At' },
         {
           key: "actions",

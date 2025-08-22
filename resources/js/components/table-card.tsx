@@ -77,7 +77,7 @@ export default function TableCard<T>({
                             <div>{column.render(item[column.key], item, idx)}</div>
                             ) : (column.key === "name" || column.key === "role" ) ? (
                             <div className="badge badge-soft badge-primary p-2">{item[column.key]}</div>
-                            ) : (
+                            ) : (column.key === "permissions_count") ? (<div className="badge badge-soft badge-info p-3">{item[column.key]}</div>) : (
                             item[column.key]
                             )}
                         </td>

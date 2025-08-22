@@ -19,7 +19,7 @@ class RoleController extends Controller
         return Inertia::render('roles/index', [
             'permissions' => PermissionResource::collection(Permission::get()),
             'roles' => new RoleCollection(
-                Role::query()
+                Role::withCount('permissions')
                     ->orderByDesc('id')
                     ->filter(Request::only('search'))
                     ->paginate()
@@ -34,7 +34,7 @@ class RoleController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
             'guard_name' => 'required|string|max:255',
-            'permissions' => 'required|array'
+            'permissions' => 'nullable|array'
         ]);
         
         $role = Role::create([
@@ -50,7 +50,7 @@ class RoleController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'guard_name' => 'required|string|max:255|in:web',
-            'permissions' => 'required|array'
+            'permissions' => 'nullable|array'
         ]);
 
         $role->fill($request->only('name','guard_name'))->save();

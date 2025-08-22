@@ -22,6 +22,7 @@ class RoleCollection extends ResourceCollection
                 'permissions' => PermissionResource::collection($role->permissions),
                 'created_at'  => $role->created_at,
                 'updated_at'  => $role->updated_at,
+                'permissions_count' => $role->permissions_count
             ];
         })->all();
     }
