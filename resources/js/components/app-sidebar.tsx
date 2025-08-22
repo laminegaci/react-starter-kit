@@ -18,7 +18,7 @@ const mainNavItems: NavItem[] = [
 const footerNavItems: NavItem[] = [
     {
         title: 'Roles',
-        href: route('role.index'),
+        href: route('roles.index'),
         icon: Notebook,
     },
     // {
