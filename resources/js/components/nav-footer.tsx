@@ -3,6 +3,7 @@ import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, Side
 import { type NavItem } from '@/types';
 import { type ComponentPropsWithoutRef } from 'react';
 import { Link } from '@inertiajs/react';
+import { t } from 'i18next';
 
 export function NavFooter({
     items,
@@ -22,7 +23,7 @@ export function NavFooter({
                                 className="text-neutral-600 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-100">
                                 <Link href={item.href} prefetch>
                                     {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
-                                    <span>{item.title}</span>
+                                    <span>{t(item.title)}</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
