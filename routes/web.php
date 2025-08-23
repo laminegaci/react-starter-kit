@@ -30,6 +30,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('teams', [TeamController::class, 'store'])->name('teams.store');
     Route::put('teams/{team}', [TeamController::class, 'update'])->name('teams.update');
     Route::delete('teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+
+    Route::get('/language/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'fr', 'ar'])) {
+        session(['locale' => $locale]);
+    }
+    return back();
+});
 });
 
 require __DIR__.'/settings.php';
