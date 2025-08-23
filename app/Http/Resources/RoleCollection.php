@@ -14,8 +14,16 @@ class RoleCollection extends ResourceCollection
      */
     public function toArray(Request $request)
     {
-        return $this->collection->map->only(
-            'id', 'name', 'guard_name', 'created_at', 'updated_at'
-        );
+        return $this->collection->map(function ($role) {
+            return [
+                'id'          => $role->id,
+                'name'        => $role->name,
+                'guard_name'  => $role->guard_name,
+                'permissions' => PermissionResource::collection($role->permissions),
+                'created_at'  => $role->created_at,
+                'updated_at'  => $role->updated_at,
+                'permissions_count' => $role->permissions_count
+            ];
+        })->all();
     }
 }

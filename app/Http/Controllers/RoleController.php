@@ -5,22 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Support\Facades\Request;
-use App\Http\Resources\RoleCollection;
 use App\Helpers\PermissionHelper;
+use App\Http\Resources\PermissionResource;
+use App\Http\Resources\RoleCollection;
+use App\Models\Permission;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request as FormRequest;
 
 class RoleController extends Controller
 {
     public function index(): Response
     {
         return Inertia::render('roles/index', [
-            'permissions' => [
-                ['label' => 'role_permissions', 'items' => PermissionHelper::getRolePermissions()],
-                ['label' => 'team_permissions', 'items' => PermissionHelper::getTeamPermissions()],
-                ['label' => 'user_permissions', 'items' => PermissionHelper::getUserPermissions()],
-            ],
+            'permissions' => PermissionResource::collection(Permission::get()),
             'roles' => new RoleCollection(
-                Role::query()
+                Role::withCount('permissions')
                     ->orderByDesc('id')
                     ->filter(Request::only('search'))
                     ->paginate()
@@ -30,27 +29,32 @@ class RoleController extends Controller
         ]);
     }
 
-    public function store(Request $request): Void
+    public function store(FormRequest $request): Void
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
-            'guard_name' => 'required|string|max:255'
+            'guard_name' => 'required|string|max:255',
+            'permissions' => 'nullable|array'
         ]);
         
-        Role::create([
+        $role = Role::create([
             'name' => $validatedData['name'],
             'guard_name' => $validatedData['guard_name']
         ]);
+
+        $role->syncPermissions($request->input('permissions', []));
     }
 
-    public function update(Request $request, Role $role)
+    public function update(FormRequest $request, Role $role)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'guard_name' => 'required|string|max:255|in:web'
+            'guard_name' => 'required|string|max:255|in:web',
+            'permissions' => 'nullable|array'
         ]);
 
-        $role->update($validatedData);  
+        $role->fill($request->only('name','guard_name'))->save();
+        $role->syncPermissions($request->input('permissions', []));
     }
 
     public function destroy(Role $role)

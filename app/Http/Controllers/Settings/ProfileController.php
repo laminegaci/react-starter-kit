@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Models\Profile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -42,6 +43,18 @@ class ProfileController extends Controller
 
         // Update profile fields (first_name, last_name)
         $user->profile->update($request->only('first_name', 'last_name'));
+
+        // Handle avatar upload
+            if ($request->hasFile('avatar')) {
+                // Optionally clear old avatar
+                $user->profile
+                    ->clearMediaCollection(Profile::MEDIA_COLLECTION_NAME);
+
+                $user->profile
+                    ->addMedia($request->file('avatar'))
+                    ->preservingOriginal()
+                    ->toMediaCollection(Profile::MEDIA_COLLECTION_NAME);
+            }
 
         return to_route('profile.edit');
     }

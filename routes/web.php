@@ -16,7 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     // Route::get('roles', [RoleController::class, 'edit'])->name('role.edit');
-    Route::get('roles', [RoleController::class, 'index'])->name('role.index');
+    Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
     Route::post('roles', [RoleController::class, 'store'])->name('role.store');
     Route::put('roles/{role}', [RoleController::class, 'update'])->name('role.update');
     Route::delete('roles/{role}', [RoleController::class, 'destroy'])->name('role.destroy');
@@ -30,6 +30,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('teams', [TeamController::class, 'store'])->name('teams.store');
     Route::put('teams/{team}', [TeamController::class, 'update'])->name('teams.update');
     Route::delete('teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+
+    Route::get('/language/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'fr', 'ar'])) {
+        session(['locale' => $locale]);
+    }
+    return back();
+});
 });
 
 require __DIR__.'/settings.php';

@@ -3,6 +3,7 @@ import { usePage, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import { usePrevious } from 'react-use';
 import pickBy from 'lodash/pickBy';
+import { t } from 'i18next';
 
 interface TableCardProps<T> {
   description: string; 
@@ -16,7 +17,6 @@ interface TableCardProps<T> {
 export default function TableCardHeader<T>({
   description, buttonLabel, columns, visibleColumns, onVisibleColumnsChange, onCreateClick
 }: TableCardProps<T>) {
-
     const { filters } = usePage<{
         filters: { search?: string; };
     }>().props;
@@ -75,13 +75,13 @@ export default function TableCardHeader<T>({
         <button role="button" className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-orange-400 cursor-pointer" 
             onClick={onCreateClick}>
                 
-            {buttonLabel || 'Add New'}
+            {buttonLabel || t('Add New')}
         </button>
     </div>
     <div className="flex justify-between items-center mb-6">
         <div>
             <form className="flex items-center max-w-sm mx-auto">   
-                <label htmlFor="simple-search" className="sr-only">Search</label>
+                <label htmlFor="simple-search" className="sr-only">{t("Search")}</label>
                 <div className="relative w-full">
                     <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                         <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -92,7 +92,7 @@ export default function TableCardHeader<T>({
                         type="text" 
                         name="search"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                        placeholder="Search ..." 
+                        placeholder={t("Search ...")} 
                         required
                         value={values.search}
                         onChange={handleChange}
@@ -102,7 +102,7 @@ export default function TableCardHeader<T>({
         </div>
         <div >
             <div className="dropdown dropdown-end">
-                <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">Columns</div>
+                <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">{t("Columns")}</div>
                 <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                     {columns.filter(column => column.label !== "").map((column) => (
                         <li key={column.key}>
@@ -120,7 +120,7 @@ export default function TableCardHeader<T>({
                 </ul>
             </div>
             <div className="dropdown dropdown-end">
-                <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">Filters</div>
+                <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">{t("Filters")}</div>
                 <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                     <li>
                         <label className="label">
@@ -135,16 +135,16 @@ export default function TableCardHeader<T>({
                 </ul>
             </div>
             <div className="dropdown dropdown-end">
-                <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">Actions</div>
+                <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">{t("Actions")}</div>
                 <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                     <li>
-                        <h2 className="menu-title">import</h2>
+                        <h2 className="menu-title">{t("Import")}</h2>
                         <ul>
                             <li><a>CSV</a></li>
                             <li><a>PDF</a></li>
                             <li><a>EXCEL</a></li>
                         </ul>
-                        <h2 className="menu-title">export</h2>
+                        <h2 className="menu-title">{t("Export")}</h2>
                         <ul>
                             <li><a>CSV</a></li>
                             <li><a>PDF</a></li>

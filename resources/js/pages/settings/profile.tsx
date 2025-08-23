@@ -1,7 +1,7 @@
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState, useRef } from 'react';
 
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
@@ -24,6 +24,7 @@ type ProfileForm = {
   first_name: string;
   last_name: string;
   email: string;
+  avatar: File | string | null;
 };
 
 export default function Profile({
@@ -35,17 +36,30 @@ export default function Profile({
 }) {
   const { auth } = usePage<SharedData>().props;
 
-  const { data, setData, patch, errors, processing, recentlySuccessful } =
-    useForm<Required<ProfileForm>>({
+  const { 
+    data,
+    setData,
+    post,            // <- use post instead of patch
+    errors,
+    processing,
+    recentlySuccessful,
+    progress,
+    transform, 
+  } =
+    useForm<ProfileForm>({
       first_name: auth.user.profile?.first_name ?? '',
       last_name: auth.user.profile?.last_name ?? '',
       email: auth.user.email,
+      avatar: auth.user.profile?.avatar?.original ?? null,
     });
+
+    const [preview, setPreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        patch(route('profile.update'), {
+        post(route('profile.update'), {
         preserveScroll: true,
         onSuccess: success,
         onError: failed
@@ -55,8 +69,9 @@ export default function Profile({
     const success = () => {
         toast.success("Profile updated successfully!");
     }
-    const failed = () => {
-        toast.error("Failed updated profile. Please try again.");
+    const failed = (errors: Record<string, string>) => {
+        console.log(errors)
+        toast.error("Failed updated profile. Please try again." + JSON.stringify(errors));
     }
 
   return (
@@ -70,7 +85,77 @@ export default function Profile({
             description="Update your first name and email address"
           />
 
-          <form onSubmit={submit} className="space-y-6">
+          <form onSubmit={submit} encType="multipart/form-data" className="space-y-6">
+            <input
+                id="avatar"
+                type="file"
+                accept="image/*"
+                className="file-input cursor-pointer"
+                ref={fileInputRef}
+                onChange={(e) => {
+                    const file = e.target.files?.[0] ?? null;
+                    setData("avatar", file);
+
+                    if (file) {
+                      setPreview(URL.createObjectURL(file));
+                    } else {
+                      setPreview(null);
+                    }
+                  }}
+                  hidden
+            />
+            <div className="mt-4 flex items-center gap-4">
+  {/* Avatar preview with clickable area */}
+  <div
+    className="relative h-20 w-20"
+    onClick={() => fileInputRef.current?.click()}
+  >
+    <img
+      src={preview ?? (data.avatar as string)}
+      alt="Avatar preview"
+      className="h-20 w-20 rounded-full object-cover border border-gray-300 shadow-sm cursor-pointer hover:opacity-80 transition"
+    />
+
+    {/* Hover overlay */}
+    <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 hover:opacity-100 transition">
+      <span className="text-white text-xs">Change</span>
+    </div>
+
+    {/* Upload progress ring */}
+    {progress && (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div
+          className="radial-progress text-indigo-500"
+          style={
+            { "--value": progress.percentage } as React.CSSProperties
+          }
+          role="progressbar"
+        >
+          <span className="text-xs text-gray-700">
+            {progress.percentage}%
+          </span>
+        </div>
+      </div>
+    )}
+  </div>
+
+  {/* Remove button */}
+  {(preview || data.avatar) && (
+    <button
+      type="button"
+      onClick={() => {
+        setData("avatar", null);
+        setPreview(null);
+      }}
+      className="text-sm text-red-500 hover:text-red-700"
+    >
+      Remove
+    </button>
+  )}
+</div>
+
+
+            <InputError className="mt-2" message={errors.avatar} />
             {/* First Name */}
             <div className="grid gap-2">
               <Label htmlFor="first_name">First name</Label>
@@ -122,28 +207,6 @@ export default function Profile({
               <InputError className="mt-2" message={errors.email} />
             </div>
 
-            {/* Email Verification */}
-            {mustVerifyEmail && auth.user.email_verified_at === null && (
-              <div>
-                <p className="-mt-4 text-sm text-muted-foreground">
-                  Your email address is unverified.{' '}
-                  <Link
-                    href={route('verification.send')}
-                    method="post"
-                    as="button"
-                    className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                  >
-                    Click here to resend the verification email.
-                  </Link>
-                </p>
-
-                {status === 'verification-link-sent' && (
-                  <div className="mt-2 text-sm font-medium text-green-600">
-                    A new verification link has been sent to your email address.
-                  </div>
-                )}
-              </div>
-            )}
 
             {/* Actions */}
             <div className="flex items-center gap-4">

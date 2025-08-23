@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Eye, SquarePen, Trash } from "lucide-react";
 import _ from "lodash";
+import { t } from "i18next";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: "Roles", href: "/roles" },
@@ -19,7 +20,9 @@ interface PageProps {
     links: any[];
     meta: any;
   };
-  permissions: PermissionGroup[];
+  permissions: {
+    data: Permission[];
+  };
   [key: string]: unknown;
 }
 
@@ -28,27 +31,40 @@ interface Role {
   name: string;
   guard_name: string;
   updated_at: string;
+  permissions?: Permission[];
 }
 
-interface PermissionGroup {
-  label: string;
-  items: Record<string, string>;
+interface Permission {
+  id: number;
+  name: string;
+  guard_name: string
+  prefix: string;
+  suffix: string;
 }
+
+type RoleForm = {
+  name: string;
+  guard_name: string;
+  permissions: number[];
+};
 
 type ModalType = "create" | "view" | "edit" | "delete" | null;
 
-const description = "A list of the roles in your account including their name.";
-
 export default function Roles() {
-    const { roles } = usePage<PageProps>().props;
+    const { roles, permissions } = usePage<PageProps>().props;
 
     const [modal, setModal] = useState<ModalType>(null);
     const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
-    const { data, setData, post, put, processing, reset, errors, clearErrors } = useForm({
+    const { data, setData, post, put, processing, reset, errors, clearErrors } = useForm<RoleForm>({
       name: "",
       guard_name: "web",
+      permissions: [] as number[],
     });
+
+    const uniquePrefixes = Array.from(new Set(permissions.data.map(p => p.prefix)));
+
+    const description = t("A list of roles including their name, gard name and permissions.");
 
     useEffect(() => {
       if (modal === "create" || modal === "edit") {
@@ -70,6 +86,15 @@ export default function Roles() {
         setData({
           name: role.name,
           guard_name: role.guard_name,
+          permissions: (role.permissions ?? []).map(p => p.id), // ✅ ensure number[]
+        });
+      }
+
+      if (type === "create") {
+        setData({
+          name: "",
+          guard_name: "web",
+          permissions: [], // ✅ empty selection
         });
       }
     };
@@ -131,7 +156,7 @@ export default function Roles() {
       closeModal();
     }
 
-    const failed = () => {
+    const failed = (errors) => {
       if(modal === 'create' )
         toast.error("Failed to create role. Please try again.");
       if(modal === 'edit')
@@ -140,17 +165,30 @@ export default function Roles() {
         toast.error("Failed to delete role. Please try again.");
     }
 
+    const selectedIds = Array.isArray(data.permissions) ? data.permissions : []; // ✅ guard
+
+    const togglePermission = (id: number) => {
+      setData("permissions",
+        selectedIds.includes(id)
+          ? selectedIds.filter(x => x !== id)
+          : [...selectedIds, id]
+      );
+    };
+    const toggleGroup = (ids: number[]) => {
+      const allSelected = ids.every(id => selectedIds.includes(id));
+      setData("permissions",
+        allSelected
+          ? selectedIds.filter(id => !ids.includes(id))                  // uncheck all
+          : Array.from(new Set([...selectedIds, ...ids]))                // check all
+      );
+    };
+
     const columns: Column[] = [
         { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' },
-        { key: 'guard_name', label: 'Guard Name' },
-        { 
-          key: 'permissions', 
-          label: 'Permissions',
-          render: (_: any) => (
-            <div className="badge badge-soft badge-info p-3">00</div>
-        )},
-        { key: 'updated_at', label: 'Updated At' },
+        { key: 'name', label: t('name') },
+        { key: 'guard_name', label: t('guard_name') },
+        { key: 'permissions_count', label: t('permissions')},
+        { key: 'updated_at', label: t('updated_at') },
         {
           key: "actions",
           label: "",
@@ -162,7 +200,7 @@ export default function Roles() {
                   onClick={() => openModal("view", row)}
               >
                   <Eye className="-ml-1 h-4 w-4" />
-                  <span className="ml-1.5 text-sm">View</span>
+                  <span className="ml-1.5 text-sm">{t("View")}</span>
               </button>
               
               <button 
@@ -171,7 +209,7 @@ export default function Roles() {
                   onClick={() => openModal("edit", row)}
               >
                   <SquarePen className="-ml-1 h-4 w-4" />
-                  <span className="ml-1.5 text-sm">Edit</span>
+                  <span className="ml-1.5 text-sm">{t("Edit")}</span>
               </button>
               
               <button 
@@ -180,7 +218,7 @@ export default function Roles() {
                   onClick={() => openModal("delete", row)}
               >
                   <Trash className="-ml-1 h-4 w-4" />
-                  <span className="ml-1.5 text-sm">Delete</span>
+                  <span className="ml-1.5 text-sm">{t("Delete")}</span>
               </button>
             </div>
           ),
@@ -189,16 +227,16 @@ export default function Roles() {
     
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Roles" />
+            <Head title={t("Roles")} />
             <div className='px-4 py-6'>
-                <Heading title="Roles" description="Manage roles and permissions" />
+                <Heading title={t("Roles")} description={t("Manage roles and permissions")} />
 
                 <TableCard 
                     description={description} 
                     columns={columns} 
                     actions={{ view: false, edit: true, delete: true }}
                     data={roles.data} 
-                    buttonLabel="Add New Role"
+                    buttonLabel={t("Add New Role")}
                     onCreateClick={() => openModal("create", { id: 0, name: "", guard_name: "web", updated_at: "" })}
                 />
 
@@ -209,7 +247,7 @@ export default function Roles() {
                   <dialog id='create&update' className="modal">
                       <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                           <div className="flex items-center justify-between border-b pb-3">
-                            <h3 className="font-bold text-lg">{modal === "create" ? "Create Role" : "Edit Role"}</h3>
+                            <h3 className="font-bold text-lg">{modal === "create" ? t("Create Role") : t("Edit Role")}</h3>
                           </div>
 
                           {/* Modal Content */}
@@ -224,50 +262,105 @@ export default function Roles() {
                                 <div className="card-body">
                                   <div className="flex justify-around">  
                                   
-                                  <div className="w-90">
-                                    <label htmlFor="name" className="block text-sm/6 font-medium text-gray-900">
-                                      Name
-                                    </label>
-                                    <div className="mt-2">
-                                      <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-                                        <input
-                                          id="name"
-                                          name="name"
-                                          type="text"
-                                          className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                          value={(modal === "create") ? data.name : selectedRole?.name}
-                                          onChange={(e) => (modal === "create") ? setData("name", e.target.value) : handleChange(e)}
-                                        />
-                                      </div>
-                                      {errors.name && (
-                                        <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-                                      )}
-                                    </div>
-                                  </div>
-
-                                  <div className="w-90">
-                                    <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
-                                      Guard name
-                                    </label>
-                                    <div className="mt-2">
-                                      <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-                                        <input
-                                          id="guard_name"
-                                          name="guard_name"
-                                          type="text"
-                                          className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                          value={(modal === "create") ? data.guard_name : selectedRole?.guard_name}
-                                          onChange={(e) => (modal === "create") ? setData("guard_name", e.target.value) : handleChange(e)}
-                                        />
-                                      </div>
-                                        {errors.guard_name && (
-                                          <p className="text-red-500 text-sm mt-1">{errors.guard_name}</p>
+                                    <div className="w-90">
+                                      <label htmlFor="name" className="block text-sm/6 font-medium text-gray-900">
+                                        {t("name")}
+                                      </label>
+                                      <div className="mt-2">
+                                        <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                          <input
+                                            id="name"
+                                            name="name"
+                                            type="text"
+                                            className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                            value={(modal === "create") ? data.name : selectedRole?.name}
+                                            onChange={(e) => (modal === "create") ? setData("name", e.target.value) : handleChange(e)}
+                                          />
+                                        </div>
+                                        {errors.name && (
+                                          <p className="text-red-500 text-sm mt-1">{errors.name}</p>
                                         )}
+                                      </div>
+                                    </div>
+
+                                    <div className="w-90">
+                                      <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
+                                        {t("guard_name")}
+                                      </label>
+                                      <div className="mt-2">
+                                        <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                          <input
+                                            id="guard_name"
+                                            name="guard_name"
+                                            type="text"
+                                            className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                            value={(modal === "create") ? data.guard_name : selectedRole?.guard_name}
+                                            onChange={(e) => (modal === "create") ? setData("guard_name", e.target.value) : handleChange(e)}
+                                          />
+                                        </div>
+                                          {errors.guard_name && (
+                                            <p className="text-red-500 text-sm mt-1">{errors.guard_name}</p>
+                                          )}
+                                      </div>
+                                    </div>
+                                  
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="mt-4 space-y-4">
+                              <data value="" className='flex flex-wrap gap-4'> 
+
+                              {uniquePrefixes.map((prefix) => {
+                                const groupPermissions = permissions.data.filter(p => p.prefix === prefix);
+                                const groupIds = groupPermissions.map(p => p.id);
+
+                                const isGroupChecked =
+                                  groupIds.length > 0 && groupIds.every(id => selectedIds.includes(id));
+
+                                return (
+                                  <div key={prefix} className="card w-78 bg-base-100 card-xs shadow-sm">
+                                    <div className="card-body">
+                                      <div className="flex items-center gap-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={isGroupChecked}
+                                          onChange={() => toggleGroup(groupIds)}
+                                        />
+                                        <h2 className="card-title">{t(prefix)}</h2>
+                                      </div>
+
+                                      <p>{t("Available permissions")}</p>
+                                      <div className="grid grid-cols-3 gap-4">
+                                        {groupPermissions.map((permission) => {
+                                          const isChecked = selectedIds.includes(permission.id);
+
+                                          return (
+                                            <label key={permission.id} className="flex items-center gap-1">
+                                              <input
+                                                type="checkbox"
+                                                checked={isChecked}
+                                                onChange={() => togglePermission(permission.id)}
+                                              />
+                                              <span className="text-xs">{t(permission.suffix)}</span>
+                                            </label>
+                                          );
+                                        })}
+                                      </div>
                                     </div>
                                   </div>
-                                  
-                                </div>
-                                </div>
+                                );
+                              })}
+
+                              </data>
+                              <div className="flex justify-between">
+                                {modal === "edit" && (
+                                  <>
+                                  <span className="text-gray-500 font-medium">{t("Last Updated")}</span>
+                                  <span className="text-gray-900">{selectedRole?.updated_at}</span>
+                                  </>
+                                )}
                               </div>
                             </div>
 
@@ -278,7 +371,7 @@ export default function Roles() {
                                 className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
                                 onClick={closeModal}
                               >
-                                Cancel
+                                {t("Cancel")}
                               </button>
                               <button
                                 type="submit"
@@ -288,7 +381,7 @@ export default function Roles() {
                                 {processing && (
                                   <span className="loading loading-spinner loading-xs mr-2"></span>
                                 )}
-                                Save Changes
+                                {t("Save Changes")}
                               </button>
                             </div>
                           </form>
@@ -300,7 +393,7 @@ export default function Roles() {
                   <dialog id={'view'} className="modal">
                     <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                         <div className="flex items-center justify-between border-b pb-3">
-                          <h3 className="font-bold text-lg">View</h3>
+                          <h3 className="font-bold text-lg">{t("View")}</h3>
                         </div>
 
                         {/* Modal Content */}
@@ -310,16 +403,59 @@ export default function Roles() {
                               <div className="flex justify-center">  
                               
                               <fieldset className="fieldset w-95">
-                                <legend className="fieldset-legend">Role name</legend>
+                                <legend className="fieldset-legend">{t("name")}</legend>
                                 <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.name ?? ''} disabled/>
                               </fieldset>
 
                               <fieldset className="fieldset w-95">
-                                <legend className="fieldset-legend">Guard name</legend>
+                                <legend className="fieldset-legend">{t("guard_name")}</legend>
                                 <input type="text" placeholder="Type here" className="input input-neutral" value={selectedRole?.guard_name ?? ''} disabled/>
                               </fieldset>
                             </div>
                             </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 space-y-4">
+                          <data value="" className='flex flex-wrap gap-4'> 
+                          {uniquePrefixes.map((prefix) => {
+                            const groupPermissions = permissions.data.filter((p) => p.prefix === prefix);
+
+                            const isGroupChecked =
+                              groupPermissions.length > 0 &&
+                              groupPermissions.every((permission) =>
+                                selectedRole?.permissions?.some((rp) => rp.id === permission.id)
+                              );
+
+                            return (
+                              <div key={prefix} className="card w-78 bg-base-100 card-xs shadow-sm">
+                                <div className="card-body">
+                                  <div className='flex items-center gap-2'>
+                                    <input type="checkbox" disabled checked={isGroupChecked} />
+                                    <h2 className="card-title">{prefix}</h2>
+                                  </div>
+                                  <p>{t("Available permissions")}</p>
+                                  <div className="grid grid-cols-3 gap-4">
+                                    {groupPermissions.map((permission) => {
+                                      const isChecked =
+                                        selectedRole?.permissions?.some((rp) => rp.id === permission.id) ?? false;
+
+                                      return (
+                                        <div key={permission.id} className="flex items-center gap-1">
+                                          <input type="checkbox" disabled checked={isChecked} />
+                                          <p className="text-xs">{t(permission.suffix)}</p>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                          </data>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500 font-medium">{t("Last Updated")}</span>
+                            <span className="text-gray-900">{selectedRole?.updated_at}</span>
                           </div>
                         </div>
 
@@ -332,7 +468,7 @@ export default function Roles() {
                                 className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
                                 onClick={closeModal}
                               >
-                                Cancel
+                                {t("Cancel")}
                               </button>
                             </div>
                           </form>
@@ -344,10 +480,8 @@ export default function Roles() {
                 {modal === 'delete' && (
                   <dialog id={'delete'} className="modal">
                       <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
-                        <div className="flex items-center justify-between border-b pb-3">
-                          <h3 className="font-bold text-lg">Delete</h3>
-                        </div>
-                        <p className="py-4">Are you sure you want to delete this role? <span className='text-red-600'>{selectedRole?.name}</span></p>
+                        <p className="flex justify-center"><Trash className="-ml-1 h-10 w-10" /></p>
+                        <p className="py-4 text-center">{t("Are you sure you want to delete this role")}? <span className='text-red-600'>{selectedRole?.name}</span></p>
                           
 
                           <form 
@@ -361,7 +495,7 @@ export default function Roles() {
                                 className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
                                 onClick={closeModal}
                               >
-                                Cancel
+                                {t("Cancel")}
                               </button>
                               <button
                                 type="submit"
@@ -371,7 +505,7 @@ export default function Roles() {
                                 {processing && (
                                   <span className="loading loading-spinner loading-xs mr-2"></span>
                                 )}
-                                Save Changes
+                                {t("Delete")}
                               </button>
                             </div>
                           </form>

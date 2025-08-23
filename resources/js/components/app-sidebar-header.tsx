@@ -1,25 +1,38 @@
-import { Breadcrumbs } from '@/components/breadcrumbs';
+import { type SharedData } from '@/types';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
 import { Link } from '@inertiajs/react';
 import { Input } from './ui/input';
+import { usePage } from '@inertiajs/react'
+import { Breadcrumbs } from './breadcrumbs';
+import LanguageSwitcher from './language-switcher';
+import { t } from 'i18next';
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
+    const { auth } = usePage<SharedData>().props
+
     return (
         <header className="flex justify-between h-16 shrink-0 items-center gap-2 border-b border-sidebar-border/50 px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4">
             <div className="flex items-center gap-2">
                 <SidebarTrigger className="-ml-1" />
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
             </div>
-            <div className="flex gap-1">
+            <div className="flex items-center gap-1">
                 <Input
                     id="name"
                     className="mt-1 block w-full"
                     value=''
                     required
                     autoComplete="name"
-                    placeholder="Search ..."
+                    placeholder={t("Search ...")} 
                 />
+
+                <div className='dropdown dropdown-end'>
+                    <button className=''>
+                        <LanguageSwitcher />
+                    </button>
+                </div>
+
                 <div className="dropdown dropdown-end">
                     <button className="btn btn-ghost btn-circle">
                         <div className="indicator">
@@ -32,8 +45,8 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
                         <img
-                            alt="Tailwind CSS Navbar component"
-                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                            alt="avatar"
+                            src={auth.user?.profile?.avatar?.original} />
                         </div>
                     </div>
                     <ul
@@ -41,12 +54,12 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
                         <li>
                             <Link href='/settings/profile' prefetch>
-                                Profile
+                                {t("Profile")}
                             </Link>
                         </li>
                         <li>
                             <Link method="post" href={route('logout')} as="button">
-                                Logout
+                                {t("LogOut")}
                             </Link>
                         </li>
                     </ul>

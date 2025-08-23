@@ -1,7 +1,7 @@
 import React , { useState } from 'react';
 import TableCardHeader from './table-card-header';
 import { SquarePen, Eye, Trash, Key } from 'lucide-react';
-
+import { Link } from '@inertiajs/react';
 export interface Column {
   key: string;
   label: string;
@@ -26,14 +26,10 @@ interface TableCardProps<T> {
 export default function TableCard<T>({
   description, columns, actions, data, onEdit, onDelete, buttonLabel, onCreateClick
 }: TableCardProps<T>) {
-    function clickedEdit<T extends {}>(item: T): void {
-        console.log('Edit clicked for item:', item);
-    }
     
     const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set(columns.map(col => col.key)));
 
     const filteredColumns = columns.filter(col => visibleColumns.has(col.key));
-    {console.log(filteredColumns)}
 
 
   return (
@@ -79,9 +75,13 @@ export default function TableCard<T>({
                         >
                             {column.render ? (
                             <div>{column.render(item[column.key], item, idx)}</div>
-                            ) : (column.key === "name" || column.key === "role" ) ? (
+                            ) : (column.key === "name") ? (
                             <div className="badge badge-soft badge-primary p-2">{item[column.key]}</div>
-                            ) : (
+                            ) : (column.key === "role" ) ? (
+                            <Link href={route('roles.index')} prefetch>
+                                <div className="badge badge-soft badge-primary p-2">{item[column.key]}</div>
+                            </Link>
+                            ) : (column.key === "permissions_count") ? (<div className="badge badge-soft badge-info p-3">{item[column.key]}</div>) : (
                             item[column.key]
                             )}
                         </td>

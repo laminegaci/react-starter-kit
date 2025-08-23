@@ -60,6 +60,12 @@ return [
             'report' => false,
         ],
 
+        'profile-avatar' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/media/profile/avatars'),
+            'url' => env('APP_URL') . '/storage/media/profile/avatars',
+            'visibility' => 'public',
+        ],
     ],
 
     /*
