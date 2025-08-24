@@ -53,7 +53,13 @@ const resources = {
       Users: "Users",
       Settings: "Settings",
       Profile: "Profile",
-      LogOut: "Log Out"
+      LogOut: "Log Out",
+      "Manage teams": "Manage teams",
+      "A list of teams including their name.": "A list of teams including their name.",
+      "Add New Team": "Add New Team",
+      "Create Team": "Create Team",
+      "Edit Team": "Edit Team",
+      Team: "Team",
     }
   },
   fr: {
@@ -102,7 +108,13 @@ const resources = {
       Users: "Utilisateurs",
       Settings: "Paramètre",
       Profile: "Profil",
-      LogOut: "Se déconnecter"
+      LogOut: "Se déconnecter",
+      "Manage teams": "Gérer les équipes",
+      "A list of teams including their name.": "Une liste des équipes avec leur nom.",
+      "Add New Team": "Ajouter une équipe",
+      "Create Team": "Créer une équipe",
+      "Edit Team": "Modifier l'équipe",
+      Team: "Équipe",
     }
   },
   ar: {

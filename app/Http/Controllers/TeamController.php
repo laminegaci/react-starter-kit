@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Http\Resources\UserCollection;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Http\Request as FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Hash;
-use App\Enums\UserRoleEnum;
+use App\Http\Resources\TeamCollection;
+use App\Models\Team;
 
 class TeamController extends Controller
 {
@@ -18,11 +16,8 @@ class TeamController extends Controller
     {
         return Inertia::render('teams/index', [
             'filters' => Request::all('search', 'trashed'),
-            'teams' => new UserCollection(
-                User::query()
-                    ->whereHas('roles', function ($query) {
-                        $query->where('name', '=', 'user');
-                    })
+            'teams' => new TeamCollection(
+                Team::query()
                     ->orderByDesc('id')
                     ->filter(Request::only('search', 'trashed'))
                     ->paginate(20)
@@ -34,43 +29,28 @@ class TeamController extends Controller
     public function store(FormRequest $request): Void
     {
         $validatedData = $request->validate([
-            'email' => 'required|email|max:255|unique:users,email',
-            'profile' => 'required|array',
-            'profile.first_name' => 'required|string|max:255',
-            'profile.last_name' => 'required|string|max:255'
+            'name' => 'required|max:255|unique:teams,name'
         ]);
 
-        $team = User::create([
-            'email' => $validatedData['email'],
-            'password' => Hash::make('123456789'),
-        ])->assignRole(UserRoleEnum::USER->value);
-        $team->profile()->create([
-            'first_name' => $validatedData['profile']['first_name'],
-            'last_name' => $validatedData['profile']['last_name']
+        Team::create([
+            'name' => $validatedData['name'],
         ]);
     }
 
-    public function update(FormRequest $request, User $team)
+    public function update(FormRequest $request, Team $team)
     {
         $validatedData = $request->validate([
-            'email' => ['required', 'max:50', 'email',
-                Rule::unique('users')->ignore($team->id),
-            ],
-            'profile' => 'required|array',
-            'profile.first_name' => 'required|string|max:255',
-            'profile.last_name' => 'required|string|max:255'
+            'name' => ['required', 'max:50',
+                Rule::unique('teams')->ignore($team->id),
+            ]
         ]);
 
         $team->update([
-            'email' => $validatedData['email'],
-        ]);
-        $team->profile->update([
-            'first_name' => $validatedData['profile']['first_name'],
-            'last_name' => $validatedData['profile']['last_name'],
+            'name' => $validatedData['name'],
         ]);
     }
 
-    public function destroy(User $team)
+    public function destroy(Team $team)
     {
         $team->delete();
     }

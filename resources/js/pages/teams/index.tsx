@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Eye, SquarePen, Trash } from "lucide-react";
 import { profile } from "console";
+import { t } from "i18next";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: "Teams", href: "/teams" },
@@ -25,13 +26,12 @@ interface PageProps {
 // Define the shape of each team
 interface Team {
   id: number;
-  email: string;
-  profile: Profile
+  name: string;
 }
 
 type ModalType = "create" | "view" | "edit" | "delete" | null;
 
-const description = 'A list of all the users in your account including their name, email.';
+const description = t('A list of teams including their name.');
 
 export default function Teams() {
     const { teams } = usePage<PageProps>().props;
@@ -40,18 +40,14 @@ export default function Teams() {
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
 
     const { data, setData, post, put, processing, reset, errors, clearErrors } = useForm({
-      email: "",
-      profile: { 
-        first_name: "",
-        last_name: ""
-       }
+      name: "",
     });
 
-    const flattenedData = teams.data.map((team) => ({
-      ...team,
-      full_name: team.profile?.full_name ?? "",
-      role: team.roles?.[0]?.name ?? ""
-    }));
+    // const flattenedData = teams.data.map((team) => ({
+    //   ...team,
+    //   full_name: team.profile?.full_name ?? "",
+    //   role: team.roles?.[0]?.name ?? ""
+    // }));
 
     useEffect(() => {
       if (modal === "create" || modal === "edit") {
@@ -71,11 +67,7 @@ export default function Teams() {
       setSelectedTeam(team);
       if (type === "edit") {
         setData({
-          email: team.email,
-          profile: {
-            first_name: team.profile.first_name,
-            last_name: team.profile.last_name
-          },
+          name: team.name
         });
       }
     };
@@ -90,33 +82,13 @@ export default function Teams() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
       
-      if (name.includes(".")) {
-        const [parent, child] = name.split(".");
+      setData(name as keyof typeof data, value);
 
-        setData(parent as keyof typeof data, {
-          ...(data as any)[parent],
-          [child]: value,
+      if (selectedTeam) {
+        setSelectedTeam({
+          ...selectedTeam,
+          [name]: value,
         });
-
-        if (selectedTeam) {
-          setSelectedTeam({
-            ...selectedTeam,
-            [parent]: {
-              ...(selectedTeam as any)[parent],
-              [child]: value,
-            },
-          });
-        }
-      } else {
-        // Normal flat property
-        setData(name as keyof typeof data, value);
-
-        if (selectedTeam) {
-          setSelectedTeam({
-            ...selectedTeam,
-            [name]: value,
-          });
-        }
       }
     };
 
@@ -168,9 +140,7 @@ export default function Teams() {
 
     const columns: Column[] = [
         { key: 'id', label: 'ID' },
-        { key: 'full_name', label: 'Name' },
-        { key: 'email', label: 'Email' },
-        { key: 'role', label: 'Role' },
+        { key: 'name', label: t('name') },
         {
           key: "actions",
           label: "",
@@ -182,7 +152,7 @@ export default function Teams() {
                   onClick={() => openModal("view", row)}
               >
                   <Eye className="-ml-1 h-4 w-4" />
-                  <span className="ml-1.5 text-sm">View</span>
+                  <span className="ml-1.5 text-sm">{t("View")}</span>
               </button>
               
               <button 
@@ -191,7 +161,7 @@ export default function Teams() {
                   onClick={() => openModal("edit", row)}
               >
                   <SquarePen className="-ml-1 h-4 w-4" />
-                  <span className="ml-1.5 text-sm">Edit</span>
+                  <span className="ml-1.5 text-sm">{t("Edit")}</span>
               </button>
               
               <button 
@@ -200,7 +170,7 @@ export default function Teams() {
                   onClick={() => openModal("delete", row)}
               >
                   <Trash className="-ml-1 h-4 w-4" />
-                  <span className="ml-1.5 text-sm">Delete</span>
+                  <span className="ml-1.5 text-sm">{t("Delete")}</span>
               </button>
             </div>
           ),
@@ -211,15 +181,15 @@ export default function Teams() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="teams" />
             <div className='px-4 py-6'>
-                <Heading title="Teams" description="Manage teams" />
+                <Heading title={t("Teams")} description={t("Manage teams")} />
                 
                 <TableCard 
                     description={description} 
                     columns={columns} 
                     actions={{ view: false, edit: true, delete: true }}
-                    data={flattenedData} 
-                    buttonLabel="Add New Team"
-                    onCreateClick={() => openModal("create", { id: 0, email: "", profile: { first_name: "", last_name: "" } })}
+                    data={teams.data} 
+                    buttonLabel={t("Add New Team")}
+                    onCreateClick={() => openModal("create", { id: 0, name: "" })}
                 />
 
                 <Pagination links={teams.meta.links} />
@@ -229,7 +199,7 @@ export default function Teams() {
                   <dialog id='create&update' className="modal">
                       <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                           <div className="flex items-center justify-between border-b pb-3">
-                            <h3 className="font-bold text-lg">{modal === "create" ? "Create Team" : "Edit Team"}</h3>
+                            <h3 className="font-bold text-lg">{modal === "create" ? t("Create Team") : t("Edit Team")}</h3>
                           </div>
 
                           {/* Modal Content */}
@@ -245,75 +215,29 @@ export default function Teams() {
                                   <div className="flex justify-around">  
                                   
                                   <div className="w-70">
-                                    <label htmlFor="first_name" className="block text-sm/6 font-medium text-gray-900">
-                                      First name
+                                    <label htmlFor="name" className="block text-sm/6 font-medium text-gray-900">
+                                      {t('Team')}
                                     </label>
                                     <div className="mt-2">
                                       <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
                                         <input
-                                          id="first_name"
-                                          name="profile.first_name"
+                                          id="name"
+                                          name="name"
                                           type="text"
                                           className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                          value={(modal === "create") ? data.profile.first_name : selectedTeam?.profile.first_name}
+                                          value={(modal === "create") ? data.name : selectedTeam?.name}
                                           onChange={(e) => (modal === "create")
-                                            ? setData("profile", { ...data.profile, first_name: e.target.value })
+                                            ? setData("name", e.target.value)
                                             : handleChange(e)}
                                         />
                                       </div>
-                                      {errors["profile.first_name"] && (
-                                        <p className="text-red-500 text-sm mt-1">{errors["profile.first_name"]}</p>
+                                      {errors["name"] && (
+                                        <p className="text-red-500 text-sm mt-1">{errors["name"]}</p>
                                       )}
                                     </div>
                                   </div>
-
-                                  <div className="w-70">
-                                    <label htmlFor="last_name" className="block text-sm/6 font-medium text-gray-900">
-                                      Last name
-                                    </label>
-                                    <div className="mt-2">
-                                      <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-                                        <input
-                                          id="last_name"
-                                          name="profile.last_name"
-                                          type="text"
-                                          className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                          value={(modal === "create") ? data.profile.last_name : selectedTeam?.profile.last_name}
-                                          onChange={(e) => (modal === "create")
-                                            ? setData("profile", { ...data.profile, last_name: e.target.value })
-                                            : handleChange(e)}
-                                        />
-                                      </div>
-                                        {errors["profile.last_name"] && (
-                                          <p className="text-red-500 text-sm mt-1">{errors["profile.last_name"]}</p>
-                                        )}
-                                    </div>
-                                  </div>
-
-                                  <div className="w-70">
-                                    <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
-                                      Email
-                                    </label>
-                                    <div className="mt-2">
-                                      <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-                                        <input
-                                          id="email"
-                                          name="email"
-                                          type="text"
-                                          className="block min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                          value={(modal === "create") ? data.email : selectedTeam?.email}
-                                          onChange={(e) => (modal === "create")
-                                            ? setData("email", e.target.value )
-                                            : handleChange(e)}
-                                        />
-                                      </div>
-                                        {errors.email && (
-                                          <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                                        )}
-                                    </div>
-                                  </div>
                                   
-                                </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -325,7 +249,7 @@ export default function Teams() {
                                 className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
                                 onClick={closeModal}
                               >
-                                Cancel
+                                {t("Cancel")}
                               </button>
                               <button
                                 type="submit"
@@ -335,7 +259,7 @@ export default function Teams() {
                                 {processing && (
                                   <span className="loading loading-spinner loading-xs mr-2"></span>
                                 )}
-                                Save Changes
+                                {t("Save Changes")}
                               </button>
                             </div>
                           </form>
@@ -347,7 +271,7 @@ export default function Teams() {
                   <dialog id={'view'} className="modal">
                     <div className="modal-box w-11/12 max-w-5xl rounded-lg shadow-lg border border-gray-200 bg-gray-50">
                         <div className="flex items-center justify-between border-b pb-3">
-                          <h3 className="font-bold text-lg">View</h3>
+                          <h3 className="font-bold text-lg">{t("View")}</h3>
                         </div>
 
                         {/* Modal Content */}
@@ -357,18 +281,8 @@ export default function Teams() {
                               <div className="flex justify-around">  
 
                               <fieldset className="fieldset w-70">
-                                <legend className="fieldset-legend">First name</legend>
-                                <input type="text" placeholder="Type here" className="input input-neutral" value={selectedTeam?.profile.first_name ?? ''} disabled/>
-                              </fieldset>
-
-                              <fieldset className="fieldset w-70">
-                                <legend className="fieldset-legend">Last name</legend>
-                                <input type="text" placeholder="Type here" className="input input-neutral" value={selectedTeam?.profile.last_name ?? ''} disabled/>
-                              </fieldset>
-
-                              <fieldset className="fieldset w-70">
-                                <legend className="fieldset-legend">email</legend>
-                                <input type="text" placeholder="Type here" className="input input-neutral" value={selectedTeam?.email ?? ''} disabled/>
+                                <legend className="fieldset-legend">{t('Team')}</legend>
+                                <input type="text" placeholder="Type here" className="input input-neutral" value={selectedTeam?.name ?? ''} disabled/>
                               </fieldset>
                             </div>
                             </div>
@@ -384,7 +298,7 @@ export default function Teams() {
                                 className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
                                 onClick={closeModal}
                               >
-                                Cancel
+                                {t("Cancel")}
                               </button>
                             </div>
                           </form>
@@ -393,13 +307,11 @@ export default function Teams() {
                   </dialog>
                 )}
 
-                {modal === 'delete' && (  
+                {modal === 'delete' && (
                   <dialog id={'delete'} className="modal">
                       <div className="modal-box w-full max-w-lg rounded-lg shadow-lg border border-gray-200 bg-gray-50">
-                        <div className="flex items-center justify-between border-b pb-3">
-                          <h3 className="font-bold text-lg">Delete</h3>
-                        </div>
-                        <p className="py-4">Are you sure you want to delete this role? <span className='text-red-600'>{selectedTeam?.profile.full_name}</span></p>
+                        <p className="flex justify-center"><Trash className="-ml-1 h-10 w-10" /></p>
+                        <p className="py-4 text-center">{t("Are you sure you want to delete this team")}? <span className='text-red-600'>{selectedTeam?.name}</span></p>
                           
 
                           <form 
@@ -413,7 +325,7 @@ export default function Teams() {
                                 className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
                                 onClick={closeModal}
                               >
-                                Cancel
+                                {t("Cancel")}
                               </button>
                               <button
                                 type="submit"
@@ -423,7 +335,7 @@ export default function Teams() {
                                 {processing && (
                                   <span className="loading loading-spinner loading-xs mr-2"></span>
                                 )}
-                                Save Changes
+                                {t("Delete")}
                               </button>
                             </div>
                           </form>
