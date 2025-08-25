@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Enums\UserRoleEnum;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -27,6 +24,7 @@ class DatabaseSeeder extends Seeder
 
         if (config('app.env') === 'local') {
             $this->call([
+                TeamSeeder::class,
                 UserSeeder::class
             ]);
         }

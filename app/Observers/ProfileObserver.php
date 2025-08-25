@@ -19,7 +19,6 @@ class ProfileObserver
 
     protected function onNameChanged(Profile $profile): void
     {
-        info('it works');
         if($profile->isDirty(['first_name', 'last_name'])) {
             Profile::withoutEvents(function() use($profile) {
                 $profile->update([

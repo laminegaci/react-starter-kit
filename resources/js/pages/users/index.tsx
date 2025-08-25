@@ -20,6 +20,12 @@ interface PageProps {
     links: any[];
     meta: any;
   };
+  roles: {
+    data: any[];
+  };
+  teams: {
+    data: any[];
+  }
   [key: string]: unknown;
 }
 
@@ -29,6 +35,7 @@ interface User {
   email: string;
   profile: Profile;
   roles?: any;
+  team?: any;
 }
 
 type ModalType = "create" | "view" | "edit" | "delete" | null;
@@ -36,7 +43,7 @@ type ModalType = "create" | "view" | "edit" | "delete" | null;
 const description = 'A list of users including their name, email, role and team.';
 
 export default function Users() {
-    const { users } = usePage<PageProps>().props;
+    const { users, roles, teams } = usePage<PageProps>().props;
 
     const [modal, setModal] = useState<ModalType>(null);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -46,7 +53,10 @@ export default function Users() {
       profile: { 
         first_name: "",
         last_name: ""
-       }
+       },
+      team: {
+        id: null as number | null
+      }
     });
 
     console.log(errors)
@@ -54,7 +64,8 @@ export default function Users() {
     const flattenedData = users.data.map((user) => ({
       ...user,
       full_name: user.profile?.full_name ?? "",
-      role: user.roles?.[0]?.name ?? ""
+      role: user.roles?.[0]?.name ?? "",
+      team_name: user.team?.name ?? "",
     }));
 
     useEffect(() => {
@@ -80,6 +91,9 @@ export default function Users() {
             first_name: user.profile.first_name,
             last_name: user.profile.last_name
           },
+          team: {
+            id: user.team?.id
+          }
         });
       }
     };
@@ -91,41 +105,42 @@ export default function Users() {
       clearErrors();
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      
-      if (name.includes(".")) {
-        const [parent, child] = name.split(".");
-
-        setData(parent as keyof typeof data, {
-          ...(data as any)[parent],
-          [child]: value,
-        });
-
-        if (selectedUser) {
-          setSelectedUser({
-            ...selectedUser,
-            [parent]: {
-              ...(selectedUser as any)[parent],
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+          const { name, value } = e.target;
+          console.log(name, value);
+          if (name.includes(".")) {
+            const [parent, child] = name.split(".");
+    
+            setData(parent as keyof typeof data, {
+              ...(data as any)[parent],
               [child]: value,
-            },
-          });
-        }
-      } else {
-        // Normal flat property
-        setData(name as keyof typeof data, value);
-
-        if (selectedUser) {
-          setSelectedUser({
-            ...selectedUser,
-            [name]: value,
-          });
-        }
-      }
-    };
+            });
+    
+            if (selectedUser) {
+              setSelectedUser({
+                ...selectedUser,
+                [parent]: {
+                  ...(selectedUser as any)[parent],
+                  [child]: value,
+                },
+              });
+            }
+          } else {
+            // Normal flat property
+            setData(name as keyof typeof data, value);
+    
+            if (selectedUser) {
+              setSelectedUser({
+                ...selectedUser,
+                [name]: value,
+              });
+            }
+          }
+        };
 
     const handleCreate = (e: React.FormEvent) => {
       e.preventDefault();
+      console.log(data);
       post("/users", {
         onSuccess: success,
         onError: failed
@@ -172,9 +187,10 @@ export default function Users() {
 
     const columns: Column[] = [
         { key: 'id', label: 'ID' },
-        { key: 'full_name', label: 'Name' },
-        { key: 'email', label: 'Email' },
-        { key: 'role', label: 'User' },
+        { key: 'full_name', label: t('name') },
+        { key: 'email', label: t('Email') },
+        { key: 'role', label: t('Role') },
+        { key: 'team_name', label: t('Team') },
         {
           key: "actions",
           label: "",
@@ -223,7 +239,7 @@ export default function Users() {
                     actions={{ view: false, edit: true, delete: true }}
                     data={flattenedData} 
                     buttonLabel={t("Add New User")}
-                    onCreateClick={() => openModal("create", { id: 0, email: "", profile: { first_name: "", last_name: "" } })}
+                    onCreateClick={() => openModal("create", { id: 0, email: "", profile: { first_name: "", last_name: "" }, team: { id: null } })}
                 />
 
                 <Pagination links={users.meta.links} />
@@ -247,11 +263,11 @@ export default function Users() {
                       <div className="card bg-base-100 shadow-sm mt-6">
                         <div className="card lg:card-side bg-base-100 shadow-sm">
                           <div className="card-body">
-                            <div className="flex justify-around">  
+                            <div className="flex flex-wrap gap-3 justify-center">  
                             
-                            <div className="w-70">
+                            <div className="w-100">
                               <label htmlFor="first_name" className="block text-sm/6 font-medium text-gray-900">
-                                First name
+                                {t('First name')}
                               </label>
                               <div className="mt-2">
                                 <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -272,9 +288,9 @@ export default function Users() {
                               </div>
                             </div>
 
-                            <div className="w-70">
+                            <div className="w-100">
                               <label htmlFor="last_name" className="block text-sm/6 font-medium text-gray-900">
-                                Last name
+                                {t('Last name')}
                               </label>
                               <div className="mt-2">
                                 <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -297,7 +313,7 @@ export default function Users() {
 
                             <div className="w-70">
                               <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
-                                Email
+                                {t('Email')}
                               </label>
                               <div className="mt-2">
                                 <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -318,6 +334,31 @@ export default function Users() {
                               </div>
                             </div>
                             
+
+                            <div className="w-70">
+                              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+                                {t('Team')}
+                              </label>
+                              <div className="mt-2">
+                                  <select 
+                                    name="team.id"
+                                    value={(modal === "create") ? data.team.id : selectedUser?.team?.id}
+                                    onChange={(e) => (modal === "create")
+                                      ? setData("team", { ...data.team, id: e.target.value === "" ? null : Number(e.target.value) })
+                                      : handleChange(e)}
+                                    className="select select-neutral min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                    >
+                                    <option value="">{t("Pick a team")}</option>
+                                    {teams.data.map(role => (
+                                      <option value={role.id}>{t(role.name)}</option>  
+                                    ))}
+                                  </select>
+                                  {/* {errors.team && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.team}</p>
+                                  )} */}
+                              </div>
+                            </div>
+
                           </div>
                           </div>
                         </div>
@@ -360,21 +401,25 @@ export default function Users() {
                     <div className="card bg-base-100 shadow-sm mt-6">
                       <div className="card lg:card-side bg-base-100 shadow-sm">
                         <div className="card-body">
-                          <div className="flex justify-around">  
+                          <div className="flex flex-wrap gap-1 justify-center">  
 
-                          <fieldset className="fieldset w-70">
-                            <legend className="fieldset-legend">First name</legend>
+                          <fieldset className="fieldset">
+                            <legend className="fieldset-legend">{t('First name')}</legend>
                             <input type="text" placeholder="Type here" className="input input-neutral" value={selectedUser?.profile.first_name ?? ''} disabled/>
                           </fieldset>
 
-                          <fieldset className="fieldset w-70">
-                            <legend className="fieldset-legend">Last name</legend>
+                          <fieldset className="fieldset">
+                            <legend className="fieldset-legend">{t('Last name')}</legend>
                             <input type="text" placeholder="Type here" className="input input-neutral" value={selectedUser?.profile.last_name ?? ''} disabled/>
                           </fieldset>
 
                           <fieldset className="fieldset w-70">
-                            <legend className="fieldset-legend">email</legend>
+                            <legend className="fieldset-legend">{t('Email')}</legend>
                             <input type="text" placeholder="Type here" className="input input-neutral" value={selectedUser?.email ?? ''} disabled/>
+                          </fieldset>
+                          <fieldset className="fieldset w-70">
+                            <legend className="fieldset-legend">{t('Team')}</legend>
+                            <input type="text" placeholder="" className="input input-neutral" value={selectedUser?.team_name ?? ''} disabled/>
                           </fieldset>
                         </div>
                         </div>

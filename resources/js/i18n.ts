@@ -70,7 +70,9 @@ const resources = {
       "Add New User": "Add New User",
       "Create User": "Create User",
       "Edit User": "Edit User",
-      "Delete User": "Delete User"
+      "Delete User": "Delete User",
+      "First name": "First name",
+      "Last name": "Last name"
     }
   },
   fr: {
@@ -136,7 +138,9 @@ const resources = {
       "Add New User": "Ajouter un utilisateur",
       "Create User": "Créer un utilisateur",
       "Edit User": "Modifier l'utilisateur",
-      "Delete User": "Supprimer l'utilisateur"
+      "Delete User": "Supprimer l'utilisateur",
+      "First name": "Prénom",
+      "Last name": "Nom de famille",
     }
   },
   ar: {

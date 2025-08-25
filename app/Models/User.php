@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -23,6 +24,7 @@ class User extends Authenticatable
     protected $fillable = [
         'email',
         'password',
+        'team_id'
     ];
 
     /**
@@ -64,6 +66,11 @@ class User extends Authenticatable
     public function role(): HasOne
     {
         return $this->hasOne(Role::class, 'user_id')->withTrashed();
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class)->withTrashed();
     }
 
     /*

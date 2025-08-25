@@ -29,7 +29,9 @@ class TeamController extends Controller
     public function store(FormRequest $request): Void
     {
         $validatedData = $request->validate([
-            'name' => 'required|max:255|unique:teams,name'
+            'name' => ['required', 'max:50',
+                Rule::unique('teams')
+            ]
         ]);
 
         Team::create([
