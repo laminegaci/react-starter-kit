@@ -200,7 +200,7 @@ export default function Teams() {
                   <Modal
                     isOpen={modal === "create" || modal === "edit"}
                     onClose={closeModal}
-                    title={modal === "create" ? t("Create Role") : t("Edit Role")}
+                    title={modal === "create" ? t("Create Team") : t("Edit Team")}
                     size="xl"
                   >
 
@@ -273,7 +273,7 @@ export default function Teams() {
                 <Modal
                   isOpen={modal === "view"}
                   onClose={closeModal}
-                  title={t("View Role")}
+                  title={t("View Team")}
                   size="xl"
                 >
 
@@ -314,11 +314,11 @@ export default function Teams() {
                   <Modal
                     isOpen={modal === "delete"}
                     onClose={closeModal}
-                    title={t("Delete Role")}
+                    title={t("Delete Team")}
                     size="sm"
                   >
                     <p className="flex justify-center"><Trash className="-ml-1 h-10 w-10" /></p>
-                    <p className="py-4 text-center">{t("Are you sure you want to delete this role")}? <span className='text-red-600'>{selectedRole?.name}</span></p>
+                    <p className="py-4 text-center">{t("Are you sure you want to delete this team")}? <span className='text-red-600'>{selectedTeam?.name}</span></p>
                           
 
                     <form 
