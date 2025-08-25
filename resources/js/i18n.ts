@@ -51,6 +51,8 @@ const resources = {
       "Edit Role": "Edit Role",
       "Save Changes": "Save Changes",
       "Are you sure you want to delete this role": "Are you sure you want to delete this role",
+      "Are you sure you want to delete this user": "Are you sure you want to delete this user",
+      "Are you sure you want to delete this team": "Are you sure you want to delete this team",
       Teams: "Teams",
       Users: "Users",
       Settings: "Settings",
@@ -62,6 +64,12 @@ const resources = {
       "Create Team": "Create Team",
       "Edit Team": "Edit Team",
       Team: "Team",
+      "Manage users": "Manage users",
+      "A list of users including their name, email, role and team.": "A list of users including their name, email, role and team.",
+      "Add New User": "Add New User",
+      "Create User": "Create User",
+      "Edit User": "Edit User",
+      "Delete User": "Delete User"
     }
   },
   fr: {
@@ -108,6 +116,8 @@ const resources = {
       "Edit Role": "Modifier le rôle",
       "Save Changes": "Sauvegarder",
       "Are you sure you want to delete this role": "Êtes-vous sûr de vouloir supprimer ce rôle",
+      "Are you sure you want to delete this user": "Êtes-vous sûr de vouloir supprimer cet utilisateur",
+      "Are you sure you want to delete this team": "Êtes-vous sûr de vouloir supprimer cette équipe",
       Teams: "Equipes",
       Users: "Utilisateurs",
       Settings: "Paramètre",
@@ -119,6 +129,12 @@ const resources = {
       "Create Team": "Créer une équipe",
       "Edit Team": "Modifier l'équipe",
       Team: "Équipe",
+      "Manage users": "Gérer les utilisateurs",
+      "A list of users including their name, email, role and team.": "Une liste des utilisateurs avec leur nom, email, rôle et équipe.",
+      "Add New User": "Ajouter un utilisateur",
+      "Create User": "Créer un utilisateur",
+      "Edit User": "Modifier l'utilisateur",
+      "Delete User": "Supprimer l'utilisateur"
     }
   },
   ar: {
