@@ -123,14 +123,11 @@ export default function TableCardHeader<T>({
                 <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">{t("Filters")}</div>
                 <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                     <li>
-                        <label className="label">
-                            Filter 1
-                        </label>
+                        <label className="label">Filter 1</label>
+                        
                     </li>
                     <li>
-                        <label className="label">
-                            Filter 2
-                        </label>
+                        <label className="label">Filter 2</label>
                     </li>
                 </ul>
             </div>
