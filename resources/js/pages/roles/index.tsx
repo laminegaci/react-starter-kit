@@ -226,7 +226,7 @@ export default function Roles() {
             <div className="flex gap-2">
               {row.deleted_at && (
                 <><button 
-                  className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-green-600'
+                  className='flex items-center rounded-md px-3 py-1 transition-colors cursor-pointer bg-green-600 text-white hover:bg-green-400'
                   type='button'
                   onClick={() => openModal("restore", row)}
                 >
@@ -234,7 +234,7 @@ export default function Roles() {
                     <span className="ml-1.5 text-sm">{t("Restore")}</span>
                 </button>
                 <button 
-                  className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
+                  className='flex items-center rounded-md px-3 py-1 transition-colors cursor-pointer bg-red-600 text-white hover:bg-red-400'
                   type='button'
                   onClick={() => openModal("force_delete", row)}
                 >

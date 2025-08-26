@@ -89,6 +89,7 @@ const resources = {
       "Only trashed": "Only trashed",
       "With trashed": "With trashed",
       "Trashed": "Trashed",
+      "Force delete": "Force delete"
     }
   },
   fr: {
@@ -173,6 +174,7 @@ const resources = {
       "Only trashed": "Seulement les supprimés",
       "With trashed": "Avec les supprimés",
       "Trashed": "Supprimés",
+      "Force delete": "Supprimer"
     }
   },
   ar: {
