@@ -2,6 +2,7 @@ import React , { useState } from 'react';
 import TableCardHeader from './table-card-header';
 import { SquarePen, Eye, Trash, Key } from 'lucide-react';
 import { Link } from '@inertiajs/react';
+import { t } from 'i18next';
 export interface Column {
   key: string;
   label: string;
@@ -61,7 +62,7 @@ export default function TableCard<T>({
                         className="px-6 py-24 border-t text-center"
                         colSpan={columns.length}
                     >
-                        No data found.
+                        {t('No data found.')}
                     </td>
                     </tr>
                 )}

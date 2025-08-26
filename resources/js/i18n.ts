@@ -98,7 +98,8 @@ const resources = {
       "Team deleted successfully!": "Team deleted successfully!",
       "Team updated successfully!": "Team updated successfully!",
       "Team created successfully!": "Team created successfully!",
-      "Restore Team": "Restore Team"
+      "Restore Team": "Restore Team",
+      "No data found.": "No data found."
     }
   },
   fr: {
@@ -192,7 +193,8 @@ const resources = {
       "Team deleted successfully!": "Équipe supprimée avec succès!",
       "Team updated successfully!": "Équipe mise à jour avec succès!",
       "Team created successfully!": "Équipe créée avec succès!",
-      "Restore Team": "Restaurer l'équipe"
+      "Restore Team": "Restaurer l'équipe",
+      "No data found.": "Aucune donnée trouvée."
     }
   },
   ar: {
