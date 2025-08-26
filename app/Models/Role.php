@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role as ModelsRole;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Role extends ModelsRole
 {
+    use SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *

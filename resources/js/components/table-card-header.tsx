@@ -18,18 +18,20 @@ export default function TableCardHeader<T>({
   description, buttonLabel, columns, visibleColumns, onVisibleColumnsChange, onCreateClick
 }: TableCardProps<T>) {
     const { filters } = usePage<{
-        filters: { search?: string; };
+        filters: { search?: string; trashed?: string };
     }>().props;
 
     const [values, setValues] = useState({
         search: filters.search || '',
+        trashed: filters.trashed || ''
     });
 
     const prevValues = usePrevious(values);
 
     function reset() {
         setValues({
-            search: ''
+            search: '',
+            trashed: ''
         });
     }
 
@@ -100,7 +102,17 @@ export default function TableCardHeader<T>({
                 </div>
             </form>
         </div>
-        <div >
+
+        <div className='flex items-center'>
+            <div>
+                <button
+                    onClick={reset}
+                    className="ml-3 text-sm text-gray-600 hover:text-gray-700 focus:text-indigo-700 focus:outline-none"
+                    type="button"
+                >
+                    Reset
+                </button>
+            </div>
             <div className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">{t("Columns")}</div>
                 <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
@@ -122,12 +134,26 @@ export default function TableCardHeader<T>({
             <div className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">{t("Filters")}</div>
                 <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                    <li>
-                        <label className="label">Filter 1</label>
-                        
-                    </li>
-                    <li>
-                        <label className="label">Filter 2</label>
+                    <li className="flex flex-col gap-2">
+                    <label className="text-sm font-medium text-gray-700">Trashed</label>
+                    <div className="relative">
+                        <select
+                            name="trashed"
+                            value={values.trashed}
+                            onChange={handleChange}
+                            defaultValue=""
+                            className="w-full appearance-none rounded-xl border border-gray-300 bg-white px-4 py-2 pr-10 text-sm text-gray-700 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+                        >
+                            <option disabled value="">
+                            </option>
+                            <option value='with'>With trashed</option>
+                            <option value='only'>Only trashed</option>
+                            </select>
+                            {/* Custom dropdown arrow */}
+                            <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                            ▼
+                        </span>
+                    </div>
                     </li>
                 </ul>
             </div>

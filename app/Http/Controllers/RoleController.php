@@ -17,15 +17,15 @@ class RoleController extends Controller
     public function index(): Response
     {
         return Inertia::render('roles/index', [
+            'filters' => Request::all('search', 'trashed'),
             'permissions' => PermissionResource::collection(Permission::get()),
             'roles' => new RoleCollection(
                 Role::withCount('permissions')
                     ->orderByDesc('id')
-                    ->filter(Request::only('search'))
+                    ->filter(Request::only('search', 'trashed'))
                     ->paginate()
                     ->appends(Request::all())
             ),
-            'filters' => Request::all('search'),
         ]);
     }
 
