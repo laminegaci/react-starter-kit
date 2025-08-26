@@ -56,4 +56,16 @@ class TeamController extends Controller
     {
         $team->delete();
     }
+
+    public function restore($id)
+    {
+        $role = Team::withTrashed()->findOrFail($id);
+        $role->restore();
+    }
+
+    public function forceDelete($id)
+    {
+        $role = Team::withTrashed()->findOrFail($id);
+        $role->forceDelete();
+    }
 }

@@ -6,7 +6,7 @@ import TableCard, { Column } from "@/components/table-card";
 import Pagination from "@/components/Pagination";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Eye, SquarePen, Trash } from "lucide-react";
+import { Eye, SquarePen, Trash, Recycle } from "lucide-react";
 import { profile } from "console";
 import { t } from "i18next";
 import Modal from "@/components/modal";
@@ -28,9 +28,10 @@ interface PageProps {
 interface Team {
   id: number;
   name: string;
+  deleted_at?: string | null;
 }
 
-type ModalType = "create" | "view" | "edit" | "delete" | null;
+type ModalType = "create" | "view" | "edit" | "delete" | 'restore' | 'force_delete' | null;
 
 const description = t('A list of teams including their name.');
 
@@ -59,6 +60,12 @@ export default function Teams() {
         modalEl?.showModal();
       }else if(modal === 'delete') {
         const modalEl = document.getElementById('delete') as HTMLDialogElement | null;
+        modalEl?.showModal();
+      }else if(modal === 'restore') {
+        const modalEl = document.getElementById('restore') as HTMLDialogElement | null;
+        modalEl?.showModal();
+      }else if(modal === 'force_delete') {
+        const modalEl = document.getElementById('force_delete') as HTMLDialogElement | null;
         modalEl?.showModal();
       }
     }, [modal]);
@@ -111,7 +118,9 @@ export default function Teams() {
       });
     };
 
-    const handleDelete = () => {
+    const handleDelete = (e: React.FormEvent) => {
+      e.preventDefault();
+
       if (!selectedTeam) return;
       router.delete(`/teams/${selectedTeam.id}`, {
         onSuccess: success,
@@ -119,24 +128,52 @@ export default function Teams() {
       });
     };
 
+    const handleRestore = (e: React.FormEvent) => {
+      e.preventDefault();
+      
+      if (!selectedTeam) return;
+      post(`/teams/${selectedTeam.id}/restore`, {
+        onSuccess: success,
+        onError: failed
+      });
+    };
+
+    const handleForceDelete = (e: React.FormEvent) => {
+      e.preventDefault();
+
+      if (!selectedTeam) return;
+      router.delete(`/teams/${selectedTeam.id}/force-delete`, {
+        onSuccess: success,
+        onError: failed
+      });
+    };
+
     const success = () => {
       if(modal === 'create' )
-        toast.success("Team created successfully!");
+        toast.success(t("Team created successfully!"));
       if(modal === 'edit')
-        toast.success("Team updated successfully!");
+        toast.success(t("Team updated successfully!"));
       if(modal === 'delete')
-        toast.success("Team deleted successfully!");
+        toast.success(t("Team deleted successfully!"));
+      if(modal === 'restore')
+        toast.success(t("Team restored successfully!"));
+      if(modal === 'force_delete')
+        toast.success(t("Team permanently deleted successfully!"));
 
       closeModal();
     }
 
     const failed = () => {
       if(modal === 'create' )
-        toast.error("Failed to create team. Please try again.");
+        toast.error("Failed to create role. Please try again.");
       if(modal === 'edit')
-        toast.error("Failed to update team. Please try again.");
+        toast.error("Failed to update role. Please try again.");
       if(modal === 'delete')
-        toast.error("Failed to delete team. Please try again.");
+        toast.error("Failed to delete role. Please try again.");
+      if(modal === 'restore')
+        toast.error("Failed to restore role. Please try again.");
+      if(modal === 'force_delete')
+        toast.error("Failed to permanently delete role. Please try again.");
     }
 
     const columns: Column[] = [
@@ -147,32 +184,51 @@ export default function Teams() {
           label: "",
           render: (_: any, row: any, index: any) => (
             <div className="flex gap-2">
-              <button 
-                  className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-blue-600'
+              {row.deleted_at && (
+                <><button 
+                  className='flex items-center rounded-md px-3 py-1 transition-colors cursor-pointer bg-green-600 text-white hover:bg-green-400'
                   type='button'
-                  onClick={() => openModal("view", row)}
-              >
-                  <Eye className="-ml-1 h-4 w-4" />
-                  <span className="ml-1.5 text-sm">{t("View")}</span>
-              </button>
-              
-              <button 
+                  onClick={() => openModal("restore", row)}
+                >
+                    <Recycle className="-ml-1 h-4 w-4" />
+                    <span className="ml-1.5 text-sm">{t("Restore")}</span>
+                </button>
+                <button 
+                  className='flex items-center rounded-md px-3 py-1 transition-colors cursor-pointer bg-red-600 text-white hover:bg-red-400'
+                  type='button'
+                  onClick={() => openModal("force_delete", row)}
+                >
+                    <Trash className="-ml-1 h-4 w-4" />
+                    <span className="ml-1.5 text-sm">{t("Force delete")}</span>
+                </button></>
+              )}
+              {!row.deleted_at && (
+                <><button 
+                    className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-blue-600'
+                    type='button'
+                    onClick={() => openModal("view", row)}
+                >
+                    <Eye className="-ml-1 h-4 w-4" />
+                    <span className="ml-1.5 text-sm">{t("View")}</span>
+                </button>
+                <button 
                   className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-violet-600'
                   type='button'
                   onClick={() => openModal("edit", row)}
-              >
-                  <SquarePen className="-ml-1 h-4 w-4" />
-                  <span className="ml-1.5 text-sm">{t("Edit")}</span>
-              </button>
-              
-              <button 
-                  className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
-                  type='button'
-                  onClick={() => openModal("delete", row)}
-              >
-                  <Trash className="-ml-1 h-4 w-4" />
-                  <span className="ml-1.5 text-sm">{t("Delete")}</span>
-              </button>
+                >
+                    <SquarePen className="-ml-1 h-4 w-4" />
+                    <span className="ml-1.5 text-sm">{t("Edit")}</span>
+                </button>
+                
+                <button 
+                    className='flex items-center rounded-md pr-3 transition-colors cursor-pointer text-red-600'
+                    type='button'
+                    onClick={() => openModal("delete", row)}
+                >
+                    <Trash className="-ml-1 h-4 w-4" />
+                    <span className="ml-1.5 text-sm">{t("Delete")}</span>
+                </button></>
+              )}
             </div>
           ),
         },
@@ -325,6 +381,84 @@ export default function Teams() {
                       method="dialog"
                       className="mt-4 space-y-4"
                       onSubmit={handleDelete}
+                    >
+                      <div className="flex justify-end gap-2 pt-4">
+                        <button
+                          type="button"
+                          className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
+                          onClick={closeModal}
+                        >
+                          {t("Cancel")}
+                        </button>
+                        <button
+                          type="submit"
+                          className={`px-4 py-2 bg-red-600 text-white text-sm font-medium rounded hover:bg-red-400 cursor-pointer ${processing ? 'cursor-none! bg-indigo-300! hover:bg-indigo-400!' : ''}`}
+                          disabled={processing}
+                        >
+                          {processing && (
+                            <span className="loading loading-spinner loading-xs mr-2"></span>
+                          )}
+                          {t("Delete")}
+                        </button>
+                      </div>
+                    </form>
+                  </Modal>
+                )}
+
+                {modal === 'restore' && (
+                  <Modal
+                    isOpen={modal === "restore"}
+                    onClose={closeModal}
+                    title={t("Restore Team")}
+                    size="sm"
+                  >
+                    <p className="flex justify-center"><Recycle className="-ml-1 h-10 w-10" /></p>
+                    <p className="py-4 text-center">{t("Are you sure you want to restore this team")}? <span className='text-green-600'>{selectedTeam?.name}</span></p>
+                          
+
+                    <form 
+                      method="dialog"
+                      className="mt-4 space-y-4"
+                      onSubmit={handleRestore}
+                    >
+                      <div className="flex justify-end gap-2 pt-4">
+                        <button
+                          type="button"
+                          className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
+                          onClick={closeModal}
+                        >
+                          {t("Cancel")}
+                        </button>
+                        <button
+                          type="submit"
+                          className={`px-4 py-2 bg-green-600 text-white text-sm font-medium rounded hover:bg-green-400 cursor-pointer ${processing ? 'cursor-none! bg-indigo-300! hover:bg-indigo-400!' : ''}`}
+                          disabled={processing}
+                        >
+                          {processing && (
+                            <span className="loading loading-spinner loading-xs mr-2"></span>
+                          )}
+                          {t("Restore")}
+                        </button>
+                      </div>
+                    </form>
+                  </Modal>
+                )}
+
+                {modal === 'force_delete' && (
+                  <Modal
+                    isOpen={modal === "force_delete"}
+                    onClose={closeModal}
+                    title={t("Permanently delete Team")}
+                    size="sm"
+                  >
+                    <p className="flex justify-center"><Trash className="-ml-1 h-10 w-10" /></p>
+                    <p className="py-4 text-center">{t("Are you sure you want to permanently delete this team")}? <span className='text-red-600'>{selectedTeam?.name}</span></p>
+                          
+
+                    <form 
+                      method="dialog"
+                      className="mt-4 space-y-4"
+                      onSubmit={handleForceDelete}
                     >
                       <div className="flex justify-end gap-2 pt-4">
                         <button

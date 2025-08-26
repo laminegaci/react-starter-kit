@@ -89,7 +89,16 @@ const resources = {
       "Only trashed": "Only trashed",
       "With trashed": "With trashed",
       "Trashed": "Trashed",
-      "Force delete": "Force delete"
+      "Force delete": "Force delete",
+      "Permanently delete Team": "Permanently delete Team",
+      "Are you sure you want to restore this team": "Are you sure you want to restore this team",
+      "Are you sure you want to permanently delete this team": "Are you sure you want to permanently delete this team",
+      "Team permanently deleted successfully!": "Team permanently deleted successfully!",
+      "Team restored successfully!": "Team restored successfully!",
+      "Team deleted successfully!": "Team deleted successfully!",
+      "Team updated successfully!": "Team updated successfully!",
+      "Team created successfully!": "Team created successfully!",
+      "Restore Team": "Restore Team"
     }
   },
   fr: {
@@ -174,7 +183,16 @@ const resources = {
       "Only trashed": "Seulement les supprimés",
       "With trashed": "Avec les supprimés",
       "Trashed": "Supprimés",
-      "Force delete": "Supprimer"
+      "Force delete": "Supprimer",
+      "Permanently delete Team": "Supprimer définitivement l'équipe",
+      "Are you sure you want to restore this team": "Êtes-vous sûr de vouloir restaurer cette équipe",
+      "Are you sure you want to permanently delete this team": "Êtes-vous sûr de vouloir supprimer définitivement cette équipe",
+      "Team permanently deleted successfully!": "Équipe supprimée définitivement avec succès!",
+      "Team restored successfully!": "Équipe restaurée avec succès!",
+      "Team deleted successfully!": "Équipe supprimée avec succès!",
+      "Team updated successfully!": "Équipe mise à jour avec succès!",
+      "Team created successfully!": "Équipe créée avec succès!",
+      "Restore Team": "Restaurer l'équipe"
     }
   },
   ar: {

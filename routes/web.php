@@ -32,6 +32,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('teams', [TeamController::class, 'store'])->name('teams.store');
     Route::put('teams/{team}', [TeamController::class, 'update'])->name('teams.update');
     Route::delete('teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+    Route::post('teams/{team}/restore', [TeamController::class, 'restore'])->name('team.restore');
+    Route::delete('teams/{team}/force-delete', [TeamController::class, 'forceDelete'])->name('team.force_destroy');
 
     Route::get('/language/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'fr', 'ar'])) {

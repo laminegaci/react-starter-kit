@@ -182,7 +182,7 @@ export default function Roles() {
       closeModal();
     }
 
-    const failed = (errors) => {
+    const failed = () => {
       if(modal === 'create' )
         toast.error("Failed to create role. Please try again.");
       if(modal === 'edit')

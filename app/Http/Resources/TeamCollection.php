@@ -14,8 +14,12 @@ class TeamCollection extends ResourceCollection
      */
     public function toArray(Request $request)
     {
-        return $this->collection->map->only(
-            'id', 'name'
-        );
+        return $this->collection->map(function ($role) {
+            return [
+                'id'          => $role->id,
+                'name'        => $role->name,
+                'deleted_at'  => $role->deleted_at,
+            ];
+        })->all();
     }
 }
