@@ -108,7 +108,22 @@ const resources = {
       "User restored successfully!": "User restored successfully!",
       "User deleted successfully!": "User deleted successfully!",
       "User updated successfully!": "User updated successfully!",
-      "User created successfully!": "User created successfully!"
+      "User created successfully!": "User created successfully!",
+      "Manage your profile and account settings": "Manage your profile and account settings",
+      "Password": "Password",
+      "Appearance": "Appearance",
+      "Profile information": "Profile information",
+      "Update your name and email address": "Update your first name and email address",
+      "Remove": "Remove",
+      "Profile updated successfully!": "Profile updated successfully!",
+      "Failed updated profile. Please try again.": "Failed updated profile. Please try again.",
+      "Saved": "Saved",
+      "Warning": "Warning",
+      "Please proceed with caution, this cannot be undone.": "Please proceed with caution, this cannot be undone.",
+      "Are you sure you want to delete your account?": "Are you sure you want to delete your account?",
+      "Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.": "Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.",
+      "Delete account": "Delete account",
+      "Delete your account and all of its resources": "Delete your account and all of its resources"
     }
   },
   fr: {
@@ -212,7 +227,22 @@ const resources = {
       "User restored successfully!": "Utilisateur restauré avec succès!",
       "User deleted successfully!": "Utilisateur supprimé avec succès!",
       "User updated successfully!": "Utilisateur mis à jour avec succès!",
-      "User created successfully!": "Utilisateur créé avec succès!"
+      "User created successfully!": "Utilisateur créé avec succès!",
+      "Manage your profile and account settings": "Gérez votre profil et les paramètres du compte",
+      "Password": "Mot de passe",
+      "Appearance": "Apparence",
+      "Profile information": "Informations du profil",
+      "Update your name and email address": "Mettez à jour votre nom et votre adresse e-mail",
+      "Remove": "Supprimer",
+      "Profile updated successfully!": "Profil mis à jour avec succès!",
+      "Failed updated profile. Please try again.": "Échec de la mise à jour du profil. Veuillez réessayer.",
+      "Saved": "Enregistré",
+      "Warning": "Avertissement",
+      "Please proceed with caution, this cannot be undone.": "Veuillez procéder avec prudence, cela ne peut pas être annulé.",
+      "Are you sure you want to delete your account?": "Êtes-vous sûr de vouloir supprimer votre compte?",
+      "Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.": "Une fois votre compte supprimé, toutes ses ressources et données seront également supprimées définitivement. Veuillez entrer votre mot de passe pour confirmer que vous souhaitez supprimer définitivement votre compte.",
+      "Delete account": "Supprimer le compte",
+      "Delete your account and all of its resources": "Supprimez votre compte et toutes ses ressources"
     }
   },
   ar: {

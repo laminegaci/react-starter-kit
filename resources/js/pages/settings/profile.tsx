@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import toast from 'react-hot-toast';
+import { t } from 'i18next';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -67,11 +68,11 @@ export default function Profile({
     };
 
     const success = () => {
-        toast.success("Profile updated successfully!");
+        toast.success(t("Profile updated successfully!"));
     }
     const failed = (errors: Record<string, string>) => {
         console.log(errors)
-        toast.error("Failed updated profile. Please try again." + JSON.stringify(errors));
+        toast.error(t("Failed updated profile. Please try again." + JSON.stringify(errors)));
     }
 
   return (
@@ -81,8 +82,8 @@ export default function Profile({
       <SettingsLayout>
         <div className="space-y-6">
           <HeadingSmall
-            title="Profile information"
-            description="Update your first name and email address"
+            title={t("Profile information")}
+            description={t("Update your name and email address")}
           />
 
           <form onSubmit={submit} encType="multipart/form-data" className="space-y-6">
@@ -149,7 +150,7 @@ export default function Profile({
                   }}
                   className="text-sm text-red-500 hover:text-red-700"
                 >
-                  Remove
+                  {t("Remove")}
                 </button>
               )}
             </div>
@@ -158,7 +159,7 @@ export default function Profile({
             <InputError className="mt-2" message={errors.avatar} />
             {/* First Name */}
             <div className="grid gap-2">
-              <Label htmlFor="first_name">First name</Label>
+              <Label htmlFor="first_name">{t('First name')}</Label>
 
               <Input
                 id="first_name"
@@ -167,14 +168,14 @@ export default function Profile({
                 onChange={(e) => setData('first_name', e.target.value)}
                 required
                 autoComplete="given-name"
-                placeholder="First name"
+                placeholder={t("First name")}
               />
 
               <InputError className="mt-2" message={errors.first_name} />
             </div>
             {/* Last Name */}
             <div className="grid gap-2">
-              <Label htmlFor="last_name">First name</Label>
+              <Label htmlFor="last_name">{t('Last name')}</Label>
 
               <Input
                 id="last_name"
@@ -183,7 +184,7 @@ export default function Profile({
                 onChange={(e) => setData('last_name', e.target.value)}
                 required
                 autoComplete="given-name"
-                placeholder="First name"
+                placeholder={t("Last name")}
               />
 
               <InputError className="mt-2" message={errors.last_name} />
@@ -191,7 +192,7 @@ export default function Profile({
 
             {/* Email */}
             <div className="grid gap-2">
-              <Label htmlFor="email">Email address</Label>
+              <Label htmlFor="email">{t('Email')}</Label>
 
               <Input
                 id="email"
@@ -201,7 +202,7 @@ export default function Profile({
                 onChange={(e) => setData('email', e.target.value)}
                 required
                 autoComplete="username"
-                placeholder="Email address"
+                placeholder={t("Email")}
               />
 
               <InputError className="mt-2" message={errors.email} />
@@ -218,7 +219,7 @@ export default function Profile({
                 {processing && (
                     <span className="loading loading-spinner loading-xs mr-2"></span>
                 )}
-                Save Changes
+                {t('Save Changes')}
             </button>
 
               <Transition
@@ -228,7 +229,7 @@ export default function Profile({
                 leave="transition ease-in-out"
                 leaveTo="opacity-0"
               >
-                <p className="text-sm text-neutral-600">Saved</p>
+                <p className="text-sm text-neutral-600">{t('Saved')}</p>
               </Transition>
             </div>
           </form>
