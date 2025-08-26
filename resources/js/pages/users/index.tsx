@@ -60,8 +60,6 @@ export default function Users() {
       }
     });
 
-    console.log(errors)
-
     const flattenedData = users.data.map((user) => ({
       ...user,
       full_name: user.profile?.full_name ?? "",
