@@ -105,54 +105,54 @@ export default function Profile({
                   hidden
             />
             <div className="mt-4 flex items-center gap-4">
-  {/* Avatar preview with clickable area */}
-  <div
-    className="relative h-20 w-20"
-    onClick={() => fileInputRef.current?.click()}
-  >
-    <img
-      src={preview ?? (data.avatar as string)}
-      alt="Avatar preview"
-      className="h-20 w-20 rounded-full object-cover border border-gray-300 shadow-sm cursor-pointer hover:opacity-80 transition"
-    />
+              {/* Avatar preview with clickable area */}
+              <div
+                className="relative h-20 w-20"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <img
+                  src={preview ?? (data.avatar as string)}
+                  alt="Avatar preview"
+                  className="h-20 w-20 rounded-full object-cover border border-gray-300 shadow-sm cursor-pointer hover:opacity-80 transition"
+                />
 
-    {/* Hover overlay */}
-    <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 hover:opacity-100 transition">
-      <span className="text-white text-xs">Change</span>
-    </div>
+                {/* Hover overlay */}
+                <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 hover:opacity-100 transition">
+                  <span className="text-white text-xs">Change</span>
+                </div>
 
-    {/* Upload progress ring */}
-    {progress && (
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div
-          className="radial-progress text-indigo-500"
-          style={
-            { "--value": progress.percentage } as React.CSSProperties
-          }
-          role="progressbar"
-        >
-          <span className="text-xs text-gray-700">
-            {progress.percentage}%
-          </span>
-        </div>
-      </div>
-    )}
-  </div>
+                {/* Upload progress ring */}
+                {progress && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div
+                      className="radial-progress text-indigo-500"
+                      style={
+                        { "--value": progress.percentage } as React.CSSProperties
+                      }
+                      role="progressbar"
+                    >
+                      <span className="text-xs text-gray-700">
+                        {progress.percentage}%
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-  {/* Remove button */}
-  {(preview || data.avatar) && (
-    <button
-      type="button"
-      onClick={() => {
-        setData("avatar", null);
-        setPreview(null);
-      }}
-      className="text-sm text-red-500 hover:text-red-700"
-    >
-      Remove
-    </button>
-  )}
-</div>
+              {/* Remove button */}
+              {(preview || data.avatar) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setData("avatar", null);
+                    setPreview(null);
+                  }}
+                  className="text-sm text-red-500 hover:text-red-700"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
 
 
             <InputError className="mt-2" message={errors.avatar} />
