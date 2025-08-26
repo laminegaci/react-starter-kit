@@ -112,6 +112,11 @@ export default function TableCardHeader<T>({
                 >
                     {t('Reset')}
                 </button>
+                {values.trashed && (
+                        <span className="ms-1 inline-block bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-full">
+                            {t(values.trashed === 'with' ? 'With trashed' : 'Only trashed')}
+                        </span>
+                    )}
             </div>
             <div className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">{t("Columns")}</div>
