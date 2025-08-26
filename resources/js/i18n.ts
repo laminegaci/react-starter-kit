@@ -99,7 +99,16 @@ const resources = {
       "Team updated successfully!": "Team updated successfully!",
       "Team created successfully!": "Team created successfully!",
       "Restore Team": "Restore Team",
-      "No data found.": "No data found."
+      "No data found.": "No data found.",
+      "Restore User": "Restore User",
+      "Permanently delete User": "Permanently delete User",
+      "Are you sure you want to restore this user": "Are you sure you want to restore this user",
+      "Are you sure you want to permanently delete this user": "Are you sure you want to permanently delete this user",
+      "User permanently deleted successfully!": "User permanently deleted successfully!",
+      "User restored successfully!": "User restored successfully!",
+      "User deleted successfully!": "User deleted successfully!",
+      "User updated successfully!": "User updated successfully!",
+      "User created successfully!": "User created successfully!"
     }
   },
   fr: {
@@ -194,7 +203,16 @@ const resources = {
       "Team updated successfully!": "Équipe mise à jour avec succès!",
       "Team created successfully!": "Équipe créée avec succès!",
       "Restore Team": "Restaurer l'équipe",
-      "No data found.": "Aucune donnée trouvée."
+      "No data found.": "Aucune donnée trouvée.",
+      "Restore User": "Restaurer l'utilisateur",
+      "Permanently delete User": "Supprimer définitivement l'utilisateur",
+      "Are you sure you want to restore this user": "Êtes-vous sûr de vouloir restaurer cet utilisateur",
+      "Are you sure you want to permanently delete this user": "Êtes-vous sûr de vouloir supprimer définitivement cet utilisateur",
+      "User permanently deleted successfully!": "Utilisateur supprimé définitivement avec succès!",
+      "User restored successfully!": "Utilisateur restauré avec succès!",
+      "User deleted successfully!": "Utilisateur supprimé avec succès!",
+      "User updated successfully!": "Utilisateur mis à jour avec succès!",
+      "User created successfully!": "Utilisateur créé avec succès!"
     }
   },
   ar: {

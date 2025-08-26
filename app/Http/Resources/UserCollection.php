@@ -14,8 +14,15 @@ class UserCollection extends ResourceCollection
      */
     public function toArray(Request $request)
     {
-        return $this->collection->map->only(
-            'id', 'email', 'profile', 'roles', 'team'
-        );
+        return $this->collection->map(function ($user) {
+            return [
+                'id'          => $user->id,
+                'name'        => $user->name,
+                'email'       => $user->email,
+                'profile'     => $user->profile,
+                'roles'       => $user->roles,
+                'deleted_at'  => $user->deleted_at,
+            ];
+        })->all();
     }
 }

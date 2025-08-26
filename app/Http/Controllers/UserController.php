@@ -53,7 +53,7 @@ class UserController extends Controller
         $user = User::create([
             'email' => $validatedData['email'],
             'password' => Hash::make('123456789'),
-            'team_id' => $validatedData['team']['id']
+            'team_id' => $validatedData['team']['id'] ?? null,
         ])->assignRole(UserRoleEnum::MANAGER->value);
         $user->profile()->create([
             'first_name' => $validatedData['profile']['first_name'],
@@ -76,7 +76,7 @@ class UserController extends Controller
 
         $user->update([
             'email' => $validatedData['email'],
-            'team_id' => $validatedData['team']['id']
+            'team_id' => $validatedData['team']['id'] ?? null,
         ]);
         $user->profile->update([
             'first_name' => $validatedData['profile']['first_name'],
@@ -87,5 +87,17 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
+    }
+
+    public function restore($id)
+    {
+        $role = User::withTrashed()->findOrFail($id);
+        $role->restore();
+    }
+
+    public function forceDelete($id)
+    {
+        $role = User::withTrashed()->findOrFail($id);
+        $role->forceDelete();
     }
 }

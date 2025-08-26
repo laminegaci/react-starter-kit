@@ -27,6 +27,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('users', [UserController::class, 'store'])->name('users.store');
     Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::post('users/{user}/restore', [UserController::class, 'restore'])->name('user.restore');
+    Route::delete('users/{user}/force-delete', [UserController::class, 'forceDelete'])->name('user.force_destroy');
 
     Route::get('teams', [TeamController::class, 'index'])->name('teams.index');
     Route::post('teams', [TeamController::class, 'store'])->name('teams.store');
