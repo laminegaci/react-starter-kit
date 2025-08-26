@@ -61,4 +61,16 @@ class RoleController extends Controller
     {
         $role->delete();
     }
+
+    public function restore($id)
+    {
+        $role = Role::withTrashed()->findOrFail($id);
+        $role->restore();
+    }
+
+    public function forceDelete($id)
+    {
+        $role = Role::withTrashed()->findOrFail($id);
+        $role->forceDelete();
+    }
 }

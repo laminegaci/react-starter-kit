@@ -20,6 +20,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('roles', [RoleController::class, 'store'])->name('role.store');
     Route::put('roles/{role}', [RoleController::class, 'update'])->name('role.update');
     Route::delete('roles/{role}', [RoleController::class, 'destroy'])->name('role.destroy');
+    Route::post('roles/{role}/restore', [RoleController::class, 'restore'])->name('role.restore');
+    Route::delete('roles/{role}/force-delete', [RoleController::class, 'forceDelete'])->name('role.force_destroy');
 
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::post('users', [UserController::class, 'store'])->name('users.store');

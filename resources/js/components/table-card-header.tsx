@@ -110,7 +110,7 @@ export default function TableCardHeader<T>({
                     className="ml-3 text-sm text-gray-600 hover:text-gray-700 focus:text-indigo-700 focus:outline-none"
                     type="button"
                 >
-                    Reset
+                    {t('Reset')}
                 </button>
             </div>
             <div className="dropdown dropdown-end">
@@ -133,24 +133,24 @@ export default function TableCardHeader<T>({
             </div>
             <div className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="btn btn-soft btn-primary m-1">{t("Filters")}</div>
-                <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-1 shadow-sm">
                     <li className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-700">Trashed</label>
+                    <label className="text-sm font-medium text-gray-700">{t('Trashed')}</label>
                     <div className="relative">
                         <select
                             name="trashed"
                             value={values.trashed}
                             onChange={handleChange}
                             defaultValue=""
-                            className="w-full appearance-none rounded-xl border border-gray-300 bg-white px-4 py-2 pr-10 text-sm text-gray-700 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+                            className="w-full appearance-none rounded-xl border border-gray-300 bg-white px-1 py-2 pr-10 text-sm text-gray-700 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
                         >
                             <option disabled value="">
                             </option>
-                            <option value='with'>With trashed</option>
-                            <option value='only'>Only trashed</option>
+                            <option value='with'>{t('With trashed')}</option>
+                            <option value='only'>{t('Only trashed')}</option>
                             </select>
                             {/* Custom dropdown arrow */}
-                            <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                            <span className="pointer-events-none absolute inset-y-0 right-5 flex items-center text-gray-400">
                             ▼
                         </span>
                     </div>
