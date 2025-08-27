@@ -26,10 +26,7 @@ class UserController extends Controller
             'teams' => new TeamCollection(Team::query()->get()),
             'users' => new UserCollection(
                 User::query()
-                    ->whereHas('roles', function ($query) {
-                        $query->where('name', '=', 'root')
-                            ->orWhere('name', '=', 'manager');
-                    })
+                    ->whereHas('roles')
                     ->orderByDesc('id')
                     ->filter(Request::only('search', 'trashed'))
                     ->paginate(100)

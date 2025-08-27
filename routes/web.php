@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\ChatMessageController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -15,7 +16,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    // Route::get('roles', [RoleController::class, 'edit'])->name('role.edit');
     Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
     Route::post('roles', [RoleController::class, 'store'])->name('role.store');
     Route::put('roles/{role}', [RoleController::class, 'update'])->name('role.update');
@@ -37,12 +37,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('teams/{team}/restore', [TeamController::class, 'restore'])->name('team.restore');
     Route::delete('teams/{team}/force-delete', [TeamController::class, 'forceDelete'])->name('team.force_destroy');
 
+    Route::get('chat', [ChatMessageController::class, 'index'])->name('chat.index');
+    Route::post('/chat/messages', [ChatMessageController::class, 'store'])->name('chat-messages.store');
+
     Route::get('/language/{locale}', function ($locale) {
-    if (in_array($locale, ['en', 'fr', 'ar'])) {
-        session(['locale' => $locale]);
-    }
-    return back();
-});
+        if (in_array($locale, ['en', 'fr', 'ar'])) {
+            session(['locale' => $locale]);
+        }
+        return back();
+    });
 });
 
 require __DIR__.'/settings.php';
