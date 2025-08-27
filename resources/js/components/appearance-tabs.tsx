@@ -1,5 +1,6 @@
 import { Appearance, useAppearance } from '@/hooks/use-appearance';
 import { cn } from '@/lib/utils';
+import { t } from 'i18next';
 import { LucideIcon, Monitor, Moon, Sun } from 'lucide-react';
 import { HTMLAttributes } from 'react';
 
@@ -26,7 +27,7 @@ export default function AppearanceToggleTab({ className = '', ...props }: HTMLAt
                     )}
                 >
                     <Icon className="-ml-1 h-4 w-4" />
-                    <span className="ml-1.5 text-sm">{label}</span>
+                    <span className="ml-1.5 text-sm">{t(label)}</span>
                 </button>
             ))}
         </div>

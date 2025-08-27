@@ -6,6 +6,7 @@ import { type BreadcrumbItem } from '@/types';
 
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import { t } from 'i18next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -17,11 +18,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Appearance() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Appearance settings" />
+            <Head title={t("Appearance settings")} />
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Appearance settings" description="Update your account's appearance settings" />
+                    <HeadingSmall title={t("Appearance settings")} description={t("Update your account's appearance settings")} />
                     <AppearanceTabs />
                 </div>
             </SettingsLayout>

@@ -123,7 +123,18 @@ const resources = {
       "Are you sure you want to delete your account?": "Are you sure you want to delete your account?",
       "Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.": "Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.",
       "Delete account": "Delete account",
-      "Delete your account and all of its resources": "Delete your account and all of its resources"
+      "Delete your account and all of its resources": "Delete your account and all of its resources",
+      "Update password": "Update password",
+      "Ensure your account is using a long, random password to stay secure": "Ensure your account is using a long, random password to stay secure",
+      "Current password": "Current password",
+      "New password": "New password",
+      "Confirm password": "Confirm password",
+      "Save password": "Save password",
+      "Appearance settings": "Appearance settings",
+      "Update your account's appearance settings": "Update your account's appearance settings",
+      "Light": "Light",
+      "Dark": "Dark",
+      "System": "System"
     }
   },
   fr: {
@@ -242,7 +253,18 @@ const resources = {
       "Are you sure you want to delete your account?": "Êtes-vous sûr de vouloir supprimer votre compte?",
       "Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.": "Une fois votre compte supprimé, toutes ses ressources et données seront également supprimées définitivement. Veuillez entrer votre mot de passe pour confirmer que vous souhaitez supprimer définitivement votre compte.",
       "Delete account": "Supprimer le compte",
-      "Delete your account and all of its resources": "Supprimez votre compte et toutes ses ressources"
+      "Delete your account and all of its resources": "Supprimez votre compte et toutes ses ressources",
+      "Update password": "Mettre à jour le mot de passe",
+      "Ensure your account is using a long, random password to stay secure": "Assurez-vous que votre compte utilise un mot de passe long et aléatoire pour rester sécurisé",
+      "Current password": "Mot de passe actuel",
+      "New password": "Nouveau mot de passe",
+      "Confirm password": "Confirmer le mot de passe",
+      "Save password": "Enregistrer le mot de passe",
+      "Appearance settings": "Paramètres d'apparence",
+      "Update your account's appearance settings": "Mettez à jour les paramètres d'apparence de votre compte",
+      "Light": "Clair",
+      "Dark": "Sombre",
+      "System": "Système"
     }
   },
   ar: {
