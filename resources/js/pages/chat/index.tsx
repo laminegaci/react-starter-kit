@@ -4,10 +4,11 @@ import AppLayout from "@/layouts/app-layout";
 import Heading from "@/components/heading";
 import { t } from "i18next";
 import { useState, useEffect, useRef } from "react";
-import { Send, UserCircle2, Circle, Menu } from "lucide-react";
+import { Send, UserCircle2, Circle, Menu, Router } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import echo from "@/echo";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: "Chat", href: "/chat" },
@@ -62,6 +63,23 @@ export default function Chat() {
     setChatMessages(messages.data);
   }, [messages]);
 
+  useEffect(() => {
+    if (!echo || !auth?.user) return;
+
+    const subscription = echo.private(`chat.${auth.user.id}`)
+      .listen("MessageSent", (event: any) => {
+        // Vérifie que c’est le bon correspondant
+        if (event.sender_id === activeUser?.id) {
+          setChatMessages((prev) => [...prev, event]);
+        }
+      });
+
+    return () => {
+      subscription.stopListening("MessageSent");
+    };
+  }, [activeUser?.id, auth?.user?.id]);
+
+
   // Changer d’utilisateur
   const handleUserClick = (user: User) => {
     setActiveUser(user);
@@ -87,6 +105,24 @@ export default function Chat() {
       },
     ]);
     setNewMessage("");
+
+    // Envoi vers backend
+    router.post(
+      "/chat/messages",
+      {
+        receiver_id: activeUser.id,
+        message: newMessage,
+      },
+      {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: () => {
+          setNewMessage("");
+          // recharge uniquement les messages (évite full reload)
+          router.reload({ only: ["messages"] });
+        },
+      }
+    );
   };
 
   const UsersList = (

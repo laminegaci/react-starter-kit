@@ -64,17 +64,19 @@ class ChatMessageController extends Controller
         ]);
     }
 
-    public function store(FormRequest $request): Void
+    public function send(FormRequest $request): Void
     {
         $validatedData = $request->validate([
             'receiver_id' => 'required|exists:users,id',
             'message' => 'required|string|max:1000',
         ]);
 
-        ChatMessage::create([
+        $chatMessage = ChatMessage::create([
             'sender_id' => auth()->id(),
-            'receiver_id' => request('receiver_id'),
-            'message' => request('message'),
+            'receiver_id' => $validatedData['receiver_id'],
+            'message' => $validatedData['message'],
         ]);
+
+        broadcast(new \App\Events\MessageSent($chatMessage));
     }
 }

@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
     Route::get('/chat/{user}', [ChatMessageController::class, 'messages'])->name('chat.messages');
+    Route::post('/chat/messages', [ChatMessageController::class, 'send'])->name('chat.send');
 
 
     Route::get('/language/{locale}', function ($locale) {
