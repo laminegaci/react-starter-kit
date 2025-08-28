@@ -14,25 +14,53 @@ class ChatMessageController extends Controller
 {
     public function index(): Response
     {
-        $authId = auth()->id();
-        $userId=1;
-        
+        $users = User::with('profile')
+            ->whereNot('id', auth()->id())
+            ->get();
+
+        // premier utilisateur (si existe)
+        $firstUser = $users->first();
+
+        $messages = collect();
+        if ($firstUser) {
+            $messages = ChatMessage::where(function ($q) use ($firstUser) {
+                    $q->where('sender_id', auth()->id())
+                      ->where('receiver_id', $firstUser->id);
+                })->orWhere(function ($q) use ($firstUser) {
+                    $q->where('sender_id', $firstUser->id)
+                      ->where('receiver_id', auth()->id());
+                })
+                ->orderBy('created_at', 'asc')
+                ->get();
+        }
+
         return Inertia::render('chat/index', [
-            'users' => new UserCollection(
-                User::with('profile')->whereNot('id', auth()->id())->get()
+            'users'    => new UserCollection($users),
+            'messages' => new ChatMessageCollection($messages),
+            'activeUserId' => $firstUser?->id,
+        ]);
+    }
+
+    public function messages(User $user): Response
+    {
+        $authId = auth()->id();
+
+        $messages = ChatMessage::where(function ($q) use ($authId, $user) {
+                $q->where('sender_id', $authId)
+                  ->where('receiver_id', $user->id);
+            })->orWhere(function ($q) use ($authId, $user) {
+                $q->where('sender_id', $user->id)
+                  ->where('receiver_id', $authId);
+            })
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return Inertia::render('chat/index', [
+            'users'    => new UserCollection(
+                User::with('profile')->whereNot('id', $authId)->get()
             ),
-            'messages' => new ChatMessageCollection((
-                ChatMessage::where(function ($q) use ($authId, $userId) {
-                        $q->where('sender_id', $authId)
-                        ->where('receiver_id', $userId);
-                    })->orWhere(function ($q) use ($authId, $userId) {
-                        $q->where('sender_id', $userId)
-                        ->where('receiver_id', $authId);
-                    })
-                    ->with(['sender.profile', 'receiver.profile'])
-                    ->orderBy('created_at', 'desc')
-                    ->get()
-            )) ,
+            'messages' => new ChatMessageCollection($messages),
+            'activeUserId' => $user->id,
         ]);
     }
 

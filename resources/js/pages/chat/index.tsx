@@ -1,5 +1,5 @@
-import { Head } from "@inertiajs/react";
-import { type BreadcrumbItem } from "@/types";
+import { Head, usePage, router } from "@inertiajs/react";
+import { Profile, type BreadcrumbItem } from "@/types";
 import AppLayout from "@/layouts/app-layout";
 import Heading from "@/components/heading";
 import { t } from "i18next";
@@ -15,47 +15,75 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface Message {
   id: number;
-  user: string;
-  text: string;
-  fromMe: boolean;
+  sender_id: number;
+  receiver_id: number;
+  message: string;
+  from_me: boolean;
+  created_at: string;
 }
 
 interface User {
   id: number;
   name: string;
-  online: boolean;
+  email: string;
+  profile?: Profile;
+  online?: boolean;
+}
+
+interface PageProps {
+  users: { data: User[] };
+  messages: { data: Message[] };
+  activeUserId?: number;
+  auth: { user: User };
 }
 
 export default function Chat() {
-  const [users] = useState<User[]>([
-    { id: 1, name: "Alice", online: true },
-    { id: 2, name: "Karim", online: false },
-    { id: 3, name: "Samira", online: true },
-  ]);
+  const { users, messages, activeUserId, auth } = usePage<PageProps>().props;
 
-  const [activeUser, setActiveUser] = useState<User | null>(users[0]);
+  const [activeUser, setActiveUser] = useState<User | null>(
+    users.data.find((u) => u.id === activeUserId) ?? null
+  );
 
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 1, user: "Alice", text: "Salam, ça va ?", fromMe: false },
-    { id: 2, user: "Moi", text: "Oui alhamdoulillah, et toi ?", fromMe: true },
-    { id: 3, user: "Alice", text: "Ça va bien aussi 😊", fromMe: false },
-  ]);
+  const [chatMessages, setChatMessages] = useState<Message[]>(messages.data);
 
   const [newMessage, setNewMessage] = useState("");
 
-  // Ref pour scroller au dernier message
+  // Ref pour scroll auto
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // Effet pour descendre en bas quand les messages changent
+  // Scroll auto en bas à chaque update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
+
+  // Mettre à jour quand Inertia renvoie de nouveaux messages
+  useEffect(() => {
+    setChatMessages(messages.data);
   }, [messages]);
 
+  // Changer d’utilisateur
+  const handleUserClick = (user: User) => {
+    setActiveUser(user);
+    router.get(route("chat.messages", user.id), {}, {
+      preserveState: true,
+      preserveScroll: true,
+      replace: true,
+    });
+  };
+
+  // Envoyer message (simulation — à connecter avec backend)
   const handleSend = () => {
-    if (!newMessage.trim()) return;
-    setMessages([
-      ...messages,
-      { id: Date.now(), user: "Moi", text: newMessage, fromMe: true },
+    if (!newMessage.trim() || !activeUser) return;
+    setChatMessages([
+      ...chatMessages,
+      {
+        id: Date.now(),
+        sender_id: auth.user.id,
+        receiver_id: activeUser.id,
+        message: newMessage,
+        from_me: true,
+        created_at: new Date().toISOString(),
+      },
     ]);
     setNewMessage("");
   };
@@ -66,10 +94,10 @@ export default function Chat() {
         {t("Utilisateurs")}
       </h3>
       <ul>
-        {users.map((user) => (
+        {users.data.map((user) => (
           <li
             key={user.id}
-            onClick={() => setActiveUser(user)}
+            onClick={() => handleUserClick(user)}
             className={`flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition ${
               activeUser?.id === user.id
                 ? "bg-gray-200 dark:bg-gray-700"
@@ -79,7 +107,7 @@ export default function Chat() {
             <UserCircle2 className="w-8 h-8 text-gray-400 dark:text-gray-500" />
             <div className="flex-1">
               <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
-                {user.name}
+                {user.profile?.full_name}
               </p>
               <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                 <Circle
@@ -132,7 +160,7 @@ export default function Chat() {
               <UserCircle2 className="w-8 h-8 text-gray-400 dark:text-gray-500" />
               <div>
                 <p className="font-medium text-gray-800 dark:text-gray-100">
-                  {activeUser?.name ?? "Sélectionnez un utilisateur"}
+                  {activeUser?.profile?.full_name ?? "Sélectionnez un utilisateur"}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   {activeUser?.online ? t("En ligne") : t("Hors ligne")}
@@ -142,46 +170,47 @@ export default function Chat() {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
-              {messages.map((msg) => (
+              {chatMessages.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex items-end gap-2 ${
-                    msg.fromMe ? "justify-end" : "justify-start"
+                    msg.from_me ? "justify-end" : "justify-start"
                   }`}
                 >
-                  {!msg.fromMe && (
+                  {!msg.from_me && (
                     <UserCircle2 className="w-8 h-8 text-gray-400 dark:text-gray-500" />
                   )}
                   <div
                     className={`max-w-xs px-4 py-2 rounded-2xl shadow ${
-                      msg.fromMe
+                      msg.from_me
                         ? "bg-blue-600 text-white rounded-br-none"
                         : "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border dark:border-gray-700 rounded-bl-none"
                     }`}
                   >
-                    <p className="text-sm">{msg.text}</p>
+                    <p className="text-sm">{msg.message}</p>
                   </div>
                 </div>
               ))}
 
-              {/* Élément invisible pour forcer le scroll */}
               <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}
-            <div className="p-3 border-t dark:border-gray-700 flex gap-2 bg-gray-50 dark:bg-gray-900">
-              <Input
-                placeholder="Écrire un message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
-              />
-              <Button onClick={handleSend} className="flex items-center gap-1">
-                <Send className="w-4 h-4" />
-                {t("Envoyer")}
-              </Button>
-            </div>
+            {activeUser && (
+              <div className="p-3 border-t dark:border-gray-700 flex gap-2 bg-gray-50 dark:bg-gray-900">
+                <Input
+                  placeholder="Écrire un message..."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                  className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
+                />
+                <Button onClick={handleSend} className="flex items-center gap-1">
+                  <Send className="w-4 h-4" />
+                  {t("Envoyer")}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

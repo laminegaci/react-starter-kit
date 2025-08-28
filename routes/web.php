@@ -37,8 +37,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('teams/{team}/restore', [TeamController::class, 'restore'])->name('team.restore');
     Route::delete('teams/{team}/force-delete', [TeamController::class, 'forceDelete'])->name('team.force_destroy');
 
-    Route::get('chat', [ChatMessageController::class, 'index'])->name('chat.index');
-    Route::post('/chat/messages', [ChatMessageController::class, 'store'])->name('chat-messages.store');
+    Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{user}', [ChatMessageController::class, 'messages'])->name('chat.messages');
+
 
     Route::get('/language/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'fr', 'ar'])) {
