@@ -134,7 +134,14 @@ const resources = {
       "Update your account's appearance settings": "Update your account's appearance settings",
       "Light": "Light",
       "Dark": "Dark",
-      "System": "System"
+      "System": "System",
+      "Chat": "Chat",
+      "Chat in real time with your contacts": "Chat in real time with your contacts",
+      "Select a user": "Select a user",
+      "Online": "Online",
+      "Offline": "Offline",
+      "Type a message...": "Type a message...",
+      "Send": "Send"
     }
   },
   fr: {
@@ -264,7 +271,14 @@ const resources = {
       "Update your account's appearance settings": "Mettez à jour les paramètres d'apparence de votre compte",
       "Light": "Clair",
       "Dark": "Sombre",
-      "System": "Système"
+      "System": "Système",
+      "Chat": "Chat",
+      "Chat in real time with your contacts": "Discutez en temps réel avec vos contacts",
+      "Select a user": "Sélectionnez un utilisateur",
+      "Online": "En ligne",
+      "Offline": "Hors ligne",
+      "Type a message...": "Écrire un message...",
+      "Send": "Envoyer"
     }
   },
   ar: {

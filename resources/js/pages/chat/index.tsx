@@ -140,7 +140,7 @@ export default function Chat() {
   const UsersList = (
     <div className="w-64 h-full bg-gray-50 dark:bg-gray-900 border-r dark:border-gray-700 overflow-y-auto">
       <h3 className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-200 border-b dark:border-gray-700">
-        {t("Utilisateurs")}
+        {t("Users")}
       </h3>
       <ul>
         {users.data.map((user) => (
@@ -165,7 +165,7 @@ export default function Chat() {
                   }`}
                   fill={user.online ? "green" : "gray"}
                 />
-                {user.online ? t("En ligne") : t("Hors ligne")}
+                {user.online ? t("Online") : t("Offline")}
               </span>
             </div>
           </li>
@@ -180,7 +180,7 @@ export default function Chat() {
       <div className="px-4 py-6 h-[90vh] flex flex-col">
         <Heading
           title={t("Chat")}
-          description={t("Discutez en temps réel avec vos contacts")}
+          description={t("Chat in real time with your contacts")}
         />
 
         {/* Layout principal */}
@@ -212,7 +212,7 @@ export default function Chat() {
                   {activeUser?.profile?.full_name ?? "Sélectionnez un utilisateur"}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {activeUser?.online ? t("En ligne") : t("Hors ligne")}
+                  {activeUser?.online ? t("Online") : t("Offline")}
                 </p>
               </div>
             </div>
@@ -248,7 +248,7 @@ export default function Chat() {
             {activeUser && (
               <div className="p-3 border-t dark:border-gray-700 flex gap-2 bg-gray-50 dark:bg-gray-900">
                 <Input
-                  placeholder="Écrire un message..."
+                  placeholder={t("Type a message...")}
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
@@ -256,7 +256,7 @@ export default function Chat() {
                 />
                 <Button onClick={handleSend} className="flex items-center gap-1">
                   <Send className="w-4 h-4" />
-                  {t("Envoyer")}
+                  {t("Send")}
                 </Button>
               </div>
             )}
