@@ -129,7 +129,7 @@ export default function Chat() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title={t("Chat")} />
-      <div className="px-4 py-6 h-[80vh] flex flex-col">
+      <div className="px-4 py-6 h-[90vh] flex flex-col">
         <Heading
           title={t("Chat")}
           description={t("Discutez en temps réel avec vos contacts")}
