@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import echo from "@/echo";
+import axios from "axios";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: "Chat", href: "/chat" },
@@ -91,39 +92,50 @@ export default function Chat() {
   };
 
   // Envoyer message (simulation — à connecter avec backend)
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!newMessage.trim() || !activeUser) return;
-    setChatMessages([
-      ...chatMessages,
-      {
-        id: Date.now(),
-        sender_id: auth.user.id,
-        receiver_id: activeUser.id,
-        message: newMessage,
-        from_me: true,
-        created_at: new Date().toISOString(),
-      },
-    ]);
+
+    // message temporaire (optimistic update)
+    const tempId = Date.now();
+    const optimisticMessage = {
+      id: tempId,
+      sender_id: auth.user.id,
+      receiver_id: activeUser.id,
+      message: newMessage,
+      from_me: true,
+      created_at: new Date().toISOString(),
+    };
+
+    // 1. Update UI immédiatement
+    setChatMessages((prev) => [...prev, optimisticMessage]);
     setNewMessage("");
 
-    // Envoi vers backend
-    router.post(
-      "/chat/messages",
-      {
+    try {
+      // 2. Envoi au backend
+      const response = await axios.post("/chat/messages", {
         receiver_id: activeUser.id,
-        message: newMessage,
-      },
-      {
-        preserveState: true,
-        preserveScroll: true,
-        onSuccess: () => {
-          setNewMessage("");
-          // recharge uniquement les messages (évite full reload)
-          router.reload({ only: ["messages"] });
-        },
+        message: optimisticMessage.message,
+      });
+
+      // Optionnel : remplacer le message temporaire par celui du backend
+      if (response.data?.id) {
+        setChatMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === tempId ? { ...msg, id: response.data.id } : msg
+          )
+        );
       }
-    );
+    } catch (error) {
+      console.error("Erreur envoi message :", error);
+
+      // 3. Rollback → supprimer le message temporaire
+      setChatMessages((prev) => prev.filter((msg) => msg.id !== tempId));
+
+      // Optionnel : afficher un toast
+      // toast.error("Échec de l’envoi du message");
+    }
   };
+
 
   const UsersList = (
     <div className="w-64 h-full bg-gray-50 dark:bg-gray-900 border-r dark:border-gray-700 overflow-y-auto">
