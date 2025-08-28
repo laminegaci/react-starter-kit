@@ -35,6 +35,7 @@ interface PageProps {
   messages: { data: Message[] };
   activeUserId?: number;
   auth: { user: User };
+  [key: string]: unknown;
 }
 
 export default function Chat() {
