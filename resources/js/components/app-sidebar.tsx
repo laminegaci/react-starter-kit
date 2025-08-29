@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Users, UsersRound, Notebook, Settings, MessageCircleMore } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Users, UsersRound, Notebook, Settings, MessageCircleMore, Calendar } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -17,6 +17,11 @@ const mainNavItems: NavItem[] = [
         title: 'Chat',
         href: '/chat',
         icon: MessageCircleMore,
+    },
+        {
+        title: 'Calendar',
+        href: '/calendar',
+        icon: Calendar,
     },
 ];
 

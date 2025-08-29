@@ -18,14 +18,14 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
             </div>
             <div className="flex items-center gap-1">
-                <Input
+                {/* <Input
                     id="name"
                     className="mt-1 block w-full"
                     value=''
                     required
                     autoComplete="name"
                     placeholder={t("Search ...")} 
-                />
+                /> */}
 
                 <div className='dropdown dropdown-end'>
                     <button className=''>

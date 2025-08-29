@@ -6,6 +6,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\ChatMessageController;
+use App\Http\Controllers\EventController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -40,6 +41,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
     Route::get('/chat/{user}', [ChatMessageController::class, 'messages'])->name('chat.messages');
     Route::post('/chat/messages', [ChatMessageController::class, 'send'])->name('chat.send');
+
+    // Route::get('/calendar', function () {
+    //     return Inertia::render('calendar/calendar');
+    // })->name('calendar');
+
+    // Route::get('/events', [EventController::class, 'index']);
+    // Route::post('/events', [EventController::class, 'store']);
+    // Route::delete('/events/{id}', [EventController::class, 'destroy']);
+
+
+    Route::get('/calendar', [EventController::class, 'index'])->name('calendar.index');
+    Route::post('/calendar', [EventController::class, 'store'])->name('calendar.store');
+    Route::delete('/calendar/{event}', [EventController::class, 'destroy'])->name('calendar.destroy');
 
 
     Route::get('/language/{locale}', function ($locale) {
