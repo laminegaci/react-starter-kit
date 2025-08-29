@@ -78,9 +78,13 @@ export default function TableCard<T>({
                             <div>{column.render(item[column.key], item, idx)}</div>
                             ) : (column.key === "name") ? (
                             <div className="badge badge-soft badge-primary p-2">{item[column.key]}</div>
-                            ) : (column.key === "role" ) ? (
+                            ) : (column.key === "role_name" ) ? (
                             <Link href={route('roles.index')} prefetch>
-                                <div className="badge badge-soft badge-primary p-2">{item[column.key]}</div>
+                                <div className="badge badge-soft badge-primary p-2">{t(item[column.key])}</div>
+                            </Link>
+                            ) : (column.key === "team_name" ) ? (
+                            <Link href={route('roles.index')} prefetch>
+                                <div className="badge badge-soft badge-info p-2">{t(item[column.key])}</div>
                             </Link>
                             ) : (column.key === "permissions_count") ? (<div className="badge badge-soft badge-info p-3">{item[column.key]}</div>) : (
                             item[column.key]

@@ -34,7 +34,7 @@ interface User {
   id: number;
   email: string;
   profile: Profile;
-  roles?: any;
+  role?: any;
   team?: any;
   deleted_at?: string | null;
 }
@@ -57,13 +57,15 @@ export default function Users() {
        },
       team: {
         id: null as number | null
+      },
+      role: {
+        id: null as number | null
       }
     });
-
     const flattenedData = users.data.map((user) => ({
       ...user,
       full_name: user.profile?.full_name ?? "",
-      role: user.roles?.[0]?.name ?? "",
+      role_name: user.role?.name ?? "",
       team_name: user.team?.name ?? "",
     }));
 
@@ -98,6 +100,9 @@ export default function Users() {
           },
           team: {
             id: user.team?.id
+          },
+          role: {
+            id: user.role?.id
           }
         });
       }
@@ -222,7 +227,7 @@ export default function Users() {
         { key: 'id', label: 'ID' },
         { key: 'full_name', label: t('name') },
         { key: 'email', label: t('Email') },
-        { key: 'role', label: t('Role') },
+        { key: 'role_name', label: t('Role') },
         { key: 'team_name', label: t('Team') },
         {
           key: "actions",
@@ -291,7 +296,7 @@ export default function Users() {
                     actions={{ view: false, edit: true, delete: true }}
                     data={flattenedData} 
                     buttonLabel={t("Add New User")}
-                    onCreateClick={() => openModal("create", { id: 0, email: "", profile: { first_name: "", last_name: "" }, team: { id: null } })}
+                    onCreateClick={() => openModal("create", { id: 0, email: "", profile: { first_name: "", last_name: "" }, team: { id: null }, role: { id: null } })}
                 />
 
                 <Pagination links={users.meta.links} />
@@ -401,7 +406,31 @@ export default function Users() {
                                     className="select select-neutral min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
                                     >
                                     <option value="">{t("Pick a team")}</option>
-                                    {teams.data.map(role => (
+                                    {teams.data.map(team => (
+                                      <option value={team.id}>{t(team.name)}</option>  
+                                    ))}
+                                  </select>
+                                  {/* {errors.team && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.team}</p>
+                                  )} */}
+                              </div>
+                            </div>
+
+                            <div className="w-70">
+                              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+                                {t('Role')}
+                              </label>
+                              <div className="mt-2">
+                                  <select 
+                                    name="role.id"
+                                    value={(modal === "create") ? data.role.id : selectedUser?.role?.id}
+                                    onChange={(e) => (modal === "create")
+                                      ? setData("role", { ...data.role, id: e.target.value === "" ? null : Number(e.target.value) })
+                                      : handleChange(e)}
+                                    className="select select-neutral min-w-0 grow bg-white py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                    >
+                                    <option value="">{t("Pick a role")}</option>
+                                    {roles.data.map(role => (
                                       <option value={role.id}>{t(role.name)}</option>  
                                     ))}
                                   </select>

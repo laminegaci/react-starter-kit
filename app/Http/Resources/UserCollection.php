@@ -21,7 +21,7 @@ class UserCollection extends ResourceCollection
                 'email'       => $user->email,
                 'profile'     => $user->profile,
                 'team'        => $user->team,
-                'roles'       => $user->roles,
+                'role'       => $user->roles->first(),
                 'deleted_at'  => $user->deleted_at,
             ];
         })->all();

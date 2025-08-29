@@ -22,7 +22,7 @@ class UserController extends Controller
     {
         return Inertia::render('users/index', [
             'filters' => Request::all('search', 'trashed'),
-            'roles' => new RoleCollection(Role::query()->get()),
+            'roles' => new RoleCollection(Role::query()->where('name', '!=', UserRoleEnum::ROOT->value)->get()),
             'teams' => new TeamCollection(Team::query()->get()),
             'users' => new UserCollection(
                 User::query()
@@ -43,7 +43,9 @@ class UserController extends Controller
             'profile.first_name' => 'required|string|max:255',
             'profile.last_name' => 'required|string|max:255',
             'team' => 'nullable|array',
-            'team.id' => 'nullable|numeric'
+            'team.id' => 'nullable|numeric',
+            'role' => 'nullable|array',
+            'role.id' => 'nullable|numeric'
         ]);
 
 
@@ -68,7 +70,9 @@ class UserController extends Controller
             'profile.first_name' => 'required|string|max:255',
             'profile.last_name' => 'required|string|max:255',
             'team' => 'nullable|array',
-            'team.id' => 'nullable|numeric'
+            'team.id' => 'nullable|numeric',
+            'role' => 'required|array',
+            'role.id' => 'required|numeric'
         ]);
 
         $user->update([
@@ -79,6 +83,9 @@ class UserController extends Controller
             'first_name' => $validatedData['profile']['first_name'],
             'last_name' => $validatedData['profile']['last_name'],
         ]);
+
+        $role = Role::where('id', '=', $validatedData['role']['id'])->first();
+        $user->syncRoles($role->name);
     }
 
     public function destroy(User $user)
