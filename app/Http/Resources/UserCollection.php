@@ -20,6 +20,7 @@ class UserCollection extends ResourceCollection
                 'name'        => $user->name,
                 'email'       => $user->email,
                 'profile'     => $user->profile,
+                'team'        => $user->team,
                 'roles'       => $user->roles,
                 'deleted_at'  => $user->deleted_at,
             ];
