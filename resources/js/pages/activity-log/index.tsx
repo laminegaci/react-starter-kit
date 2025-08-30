@@ -12,6 +12,9 @@ import {
   Search,
   Filter,
 } from "lucide-react";
+import { usePrevious } from 'react-use';
+import { useEffect } from "react";
+import pickBy from "lodash/pickBy";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: "Activity Logs", href: "/logs" },
@@ -36,13 +39,48 @@ interface PageProps {
 export default function ActivityLogs() {
   const { logs, stats, filters } = usePage<PageProps>().props;
 
-  const [search, setSearch] = useState(filters.search || "");
-  const [model, setModel] = useState(filters.model || "");
-  const [event, setEvent] = useState(filters.event || "");
+  // const [search, setSearch] = useState(filters.search || "");
+  // const [model, setModel] = useState(filters.model || "");
+  // const [event, setEvent] = useState(filters.event || "");
+  const [values, setValues] = useState({
+      search: filters.search || '',
+      model: filters.model || '',
+      event: filters.event || ''
+  });
+  const prevValues = usePrevious(values);
 
-  const applyFilters = () => {
-    router.get("/logs", { search, model, event }, { preserveState: true });
-  };
+  function reset() {
+      setValues({
+          search: '',
+          model: '',
+          event: ''
+      });
+  }
+   
+  function handleChange(
+      e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
+      const name = e.target.name;
+      const value = e.target.value;
+
+      setValues(values => ({
+      ...values,
+      [name]: value
+      }));
+  }
+
+  useEffect(() => {
+      // https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
+      if (prevValues) {
+      const query = Object.keys(pickBy(values)).length ? pickBy(values) : {};
+
+      router.get(route(route().current() as string), query, {
+          replace: true,
+          preserveState: true,
+          preserveScroll: true
+      });
+      }
+  }, [values]);
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -88,18 +126,20 @@ export default function ActivityLogs() {
               <div className="relative w-full md:w-1/3">
                 <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
                 <input
+                  name="search"
                   type="text"
-                  placeholder="Search..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={t("Search...")}
+                  value={values.search}
+                  onChange={handleChange}
                   className="w-full pl-10 rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm p-2"
                 />
               </div>
 
               {/* Filter by Model */}
               <select
-                value={model}
-                onChange={(e) => setModel(e.target.value)}
+                name="model"
+                value={values.model}
+                onChange={handleChange}
                 className="w-full md:w-1/4 rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm p-2"
               >
                 <option value="">{t('All Models')}</option>
@@ -110,8 +150,9 @@ export default function ActivityLogs() {
 
               {/* Filter by Event */}
               <select
-                value={event}
-                onChange={(e) => setEvent(e.target.value)}
+                name="event"
+                value={values.event}
+                onChange={handleChange}
                 className="w-full md:w-1/4 rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm p-2"
               >
                 <option value="">{t('All Events')}</option>
@@ -119,13 +160,6 @@ export default function ActivityLogs() {
                 <option value="updated">{t('Updated')}</option>
                 <option value="deleted">{t('Deleted')}</option>
               </select>
-
-              <button
-                onClick={applyFilters}
-                className="bg-indigo-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-indigo-700 transition"
-              >
-                {t('Apply')}
-              </button>
             </div>
           </div>
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use Spatie\Activitylog\Models\Activity;
+use App\Models\Activity;
 use Illuminate\Support\Facades\Request;
 
 class ActivityLogController extends Controller
@@ -11,16 +11,8 @@ class ActivityLogController extends Controller
     public function index()
     {
         $query = Activity::with('causer.profile')
-        // ->when($request->search, fn($q) =>
-        //     $q->where('description', 'like', "%{$request->search}%")
-        // )
-        // ->when($request->model, fn($q, $model) =>
-        //     $q->where('subject_type', $model)
-        // )
-        // ->when($request->event, fn($q, $event) =>
-        //     $q->where('event', $event)
-        // )
-        ;
+            ->filter(Request::only('search', 'model', 'event'))
+            ;
         
         return Inertia::render('activity-log/index', [
             'logs' => $query->latest()->get(),
