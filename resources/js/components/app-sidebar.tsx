@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Users, UsersRound, Notebook, Settings, MessageCircleMore, Calendar } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Users, UsersRound, Notebook, Settings, MessageCircleMore, Calendar, Logs } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -31,11 +31,6 @@ const footerNavItems: NavItem[] = [
         href: route('roles.index'),
         icon: Notebook,
     },
-    // {
-    //     title: 'Companies',
-    //     href: 'https://laravel.com/docs/starter-kits#react',
-    //     icon: BookOpen,
-    // },
     {
         title: 'Teams',
         href: route('teams.index'),
@@ -46,7 +41,12 @@ const footerNavItems: NavItem[] = [
         href: route('users.index'),
         icon: Users,
     },
-        {
+    {
+        title: 'Logs',
+        href: route('logs.index'),
+        icon: Logs,
+    },
+    {
         title: 'Settings',
         href: route('profile.edit'),
         icon: Settings,

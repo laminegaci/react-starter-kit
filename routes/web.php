@@ -8,6 +8,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\ChatMessageController;
 use App\Http\Controllers\EventController;
 use App\Models\User;
+use App\Http\Controllers\ActivityLogController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -55,9 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return back();
     });
 
-    Route::get('activity-log', function () {
-        
-    });
+    Route::get('log', [ActivityLogController::class, 'index'])->name('logs.index');
 });
 
 require __DIR__.'/settings.php';
