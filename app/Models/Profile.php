@@ -13,11 +13,13 @@ use App\Enums\UserGenderEnum;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Observers\ProfileObserver;
 use App\Http\Resources\MediaAvatarResource;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 #[ObservedBy([ProfileObserver::class])]
 class Profile extends Model implements HasMedia
 {
-    use SoftDeletes, InteractsWithMedia;
+    use SoftDeletes, InteractsWithMedia, LogsActivity;
 
     public const MEDIA_COLLECTION_NAME = 'profile-avatar';
     public const MEDIA_DISK_NAME = 'profile-avatar';
@@ -82,6 +84,15 @@ class Profile extends Model implements HasMedia
             ->crop('crop-center', '250', '250')
             ->performOnCollections(self::MEDIA_COLLECTION_NAME)
             ->quality(70);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['first_name', 'last_name'])
+            ->useLogName('profile')
+            ->setDescriptionForEvent(fn(string $eventName) => "Profile has been {$eventName}")
+            ->dontSubmitEmptyLogs();
     }
 
     /*

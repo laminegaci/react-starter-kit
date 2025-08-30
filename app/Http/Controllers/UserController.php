@@ -75,16 +75,18 @@ class UserController extends Controller
             'role.id' => 'required|numeric'
         ]);
 
-        $user->update([
-            'email' => $validatedData['email'],
-            'team_id' => $validatedData['team']['id'] ?? null,
-        ]);
-        $user->profile->update([
-            'first_name' => $validatedData['profile']['first_name'],
-            'last_name' => $validatedData['profile']['last_name'],
-        ]);
+        // Update user fields
+        $user->email   = $validatedData['email'];
+        $user->team_id = $validatedData['team']['id'] ?? null;
+        $user->save();
 
-        $role = Role::where('id', '=', $validatedData['role']['id'])->first();
+        // Update profile fields
+        $user->profile->first_name = $validatedData['profile']['first_name'];
+        $user->profile->last_name  = $validatedData['profile']['last_name'];
+        $user->profile->save();
+
+        // Update role
+        $role = Role::find($validatedData['role']['id']);
         $user->syncRoles($role->name);
     }
 

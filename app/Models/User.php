@@ -3,18 +3,21 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Spatie\Activitylog\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Activitylog\Contracts\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, SoftDeletes;
+    use HasFactory, Notifiable, HasRoles, SoftDeletes, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -73,6 +76,43 @@ class User extends Authenticatable
         return $this->belongsTo(Team::class)->withTrashed();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['email', 'password', 'team_id']) // direct attributes
+            ->useLogName('user')
+            ->setDescriptionForEvent(fn(string $eventName) => "User has been {$eventName}")
+            ->dontSubmitEmptyLogs();
+    }
+
+    /**
+     * Hook into the activity log to add related model attributes
+     */
+    public function tapActivity(Activity $activity, string $eventName)
+    {
+        // Add profile attributes
+        if ($this->profile) {
+            $activity->properties = $activity->properties->merge([
+                'profile_first_name' => $this->profile->first_name,
+                'profile_last_name'  => $this->profile->last_name,
+            ]);
+        }
+
+        // Add team name
+        if ($this->team) {
+            $activity->properties = $activity->properties->merge([
+                'team_name' => $this->team->name,
+            ]);
+        }
+    }
+    
     /*
 	|--------------------------------------------------------------------------
     ╔═══════════════╗
