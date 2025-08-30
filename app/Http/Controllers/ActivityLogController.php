@@ -10,7 +10,7 @@ class ActivityLogController extends Controller
 {
     public function index()
     {
-        $query = Activity::with('causer')
+        $query = Activity::with('causer.profile')
         // ->when($request->search, fn($q) =>
         //     $q->where('description', 'like', "%{$request->search}%")
         // )

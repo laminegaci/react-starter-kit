@@ -88,7 +88,7 @@ class User extends Authenticatable
         return LogOptions::defaults()
             ->logOnly(['email', 'password', 'team_id']) // direct attributes
             ->useLogName('user')
-            ->setDescriptionForEvent(fn(string $eventName) => "User has been {$eventName}")
+            ->setDescriptionForEvent(fn(string $eventName) => "user_{$eventName}")
             ->dontSubmitEmptyLogs();
     }
 

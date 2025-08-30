@@ -91,7 +91,7 @@ class Profile extends Model implements HasMedia
         return LogOptions::defaults()
             ->logOnly(['first_name', 'last_name'])
             ->useLogName('profile')
-            ->setDescriptionForEvent(fn(string $eventName) => "Profile has been {$eventName}")
+            ->setDescriptionForEvent(fn(string $eventName) => "profile_{$eventName}")
             ->dontSubmitEmptyLogs();
     }
 
