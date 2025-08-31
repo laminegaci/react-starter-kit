@@ -39,9 +39,6 @@ interface PageProps {
 export default function ActivityLogs() {
   const { logs, stats, filters } = usePage<PageProps>().props;
 
-  // const [search, setSearch] = useState(filters.search || "");
-  // const [model, setModel] = useState(filters.model || "");
-  // const [event, setEvent] = useState(filters.event || "");
   const [values, setValues] = useState({
       search: filters.search || '',
       model: filters.model || '',
@@ -56,6 +53,16 @@ export default function ActivityLogs() {
           event: ''
       });
   }
+
+  const lang = localStorage.getItem("lang") || "en";
+
+  // Map language to locale
+  const localeMap: Record<string, string> = {
+    fr: "fr-FR",
+    en: "en-US",
+  };
+
+  const locale = localeMap[lang] || "en-US";
    
   function handleChange(
       e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -119,7 +126,14 @@ export default function ActivityLogs() {
           {/* --- Filter Block --- */}
           <div className="bg-white p-6 rounded-2xl shadow space-y-4">
             <h2 className="text-lg font-semibold flex items-center gap-2">
-              <Filter className="w-5 h-5 text-gray-500" /> {t('Filters')}
+              <Filter className="w-5 h-5 text-gray-500" /> {t('Filters')} 
+              <button
+                  onClick={reset}
+                  className="ml-3 text-xs text-blue-600 hover:text-gray-700 focus:text-indigo-700 focus:outline-none"
+                  type="button"
+              >
+                  {t('Reset')}
+              </button>
             </h2>
             <div className="flex flex-col md:flex-row gap-4">
               {/* Search Input */}
@@ -213,12 +227,13 @@ export default function ActivityLogs() {
                           </pre>
                         </td>
                         <td className="p-3">
-                          {new Date(log.created_at).toLocaleString('en-US', {
+                          {new Date(log.created_at).toLocaleString(locale, {
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric',
                             hour: '2-digit',
                             minute: '2-digit',
+                            timeZone: 'Africa/Algiers',
                           })}
                         </td>
                       </tr>
