@@ -393,7 +393,7 @@ export default function Users() {
                             
 
                             <div className="w-70">
-                              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+                              <label htmlFor="team.id" className="block text-sm/6 font-medium text-gray-900">
                                 {t('Team')}
                               </label>
                               <div className="mt-2">
@@ -407,7 +407,7 @@ export default function Users() {
                                     >
                                     <option value="">{t("Pick a team")}</option>
                                     {teams.data.map(team => (
-                                      <option value={team.id}>{t(team.name)}</option>  
+                                      <option key={team.id} value={team.id}>{t(team.name)}</option>  
                                     ))}
                                   </select>
                                   {/* {errors.team && (
@@ -417,7 +417,7 @@ export default function Users() {
                             </div>
 
                             <div className="w-70">
-                              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+                              <label htmlFor="role.id" className="block text-sm/6 font-medium text-gray-900">
                                 {t('Role')}
                               </label>
                               <div className="mt-2">
@@ -431,7 +431,7 @@ export default function Users() {
                                     >
                                     <option value="">{t("Pick a role")}</option>
                                     {roles.data.map(role => (
-                                      <option value={role.id}>{t(role.name)}</option>  
+                                      <option key={role.id} value={role.id}>{t(role.name)}</option>  
                                     ))}
                                   </select>
                                   {/* {errors.team && (
