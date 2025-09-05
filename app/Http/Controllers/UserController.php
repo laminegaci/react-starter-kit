@@ -3,36 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Inertia\Inertia;
 use Inertia\Response;
-use App\Http\Resources\UserCollection;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Http\Request as FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Hash;
-use App\Enums\UserRoleEnum;
-use App\Http\Resources\RoleCollection;
-use App\Http\Resources\TeamCollection;
-use App\Models\Role;
-use App\Models\Team;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
+    public function __construct(protected UserService $service) {}
+
     public function index(): Response
     {
-        return Inertia::render('users/index', [
-            'filters' => Request::all('search', 'trashed'),
-            'roles' => new RoleCollection(Role::query()->where('name', '!=', UserRoleEnum::ROOT->value)->get()),
-            'teams' => new TeamCollection(Team::query()->get()),
-            'users' => new UserCollection(
-                User::query()
-                    ->whereHas('roles')
-                    ->orderByDesc('id')
-                    ->filter(Request::only('search', 'trashed'))
-                    ->paginate(100)
-                    ->appends(Request::all())
-            ),
-        ]);
+        return $this->service->get();
     }
 
     public function store(FormRequest $request): Void
@@ -47,17 +29,8 @@ class UserController extends Controller
             'role' => 'nullable|array',
             'role.id' => 'nullable|numeric'
         ]);
-
-
-        $user = User::create([
-            'email' => $validatedData['email'],
-            'password' => Hash::make('123456789'),
-            'team_id' => $validatedData['team']['id'] ?? null,
-        ])->assignRole(UserRoleEnum::MANAGER->value);
-        $user->profile()->create([
-            'first_name' => $validatedData['profile']['first_name'],
-            'last_name' => $validatedData['profile']['last_name']
-        ]);
+        
+        $this->service->createUser($validatedData);
     }
 
     public function update(FormRequest $request, User $user)
@@ -75,35 +48,21 @@ class UserController extends Controller
             'role.id' => 'required|numeric'
         ]);
 
-        // Update user fields
-        $user->email   = $validatedData['email'];
-        $user->team_id = $validatedData['team']['id'] ?? null;
-        $user->save();
-
-        // Update profile fields
-        $user->profile->first_name = $validatedData['profile']['first_name'];
-        $user->profile->last_name  = $validatedData['profile']['last_name'];
-        $user->profile->save();
-
-        // Update role
-        $role = Role::find($validatedData['role']['id']);
-        $user->syncRoles($role->name);
+        $this->service->updateUser($user, $validatedData);
     }
 
     public function destroy(User $user)
     {
-        $user->delete();
+        $this->service->deleteUser($user);
     }
 
     public function restore($id)
     {
-        $role = User::withTrashed()->findOrFail($id);
-        $role->restore();
+        $this->service->restore($id);
     }
 
     public function forceDelete($id)
     {
-        $role = User::withTrashed()->findOrFail($id);
-        $role->forceDelete();
+        $this->service->forceDelete($id);
     }
 }
