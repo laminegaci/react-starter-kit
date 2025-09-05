@@ -117,7 +117,7 @@ export default function Users() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
           const { name, value } = e.target;
-          console.log(name, value);
+
           if (name.includes(".")) {
             const [parent, child] = name.split(".");
     
@@ -150,7 +150,7 @@ export default function Users() {
 
     const handleCreate = (e: React.FormEvent) => {
       e.preventDefault();
-      console.log(data);
+
       post("/users", {
         onSuccess: success,
         onError: failed
@@ -159,7 +159,7 @@ export default function Users() {
 
     const handleUpdate = (e: React.FormEvent) => {
       e.preventDefault();
-      console.log(selectedUser);
+
       if (!selectedUser) return;
       put(`/users/${selectedUser.id}`, {
         onSuccess: success,

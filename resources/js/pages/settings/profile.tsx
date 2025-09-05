@@ -71,7 +71,6 @@ export default function Profile({
         toast.success(t("Profile updated successfully!"));
     }
     const failed = (errors: Record<string, string>) => {
-        console.log(errors)
         toast.error(t("Failed updated profile. Please try again." + JSON.stringify(errors)));
     }
 

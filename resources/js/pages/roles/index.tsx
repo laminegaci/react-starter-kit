@@ -152,7 +152,7 @@ export default function Roles() {
       e.preventDefault();
       
       if (!selectedRole) return;
-      console.log('Restoring role with ID:', selectedRole.id); // Debugging line
+
       post(`/roles/${selectedRole.id}/restore`, {
         onSuccess: success,
         onError: failed
