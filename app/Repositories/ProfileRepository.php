@@ -19,9 +19,9 @@ class ProfileRepository implements ProfileRepositoryInterface
         return Profile::find($id);
     }
 
-    public function create(User $user, array $data): Profile
+    public function create(User $user, array $data)
     {
-        return Profile::create($data);
+        $user->profile()->create($data);
     }
 
     public function update(Profile $profile, array $data)

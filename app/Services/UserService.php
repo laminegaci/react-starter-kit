@@ -26,17 +26,18 @@ class UserService
                 'email' => $data['email'],
                 'password' => Hash::make('123456789'),
                 'team_id' => $data['team']['id'] ?? null,
-            ])->assignRole(UserRoleEnum::MANAGER->value);
+            ]);
 
             $this->profiles->create($user, [
                 'first_name' => $data['profile']['first_name'],
                 'last_name' => $data['profile']['last_name']
             ]);
 
+            dd($data);
             if ($data['role']) {
                 $user->assignRole($data['role']);
             } else {
-                $user->assignRole('manager');
+                $user->assignRole(UserRoleEnum::USER->value);
             }   
         });
     }
