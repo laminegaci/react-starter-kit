@@ -33,9 +33,9 @@ class UserService
                 'last_name' => $data['profile']['last_name']
             ]);
 
-            dd($data);
-            if ($data['role']) {
-                $user->assignRole($data['role']);
+            if ($data['role']['id'] != null) {
+                $role = Role::find($data['role']['id']);
+                $user->assignRole($role->name);
             } else {
                 $user->assignRole(UserRoleEnum::USER->value);
             }   

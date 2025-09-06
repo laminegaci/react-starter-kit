@@ -51,6 +51,6 @@ class UserSeeder extends Seeder
 
 
         // Seed 100 random users with profiles
-        User::factory(50)->create();
+        User::factory(10)->create();
     }
 }
