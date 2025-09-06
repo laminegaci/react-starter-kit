@@ -502,6 +502,10 @@ export default function Users() {
                             <legend className="fieldset-legend">{t('Team')}</legend>
                             <input type="text" placeholder="" className="input input-neutral" value={selectedUser?.team_name ?? ''} disabled/>
                           </fieldset>
+                          <fieldset className="fieldset w-70">
+                            <legend className="fieldset-legend">{t('Role')}</legend>
+                            <input type="text" placeholder="" className="input input-neutral" value={selectedUser?.role_name ?? ''} disabled/>
+                          </fieldset>
                         </div>
                         </div>
                       </div>
