@@ -10,6 +10,7 @@ import { Eye, SquarePen, Trash, Recycle } from "lucide-react";
 import { profile } from "console";
 import { t } from "i18next";
 import Modal from "@/components/modal";
+import ConfirmModal from "./confirm-modal";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: "Teams", href: "/teams" },
@@ -41,7 +42,7 @@ export default function Teams() {
     const [modal, setModal] = useState<ModalType>(null);
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
 
-    const { data, setData, post, put, processing, reset, errors, clearErrors } = useForm({
+    const { data, setData, post, put, delete: destroy, processing, reset, errors, clearErrors } = useForm({
       name: "",
     });
 
@@ -51,24 +52,24 @@ export default function Teams() {
     //   role: team.roles?.[0]?.name ?? ""
     // }));
 
-    useEffect(() => {
-      if (modal === "create" || modal === "edit") {
-        const modalEl = document.getElementById("create&update") as HTMLDialogElement | null;
-        modalEl?.showModal();
-      }else if (modal === "view") {
-        const modalEl = document.getElementById('view') as HTMLDialogElement | null;
-        modalEl?.showModal();
-      }else if(modal === 'delete') {
-        const modalEl = document.getElementById('delete') as HTMLDialogElement | null;
-        modalEl?.showModal();
-      }else if(modal === 'restore') {
-        const modalEl = document.getElementById('restore') as HTMLDialogElement | null;
-        modalEl?.showModal();
-      }else if(modal === 'force_delete') {
-        const modalEl = document.getElementById('force_delete') as HTMLDialogElement | null;
-        modalEl?.showModal();
-      }
-    }, [modal]);
+    // useEffect(() => {
+    //   if (modal === "create" || modal === "edit") {
+    //     const modalEl = document.getElementById("create&update") as HTMLDialogElement | null;
+    //     modalEl?.showModal();
+    //   }else if (modal === "view") {
+    //     const modalEl = document.getElementById('view') as HTMLDialogElement | null;
+    //     modalEl?.showModal();
+    //   }else if(modal === 'delete') {
+    //     const modalEl = document.getElementById('delete') as HTMLDialogElement | null;
+    //     modalEl?.showModal();
+    //   }else if(modal === 'restore') {
+    //     const modalEl = document.getElementById('restore') as HTMLDialogElement | null;
+    //     modalEl?.showModal();
+    //   }else if(modal === 'force_delete') {
+    //     const modalEl = document.getElementById('force_delete') as HTMLDialogElement | null;
+    //     modalEl?.showModal();
+    //   }
+    // }, [modal]);
 
     const openModal = (type: ModalType, team: Team) => {
       setModal(type);
@@ -122,7 +123,7 @@ export default function Teams() {
       e.preventDefault();
 
       if (!selectedTeam) return;
-      router.delete(`/teams/${selectedTeam.id}`, {
+      destroy(`/teams/${selectedTeam.id}`, {
         onSuccess: success,
         onError: failed
       });
@@ -142,7 +143,7 @@ export default function Teams() {
       e.preventDefault();
 
       if (!selectedTeam) return;
-      router.delete(`/teams/${selectedTeam.id}/force-delete`, {
+      destroy(`/teams/${selectedTeam.id}/force-delete`, {
         onSuccess: success,
         onError: failed
       });
@@ -367,120 +368,48 @@ export default function Teams() {
                 )}
 
                 {modal === 'delete' && (
-                  <Modal
+                  <ConfirmModal
                     isOpen={modal === "delete"}
                     onClose={closeModal}
+                    onConfirm={handleDelete}
                     title={t("Delete Team")}
-                    size="sm"
-                  >
-                    <p className="flex justify-center"><Trash className="-ml-1 h-10 w-10" /></p>
-                    <p className="py-4 text-center">{t("Are you sure you want to delete this team")}? <span className='text-red-600'>{selectedTeam?.name}</span></p>
-                          
-
-                    <form 
-                      method="dialog"
-                      className="mt-4 space-y-4"
-                      onSubmit={handleDelete}
-                    >
-                      <div className="flex justify-end gap-2 pt-4">
-                        <button
-                          type="button"
-                          className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
-                          onClick={closeModal}
-                        >
-                          {t("Cancel")}
-                        </button>
-                        <button
-                          type="submit"
-                          className={`px-4 py-2 bg-red-600 text-white text-sm font-medium rounded hover:bg-red-400 cursor-pointer ${processing ? 'cursor-none! bg-indigo-300! hover:bg-indigo-400!' : ''}`}
-                          disabled={processing}
-                        >
-                          {processing && (
-                            <span className="loading loading-spinner loading-xs mr-2"></span>
-                          )}
-                          {t("Delete")}
-                        </button>
-                      </div>
-                    </form>
-                  </Modal>
+                    message={t("Are you sure you want to delete this team")}
+                    confirmLabel={t("Delete")}
+                    selected={selectedTeam?.name}
+                    lucideIcon={<Trash className="h-10 w-10 text-red-600" />}  
+                    processing={processing}     
+                    confirmColor="red"           
+                  />
                 )}
 
                 {modal === 'restore' && (
-                  <Modal
+                  <ConfirmModal
                     isOpen={modal === "restore"}
                     onClose={closeModal}
+                    onConfirm={handleRestore}
                     title={t("Restore Team")}
-                    size="sm"
-                  >
-                    <p className="flex justify-center"><Recycle className="-ml-1 h-10 w-10" /></p>
-                    <p className="py-4 text-center">{t("Are you sure you want to restore this team")}? <span className='text-green-600'>{selectedTeam?.name}</span></p>
-                          
-
-                    <form 
-                      method="dialog"
-                      className="mt-4 space-y-4"
-                      onSubmit={handleRestore}
-                    >
-                      <div className="flex justify-end gap-2 pt-4">
-                        <button
-                          type="button"
-                          className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
-                          onClick={closeModal}
-                        >
-                          {t("Cancel")}
-                        </button>
-                        <button
-                          type="submit"
-                          className={`px-4 py-2 bg-green-600 text-white text-sm font-medium rounded hover:bg-green-400 cursor-pointer ${processing ? 'cursor-none! bg-indigo-300! hover:bg-indigo-400!' : ''}`}
-                          disabled={processing}
-                        >
-                          {processing && (
-                            <span className="loading loading-spinner loading-xs mr-2"></span>
-                          )}
-                          {t("Restore")}
-                        </button>
-                      </div>
-                    </form>
-                  </Modal>
+                    message={t("Are you sure you want to restore this team")}
+                    confirmLabel={t("Restore")}
+                    selected={selectedTeam?.name}
+                    lucideIcon={<Recycle className="-ml-1 h-10 w-10" />}     
+                    processing={processing}     
+                    confirmColor="green"        
+                  />
                 )}
 
                 {modal === 'force_delete' && (
-                  <Modal
+                  <ConfirmModal
                     isOpen={modal === "force_delete"}
                     onClose={closeModal}
+                    onConfirm={handleForceDelete}
                     title={t("Permanently delete Team")}
-                    size="sm"
-                  >
-                    <p className="flex justify-center"><Trash className="-ml-1 h-10 w-10" /></p>
-                    <p className="py-4 text-center">{t("Are you sure you want to permanently delete this team")}? <span className='text-red-600'>{selectedTeam?.name}</span></p>
-                          
-
-                    <form 
-                      method="dialog"
-                      className="mt-4 space-y-4"
-                      onSubmit={handleForceDelete}
-                    >
-                      <div className="flex justify-end gap-2 pt-4">
-                        <button
-                          type="button"
-                          className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
-                          onClick={closeModal}
-                        >
-                          {t("Cancel")}
-                        </button>
-                        <button
-                          type="submit"
-                          className={`px-4 py-2 bg-red-600 text-white text-sm font-medium rounded hover:bg-red-400 cursor-pointer ${processing ? 'cursor-none! bg-indigo-300! hover:bg-indigo-400!' : ''}`}
-                          disabled={processing}
-                        >
-                          {processing && (
-                            <span className="loading loading-spinner loading-xs mr-2"></span>
-                          )}
-                          {t("Delete")}
-                        </button>
-                      </div>
-                    </form>
-                  </Modal>
+                    message={t("Are you sure you want to permanently delete this team")}
+                    confirmLabel={t("Delete")}
+                    selected={selectedTeam?.name}
+                    lucideIcon={<Trash className="-ml-1 h-10 w-10" />}     
+                    processing={processing}     
+                    confirmColor="red"        
+                  />
                 )}
 
             </div>
