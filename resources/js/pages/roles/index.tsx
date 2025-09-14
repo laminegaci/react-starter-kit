@@ -68,24 +68,24 @@ export default function Roles() {
 
     const description = t("A list of roles including their name, gard name and permissions.");
 
-    useEffect(() => {
-      if (modal === "create" || modal === "edit") {
-        const modalEl = document.getElementById("create&update") as HTMLDialogElement | null;
-        modalEl?.showModal();
-      }else if (modal === "view") {
-        const modalEl = document.getElementById('view') as HTMLDialogElement | null;
-        modalEl?.showModal();
-      }else if(modal === 'delete') {
-        const modalEl = document.getElementById('delete') as HTMLDialogElement | null;
-        modalEl?.showModal();
-      }else if(modal === 'restore') {
-        const modalEl = document.getElementById('restore') as HTMLDialogElement | null;
-        modalEl?.showModal();
-      }else if(modal === 'force_delete') {
-        const modalEl = document.getElementById('force_delete') as HTMLDialogElement | null;
-        modalEl?.showModal();
-      }
-    }, [modal]);
+    // useEffect(() => {
+    //   if (modal === "create" || modal === "edit") {
+    //     const modalEl = document.getElementById("create&update") as HTMLDialogElement | null;
+    //     modalEl?.showModal();
+    //   }else if (modal === "view") {
+    //     const modalEl = document.getElementById('view') as HTMLDialogElement | null;
+    //     modalEl?.showModal();
+    //   }else if(modal === 'delete') {
+    //     const modalEl = document.getElementById('delete') as HTMLDialogElement | null;
+    //     modalEl?.showModal();
+    //   }else if(modal === 'restore') {
+    //     const modalEl = document.getElementById('restore') as HTMLDialogElement | null;
+    //     modalEl?.showModal();
+    //   }else if(modal === 'force_delete') {
+    //     const modalEl = document.getElementById('force_delete') as HTMLDialogElement | null;
+    //     modalEl?.showModal();
+    //   }
+    // }, [modal]);
 
     const openModal = (type: ModalType, role: Role) => {
       setModal(type);
