@@ -16,7 +16,6 @@ interface ConfirmModalProps {
 }
 
 const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmLabel, confirmColor, selected, lucideIcon, processing }: ConfirmModalProps) => (
-  console.log(processing),
   <Modal isOpen={isOpen} onClose={onClose} title={title} size="sm">
 
     <p className="flex justify-center">{lucideIcon}</p>
