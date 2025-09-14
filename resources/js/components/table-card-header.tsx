@@ -146,7 +146,6 @@ export default function TableCardHeader<T>({
                             name="trashed"
                             value={values.trashed}
                             onChange={handleChange}
-                            defaultValue=""
                             className="w-full appearance-none rounded-xl border border-gray-300 bg-white px-1 py-2 pr-10 text-sm text-gray-700 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
                         >
                             <option disabled value="">
