@@ -169,6 +169,7 @@ const resources = {
       "profile_created": "Profile has been created",
       "profile_updated": "Profile has been updated",
       "profile_deleted": "Profile has been deleted",
+      "View Team": "View Team"
     }
   },
   fr: {
@@ -333,6 +334,7 @@ const resources = {
       "profile_created": "Profil a été créé",
       "profile_updated": "Profil a été mis à jour",
       "profile_deleted": "Profil a été supprimé",
+      "View Team": "Voir l'équipe"
     }
   },
   ar: {

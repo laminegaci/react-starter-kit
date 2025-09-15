@@ -11,6 +11,7 @@ import { profile } from "console";
 import { t } from "i18next";
 import Modal from "@/components/modal";
 import ConfirmModal from "./confirm-modal";
+import ViewModal from "./view-modal";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: "Teams", href: "/teams" },
@@ -327,44 +328,12 @@ export default function Teams() {
                 )}
 
                 {modal === 'view' && (
-                <Modal
-                  isOpen={modal === "view"}
-                  onClose={closeModal}
-                  title={t("View Team")}
-                  size="xl"
-                >
-
-                        {/* Modal Content */}
-                        <div className="card bg-base-100 shadow-sm mt-6">
-                          <div className="card lg:card-side bg-base-100 shadow-sm">
-                            <div className="card-body">
-                              <div className="flex justify-around">  
-
-                              <fieldset className="fieldset w-70">
-                                <legend className="fieldset-legend">{t('Team')}</legend>
-                                <input type="text" placeholder="Type here" className="input input-neutral" value={selectedTeam?.name ?? ''} disabled/>
-                              </fieldset>
-                            </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="modal-action mt-6">
-                          <form method="dialog">
-                            {/* Modal Footer */}
-                            <div className="flex justify-end gap-2 pt-4 border-t">
-                              <button
-                                type="button"
-                                className="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300 cursor-pointer"
-                                onClick={closeModal}
-                              >
-                                {t("Cancel")}
-                              </button>
-                            </div>
-                          </form>
-                        </div>
-
-                </Modal>
+                  <ViewModal
+                    isOpen={modal === "view"}
+                    onClose={closeModal}
+                    title={t("View Team")}
+                    selected={selectedTeam?.name}
+                  />
                 )}
 
                 {modal === 'delete' && (
